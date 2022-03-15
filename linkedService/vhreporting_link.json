@@ -1,0 +1,18 @@
+{
+	"name": "vhreporting_link",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=vh-core-infra-sandbox.database.windows.net;Initial Catalog=vhreporting;User ID=hvhearingsapiadmin",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "vhcoreinfrasbox",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "hvhearingsapiadmin"
+			}
+		}
+	}
+}
