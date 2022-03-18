@@ -65,11 +65,11 @@
 								"waitOnCompletion": false,
 								"parameters": {
 									"TableName": {
-										"value": "@item().TableName",
+										"value": "@{item().TableName}",
 										"type": "Expression"
 									},
 									"ProcedureName": {
-										"value": "@item().ProcedureName",
+										"value": "@{item().ProcedureName}",
 										"type": "Expression"
 									}
 								}
