@@ -71,6 +71,10 @@
 									"ProcedureName": {
 										"value": "@{item().ProcedureName}",
 										"type": "Expression"
+									},
+									"ExtractSQL": {
+										"value": "@{item().ExtractSQL}",
+										"type": "Expression"
 									}
 								}
 							}
