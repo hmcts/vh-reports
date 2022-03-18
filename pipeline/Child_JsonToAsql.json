@@ -81,21 +81,9 @@
 									"type": "String"
 								}
 							}
-						],
-						"collectionReference": "$['value']"
+						]
 					}
 				},
-				"inputs": [
-					{
-						"referenceName": "JsonBlobStorage",
-						"type": "DatasetReference",
-						"parameters": {
-							"Container": "vhreporting",
-							"Folder": "2022-03-16",
-							"FileName": "2022-03-16T22%3A00%3A00.0000000"
-						}
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "AsqlTarget",

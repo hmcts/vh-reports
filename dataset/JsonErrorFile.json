@@ -1,0 +1,37 @@
+{
+	"name": "JsonErrorFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "vhreporting_blob",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Container": {
+				"type": "string",
+				"defaultValue": "vhreporting"
+			},
+			"Folder": {
+				"type": "string",
+				"defaultValue": "2022-03-16"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "2022-03-16T22%3A00%3A00.0000000",
+				"folderPath": "2022-03-16",
+				"container": "vhreporting"
+			},
+			"columnDelimiter": "",
+			"escapeChar": "",
+			"quoteChar": ""
+		},
+		"schema": []
+	}
+}
