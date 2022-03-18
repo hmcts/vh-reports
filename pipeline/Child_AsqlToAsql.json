@@ -5,7 +5,14 @@
 			{
 				"name": "Truncate Staging",
 				"type": "SqlServerStoredProcedure",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "SetExtractSQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -53,6 +60,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@variables('ExtractSQL')",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -127,6 +138,19 @@
 					"referenceName": "vhreporting_link",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "SetExtractSQL",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ExtractSQL",
+					"value": {
+						"value": "@concat('SELECT * FROM dbo.',pipeline().parameters.TableName)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -137,6 +161,12 @@
 			"ProcedureName": {
 				"type": "string",
 				"defaultValue": "sp_LoadConference"
+			}
+		},
+		"variables": {
+			"ExtractSQL": {
+				"type": "String",
+				"defaultValue": "SELECT * FROM dbo.Conference"
 			}
 		},
 		"annotations": []
