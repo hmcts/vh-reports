@@ -23,7 +23,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "JsonSource",
+						"type": "DelimitedTextSource",
 						"additionalColumns": [
 							{
 								"name": "FileName",
@@ -34,15 +34,12 @@
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
 							"modifiedDatetimeStart": "2022-03-15T00:00:00.000Z",
-							"wildcardFolderPath": {
-								"value": "@pipeline().parameters.Folder",
-								"type": "Expression"
-							},
+							"wildcardFolderPath": "*",
 							"wildcardFileName": "*",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
-							"type": "JsonReadSettings"
+							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
@@ -56,25 +53,18 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['value'][0]['problemId']"
+									"type": "String",
+									"ordinal": 1
 								},
 								"sink": {
-									"name": "ProblemId",
+									"name": "Id",
+									"type": "Guid"
+								}
+							},
+							{
+								"source": {
+									"name": "FileName",
 									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['value'][0]['total_exceptions']"
-								},
-								"sink": {
-									"name": "TotalExceptions",
-									"type": "Byte"
-								}
-							},
-							{
-								"source": {
-									"path": "$['FileName']"
 								},
 								"sink": {
 									"name": "FileName",
@@ -84,6 +74,17 @@
 						]
 					}
 				},
+				"inputs": [
+					{
+						"referenceName": "JsonErrorFile",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": "vhreporting",
+							"Folder": "2022-03-16",
+							"FileName": "2022-03-16T22%3A00%3A00.0000000"
+						}
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "AsqlTarget",
