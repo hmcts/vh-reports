@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT TableName, ProcedureName FROM dbo.AdfConfig ORDER BY RunOrder",
+						"sqlReaderStoredProcedureName": "[dbo].[sp_GetAdfConfig]",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
