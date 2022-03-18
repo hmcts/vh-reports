@@ -82,7 +82,7 @@
 								}
 							}
 						],
-						"collectionReference": ""
+						"collectionReference": "$['value']"
 					}
 				},
 				"inputs": [
