@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "Master_ErrorFile",
 	"properties": {
 		"activities": [
 			{
@@ -54,7 +54,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup1').output.value",
+						"value": "@activity('GetFiles').output.value",
 						"type": "Expression"
 					},
 					"batchCount": 8
