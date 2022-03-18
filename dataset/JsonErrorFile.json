@@ -28,7 +28,7 @@
 				"folderPath": "2022-03-16",
 				"container": "vhreporting"
 			},
-			"columnDelimiter": "",
+			"columnDelimiter": "nodelimiterhere",
 			"escapeChar": "",
 			"quoteChar": ""
 		},
