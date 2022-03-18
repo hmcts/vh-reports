@@ -231,6 +231,10 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@pipeline().parameters.ExtractSQL",
+									"type": "Expression"
+								},
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
@@ -319,6 +323,10 @@
 					"ProcedureName": {
 						"type": "string",
 						"defaultValue": "sp_LoadConference"
+					},
+					"ExtractSQL": {
+						"type": "string",
+						"defaultValue": "SELECT * FROM dbo.Conference"
 					}
 				},
 				"annotations": []
@@ -350,7 +358,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
-								"sqlReaderQuery": "SELECT TableName, ProcedureName FROM dbo.AdfConfig ORDER BY RunOrder",
+								"sqlReaderStoredProcedureName": "[[dbo].[sp_GetAdfConfig]",
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
@@ -403,6 +411,10 @@
 											},
 											"ProcedureName": {
 												"value": "@{item().ProcedureName}",
+												"type": "Expression"
+											},
+											"ExtractSQL": {
+												"value": "@{item().ExtractSQL}",
 												"type": "Expression"
 											}
 										}
