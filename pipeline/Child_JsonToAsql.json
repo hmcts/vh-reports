@@ -57,8 +57,8 @@
 									"ordinal": 1
 								},
 								"sink": {
-									"name": "Id",
-									"type": "Guid"
+									"name": "JsonText",
+									"type": "String"
 								}
 							},
 							{
