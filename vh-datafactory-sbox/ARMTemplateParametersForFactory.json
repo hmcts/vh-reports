@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "vh-datafactory-sbox"
+		},
+		"vhreporting_blob_connectionString": {
+			"value": ""
+		},
+		"vhreporting_link_connectionString": {
+			"value": ""
+		},
+		"vhvideo_link_connectionString": {
+			"value": ""
+		},
+		"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
+			"value": "https://vhcoreinfrasandbox.vault.azure.net/"
+		}
+	}
+}
