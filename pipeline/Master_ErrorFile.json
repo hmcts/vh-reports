@@ -23,7 +23,7 @@
 			},
 			"Folder": {
 				"type": "string",
-				"defaultValue": "2022-03-16"
+				"defaultValue": "AppInsightsError"
 			},
 			"FileName": {
 				"type": "string",
