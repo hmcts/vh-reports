@@ -33,7 +33,10 @@
 						"storeSettings": {
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
-							"modifiedDatetimeStart": "2022-03-15T00:00:00.000Z",
+							"modifiedDatetimeStart": {
+								"value": "@pipeline().parameters.DeltaDateTime",
+								"type": "Expression"
+							},
 							"wildcardFolderPath": "AppInsightsError",
 							"wildcardFileName": "*",
 							"enablePartitionDiscovery": false
@@ -146,6 +149,10 @@
 			"FileName": {
 				"type": "string",
 				"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
+			},
+			"DeltaDateTime": {
+				"type": "string",
+				"defaultValue": "03/15/2022 00:00:00"
 			}
 		},
 		"annotations": []
