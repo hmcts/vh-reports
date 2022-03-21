@@ -1,5 +1,5 @@
 {
-	"name": "Json1",
+	"name": "JsonAppInsightsError",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "vhreporting_blob",
@@ -12,7 +12,7 @@
 			},
 			"Folder": {
 				"type": "string",
-				"defaultValue": "2022-03-16"
+				"defaultValue": "AppInsightsError"
 			},
 			"FileName": {
 				"type": "string",

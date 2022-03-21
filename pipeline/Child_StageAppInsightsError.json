@@ -84,11 +84,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Json1",
+						"referenceName": "JsonAppInsightsError",
 						"type": "DatasetReference",
 						"parameters": {
 							"Container": "vhreporting",
-							"Folder": "2022-03-16",
+							"Folder": "AppInsightsError",
 							"FileName": "2022-03-16T22%3A00%3A00.0000000"
 						}
 					}
@@ -141,7 +141,7 @@
 			},
 			"Folder": {
 				"type": "string",
-				"defaultValue": "2022-03-16"
+				"defaultValue": "AppInsightsError"
 			},
 			"FileName": {
 				"type": "string",
