@@ -1,5 +1,5 @@
 {
-	"name": "Child_JsonToAsql_copy1",
+	"name": "Child_StageAppInsightsError",
 	"properties": {
 		"activities": [
 			{
@@ -99,7 +99,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"SchemaName": "stg",
-							"TableName": "AppInsightsErrorLine"
+							"TableName": "AppInsightsError"
 						}
 					}
 				]
@@ -121,7 +121,7 @@
 					"storedProcedureParameters": {
 						"tableName": {
 							"value": {
-								"value": "AppInsightsErrorLine",
+								"value": "AppInsightsError",
 								"type": "Expression"
 							},
 							"type": "String"
