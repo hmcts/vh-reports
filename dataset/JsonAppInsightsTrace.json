@@ -1,0 +1,73 @@
+{
+	"name": "JsonAppInsightsTrace",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "vhreporting_blob",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Container": {
+				"type": "string",
+				"defaultValue": "vhreporting"
+			},
+			"Folder": {
+				"type": "string",
+				"defaultValue": "AppInsightsTrace"
+			},
+			"FileName": {
+				"type": "string",
+				"defaultValue": "2022-03-21T14:00:00.0000000"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().FileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().Folder",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().Container",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"value": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"message": {
+								"type": "string"
+							},
+							"customDimensions": {
+								"type": "string"
+							},
+							"user_Id": {
+								"type": "string"
+							},
+							"client_Model": {
+								"type": "string"
+							},
+							"timestamp": {
+								"type": "string"
+							},
+							"getTxt_currentConferenceId": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
