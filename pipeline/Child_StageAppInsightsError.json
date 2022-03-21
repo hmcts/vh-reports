@@ -144,6 +144,36 @@
 					"referenceName": "vhreporting_link",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "LoadTarget",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Stage AppInsightsError",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": {
+						"value": "@pipeline().parameters.ProcedureName",
+						"type": "Expression"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "vhreporting_link",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
@@ -166,6 +196,10 @@
 			"TableName": {
 				"type": "string",
 				"defaultValue": "AppInsightsError"
+			},
+			"ProcedureName": {
+				"type": "string",
+				"defaultValue": "sp_LoadAppInsightsError"
 			}
 		},
 		"annotations": []
