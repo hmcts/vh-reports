@@ -90,9 +90,18 @@
 						"referenceName": "JsonAppInsightsError",
 						"type": "DatasetReference",
 						"parameters": {
-							"Container": "vhreporting",
-							"Folder": "AppInsightsError",
-							"FileName": "2022-03-16T22%3A00%3A00.0000000"
+							"Container": {
+								"value": "@pipeline().parameters.Container",
+								"type": "Expression"
+							},
+							"Folder": {
+								"value": "@pipeline().parameters.Folder",
+								"type": "Expression"
+							},
+							"FileName": {
+								"value": "@pipeline().parameters.FileName",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -124,7 +133,7 @@
 					"storedProcedureParameters": {
 						"tableName": {
 							"value": {
-								"value": "AppInsightsError",
+								"value": "@pipeline().parameters.TableName",
 								"type": "Expression"
 							},
 							"type": "String"
@@ -153,6 +162,10 @@
 			"DeltaDateTime": {
 				"type": "string",
 				"defaultValue": "03/15/2022 00:00:00"
+			},
+			"TableName": {
+				"type": "string",
+				"defaultValue": "AppInsightsError"
 			}
 		},
 		"annotations": []

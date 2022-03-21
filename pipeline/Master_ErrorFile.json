@@ -68,7 +68,13 @@
 									"referenceName": "Child_StageAppInsightsError",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": false
+								"waitOnCompletion": false,
+								"parameters": {
+									"DeltaDateTime": {
+										"value": "@{item().DeltaValue}",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
