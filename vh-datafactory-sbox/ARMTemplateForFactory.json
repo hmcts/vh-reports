@@ -339,6 +339,36 @@
 							"referenceName": "vhreporting_link",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "LoadTarget",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Stage AppInsightsError",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": {
+								"value": "@pipeline().parameters.ProcedureName",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "vhreporting_link",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"policy": {
@@ -365,6 +395,10 @@
 					"TableName": {
 						"type": "string",
 						"defaultValue": "AppInsightsError"
+					},
+					"ProcedureName": {
+						"type": "string",
+						"defaultValue": "sp_LoadAppInsightsError"
 					}
 				},
 				"annotations": []
@@ -373,6 +407,102 @@
 				"[concat(variables('factoryId'), '/datasets/JsonAppInsightsError')]",
 				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
 				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Master_ErrorFile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetConfig",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[sp_GetAdfConfig]",
+								"storedProcedureParameters": {
+									"MasterPipeline": {
+										"type": "String",
+										"value": "Master_ErrorFile"
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AsqlTarget",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "dbo",
+									"TableName": "AdfConfig"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetConfig",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetConfig').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 4,
+							"activities": [
+								{
+									"name": "StageAndLoad",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "Child_StageAppInsightsError",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": false,
+										"parameters": {
+											"DeltaDateTime": {
+												"value": "@{item().DeltaValue}",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
+				"[concat(variables('factoryId'), '/pipelines/Child_StageAppInsightsError')]"
 			]
 		},
 		{
@@ -689,102 +819,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/vhcoreinfrasbox')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Master_ErrorFile')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "GetConfig",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[sp_GetAdfConfig]",
-								"storedProcedureParameters": {
-									"MasterPipeline": {
-										"type": "String",
-										"value": "Master_ErrorFile"
-									}
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "AsqlTarget",
-								"type": "DatasetReference",
-								"parameters": {
-									"SchemaName": "dbo",
-									"TableName": "AdfConfig"
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "GetConfig",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('GetConfig').output.value",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"batchCount": 4,
-							"activities": [
-								{
-									"name": "StageAndLoad",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "Child_StageAppInsightsError",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": false,
-										"parameters": {
-											"DeltaDateTime": {
-												"value": "@{item().DeltaValue}",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
-				"[concat(variables('factoryId'), '/pipelines/Child_StageAppInsightsError')]"
 			]
 		}
 	]
