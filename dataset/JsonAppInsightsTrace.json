@@ -16,7 +16,7 @@
 			},
 			"FileName": {
 				"type": "string",
-				"defaultValue": "2022-03-21T14:00:00.0000000"
+				"defaultValue": "2022-03-21T15:00:00.0000000"
 			}
 		},
 		"annotations": [],
@@ -61,7 +61,28 @@
 							"timestamp": {
 								"type": "string"
 							},
-							"getTxt_currentConferenceId": {
+							"currentConferenceId": {
+								"type": "string"
+							},
+							"conference": {
+								"type": "string"
+							},
+							"participant": {
+								"type": "string"
+							},
+							"errorInformation": {
+								"type": "string"
+							},
+							"HostInstanceId": {
+								"type": "null"
+							},
+							"ProcessId": {
+								"type": "null"
+							},
+							"LogLevel": {
+								"type": "null"
+							},
+							"pexipError": {
 								"type": "string"
 							}
 						}
