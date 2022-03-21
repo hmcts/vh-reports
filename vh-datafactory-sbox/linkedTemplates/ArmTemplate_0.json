@@ -435,6 +435,13 @@
 									{
 										"name": "FileName",
 										"value": "$$FILEPATH"
+									},
+									{
+										"name": "RunDate",
+										"value": {
+											"value": "@variables('RunDate')",
+											"type": "Expression"
+										}
 									}
 								],
 								"storeSettings": {
@@ -526,7 +533,14 @@
 					{
 						"name": "Truncate Staging",
 						"type": "SqlServerStoredProcedure",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Set RunDate",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -581,6 +595,19 @@
 							"referenceName": "vhreporting_link",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "Set RunDate",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "RunDate",
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
@@ -611,6 +638,11 @@
 					"ProcedureName": {
 						"type": "string",
 						"defaultValue": "sp_LoadAppInsightsError"
+					}
+				},
+				"variables": {
+					"RunDate": {
+						"type": "String"
 					}
 				},
 				"annotations": []
