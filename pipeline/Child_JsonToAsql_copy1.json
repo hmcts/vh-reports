@@ -53,25 +53,33 @@
 						"mappings": [
 							{
 								"source": {
-									"type": "String",
-									"ordinal": 1
+									"path": "['problemId']"
 								},
 								"sink": {
-									"name": "JsonText",
+									"name": "ProblemId",
 									"type": "String"
 								}
 							},
 							{
 								"source": {
-									"name": "FileName",
-									"type": "String"
+									"path": "['total_exceptions']"
+								},
+								"sink": {
+									"name": "TotalExceptions",
+									"type": "Byte"
+								}
+							},
+							{
+								"source": {
+									"path": "$['FileName']"
 								},
 								"sink": {
 									"name": "FileName",
 									"type": "String"
 								}
 							}
-						]
+						],
+						"collectionReference": "$['value']"
 					}
 				},
 				"inputs": [
