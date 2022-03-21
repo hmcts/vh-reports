@@ -486,6 +486,14 @@
 											"DeltaDateTime": {
 												"value": "@{item().DeltaValue}",
 												"type": "Expression"
+											},
+											"TableName": {
+												"value": "@{item().TableName}",
+												"type": "Expression"
+											},
+											"ProcedureName": {
+												"value": "@{item().ProcedureName}",
+												"type": "Expression"
 											}
 										}
 									}
