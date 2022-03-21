@@ -87,6 +87,15 @@
 									"name": "FileName",
 									"type": "String"
 								}
+							},
+							{
+								"source": {
+									"path": "$['RunDate']"
+								},
+								"sink": {
+									"name": "RunDate",
+									"type": "String"
+								}
 							}
 						],
 						"collectionReference": "$['value']"
