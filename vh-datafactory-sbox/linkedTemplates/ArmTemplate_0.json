@@ -55,6 +55,48 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/JsonErrorFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "vhreporting_blob",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "vhreporting"
+					},
+					"Folder": {
+						"type": "string",
+						"defaultValue": "2022-03-16"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "2022-03-16T22%3A00%3A00.0000000",
+						"folderPath": "2022-03-16",
+						"container": "vhreporting"
+					},
+					"columnDelimiter": "nodelimiterhere",
+					"escapeChar": "",
+					"quoteChar": ""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_blob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/vhreporting_link')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -98,6 +140,72 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/vhcoreinfrasbox')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "vhreporting_blob",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "vhreporting"
+					},
+					"Folder": {
+						"type": "string",
+						"defaultValue": "2022-03-16"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().Folder",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"value": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"problemId": {
+										"type": "string"
+									},
+									"total_exceptions": {
+										"type": "integer"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_blob')]"
 			]
 		},
 		{
@@ -335,6 +443,215 @@
 				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]",
 				"[concat(variables('factoryId'), '/datasets/AsqlSource')]",
 				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Child_StageAppInsightsError')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"additionalColumns": [
+									{
+										"name": "FileName",
+										"value": "$$FILEPATH"
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": "2022-03-15T00:00:00.000Z",
+									"wildcardFolderPath": "2022-03-16",
+									"wildcardFileName": "*",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['problemId']"
+										},
+										"sink": {
+											"name": "ProblemId",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['total_exceptions']"
+										},
+										"sink": {
+											"name": "TotalExceptions",
+											"type": "Byte"
+										}
+									},
+									{
+										"source": {
+											"path": "$['FileName']"
+										},
+										"sink": {
+											"name": "FileName",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": "$['value']"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Json1",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": "vhreporting",
+									"Folder": "2022-03-16",
+									"FileName": "2022-03-16T22%3A00%3A00.0000000"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AsqlTarget",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "stg",
+									"TableName": "AppInsightsError"
+								}
+							}
+						]
+					},
+					{
+						"name": "Truncate Staging",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[sp_TruncateStagingTable]",
+							"storedProcedureParameters": {
+								"tableName": {
+									"value": {
+										"value": "AppInsightsError",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "vhreporting_link",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "vhreporting"
+					},
+					"Folder": {
+						"type": "string",
+						"defaultValue": "2022-03-16"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json1')]",
+				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Master_ErrorFile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "StageAppInsightrsError",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Child_StageAppInsightsError",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "vhreporting"
+					},
+					"Folder": {
+						"type": "string",
+						"defaultValue": "2022-03-16"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Child_StageAppInsightsError')]"
 			]
 		},
 		{
