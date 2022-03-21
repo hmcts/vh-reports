@@ -18,6 +18,12 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderStoredProcedureName": "[dbo].[sp_GetAdfConfig]",
+						"storedProcedureParameters": {
+							"MasterPipeline": {
+								"type": "String",
+								"value": "Master_Staging"
+							}
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
