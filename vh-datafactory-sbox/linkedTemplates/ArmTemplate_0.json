@@ -410,7 +410,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1",
+						"name": "Stage AppInsightsError",
 						"type": "Copy",
 						"dependsOn": [
 							{
@@ -440,7 +440,10 @@
 								"storeSettings": {
 									"type": "AzureBlobStorageReadSettings",
 									"recursive": true,
-									"modifiedDatetimeStart": "2022-03-15T00:00:00.000Z",
+									"modifiedDatetimeStart": {
+										"value": "@pipeline().parameters.DeltaDateTime",
+										"type": "Expression"
+									},
 									"wildcardFolderPath": "AppInsightsError",
 									"wildcardFileName": "*",
 									"enablePartitionDiscovery": false
@@ -494,9 +497,18 @@
 								"referenceName": "JsonAppInsightsError",
 								"type": "DatasetReference",
 								"parameters": {
-									"Container": "vhreporting",
-									"Folder": "AppInsightsError",
-									"FileName": "2022-03-16T22%3A00%3A00.0000000"
+									"Container": {
+										"value": "@pipeline().parameters.Container",
+										"type": "Expression"
+									},
+									"Folder": {
+										"value": "@pipeline().parameters.Folder",
+										"type": "Expression"
+									},
+									"FileName": {
+										"value": "@pipeline().parameters.FileName",
+										"type": "Expression"
+									}
 								}
 							}
 						],
@@ -528,7 +540,7 @@
 							"storedProcedureParameters": {
 								"tableName": {
 									"value": {
-										"value": "AppInsightsError",
+										"value": "@pipeline().parameters.TableName",
 										"type": "Expression"
 									},
 									"type": "String"
@@ -557,6 +569,14 @@
 					"FileName": {
 						"type": "string",
 						"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
+					},
+					"DeltaDateTime": {
+						"type": "string",
+						"defaultValue": "03/15/2022 00:00:00"
+					},
+					"TableName": {
+						"type": "string",
+						"defaultValue": "AppInsightsError"
 					}
 				},
 				"annotations": []
@@ -565,51 +585,6 @@
 				"[concat(variables('factoryId'), '/datasets/JsonAppInsightsError')]",
 				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
 				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Master_ErrorFile')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "StageAppInsightrsError",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Child_StageAppInsightsError",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"Container": {
-						"type": "string",
-						"defaultValue": "vhreporting"
-					},
-					"Folder": {
-						"type": "string",
-						"defaultValue": "AppInsightsError"
-					},
-					"FileName": {
-						"type": "string",
-						"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Child_StageAppInsightsError')]"
 			]
 		},
 		{
@@ -634,6 +609,12 @@
 							"source": {
 								"type": "AzureSqlSource",
 								"sqlReaderStoredProcedureName": "[[dbo].[sp_GetAdfConfig]",
+								"storedProcedureParameters": {
+									"MasterPipeline": {
+										"type": "String",
+										"value": "Master_Staging"
+									}
+								},
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
@@ -708,6 +689,102 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
 				"[concat(variables('factoryId'), '/pipelines/Child_AsqlToAsql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Master_ErrorFile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetConfig",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[sp_GetAdfConfig]",
+								"storedProcedureParameters": {
+									"MasterPipeline": {
+										"type": "String",
+										"value": "Master_ErrorFile"
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AsqlTarget",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "dbo",
+									"TableName": "AdfConfig"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetConfig",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetConfig').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 4,
+							"activities": [
+								{
+									"name": "StageAndLoad",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "Child_StageAppInsightsError",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": false,
+										"parameters": {
+											"DeltaDateTime": {
+												"value": "@{item().DeltaValue}",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
+				"[concat(variables('factoryId'), '/pipelines/Child_StageAppInsightsError')]"
 			]
 		}
 	]
