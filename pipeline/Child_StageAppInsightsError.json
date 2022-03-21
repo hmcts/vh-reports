@@ -34,7 +34,7 @@
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
 							"modifiedDatetimeStart": "2022-03-15T00:00:00.000Z",
-							"wildcardFolderPath": "2022-03-16",
+							"wildcardFolderPath": "AppInsightsError",
 							"wildcardFileName": "*",
 							"enablePartitionDiscovery": false
 						},
