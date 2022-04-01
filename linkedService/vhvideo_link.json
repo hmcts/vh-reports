@@ -4,14 +4,13 @@
 		"annotations": [],
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
-			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=vh-core-infra-sandbox.database.windows.net;Initial Catalog=vhvideo;User ID=hvhearingsapiadmin",
-			"password": {
+			"connectionString": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
 					"referenceName": "vhcoreinfrasbox",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "hvhearingsapiadmin"
+				"secretName": "VhVideoDatabaseConnectionString"
 			}
 		}
 	}
