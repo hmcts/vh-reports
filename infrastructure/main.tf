@@ -39,7 +39,6 @@ resource "azurerm_mssql_database" "vhreporting" {
   collation    = "SQL_Latin1_General_CP1_CI_AS"
   license_type = "LicenseIncluded"
   max_size_gb  = 2
-  read_scale   = true
 }
 
 resource "azurerm_user_assigned_identity" "adf-mi" {
