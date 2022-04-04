@@ -6,8 +6,6 @@ terraform {
       container_name       = "tfstate"
       key                  = "vh-reporting/dev-terraform.tfstate"
   }
-
-  required_version = "= 3.0.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
