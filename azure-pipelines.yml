@@ -35,7 +35,7 @@ stages:
     jobs: 
       - template: pipeline/jobs/terraform-validate.yaml
         parameters:
-          terraformPath: $(Build.SourcesDirectory)
+          terraformPath: $(Build.SourcesDirectory)/infrastructure
   
   - stage: Plan
     displayName: Plan ${{ parameters.environment }}
@@ -44,7 +44,7 @@ stages:
         parameters:
           subscription: $(subscription)
           environment: ${{ parameters.environment }}
-          location: ukwest
+          location: $(location)
           resourceGroup: vh-core-infra-dev
           storageAccount: $(storageAccount)
           containerName: $(containerName)
@@ -69,7 +69,7 @@ stages:
         parameters:
           subscription: "Reform-CFT-VH-Dev"
           dependsOn: Wait
-          location: uksouth
+          location: $(location)
           environment: ${{ parameters.environment }}
           resourceGroup: vh-core-infra-dev
           storageAccount: $(storageAccount)

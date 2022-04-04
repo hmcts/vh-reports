@@ -48,7 +48,7 @@ jobs:
     parameters:
       subscription: ${{ parameters.subscription }}
       environment: ${{ parameters.environment }}
-      tfVariables: "./config/${{ parameters.environment }}.tfvars"
+      tfVariables: "./environments/${{ parameters.environment }}.tfvars"
       workingDirectory: ${{ parameters.workingDirectory }}
 
   - task: PublishPipelineArtifact@1
