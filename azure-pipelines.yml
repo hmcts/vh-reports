@@ -50,6 +50,7 @@ stages:
           containerName: $(containerName)
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
           outputName: ${{ parameters.environment }}
+          workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
 
   - stage: Wait
     jobs:
@@ -76,5 +77,6 @@ stages:
           containerName: $(containerName)
           stateKey: $(stateKey)
           outputName: ${{ parameters.environment }}
+          workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
 
       
