@@ -18,5 +18,5 @@ steps:
   inputs:
     workingDirectory: ${{parameters.workingDirectory}}
     command: apply
-    environmentServiceName: ${{ parameters.subscription }}
+    environmentServiceName: "Reform-CFT-VH-Dev"
     commandOptions: -auto-approve "${{ parameters.planLocation }}"
