@@ -34,12 +34,12 @@ resource "azurerm_logic_app_workflow" "logicapp" {
 
 
 resource "azurerm_mssql_database" "vhreporting" {
-  name           = "vhreporting"
-  server_id      = data.azurerm_mssql_server.core-sql-server.id
-  collation      = "SQL_Latin1_General_CP1_CI_AS"
-  license_type   = "LicenseIncluded"
-  max_size_gb    = 2
-  read_scale     = true
+  name         = "vhreporting"
+  server_id    = data.azurerm_mssql_server.core-sql-server.id
+  collation    = "SQL_Latin1_General_CP1_CI_AS"
+  license_type = "LicenseIncluded"
+  max_size_gb  = 2
+  read_scale   = true
 }
 
 resource "azurerm_user_assigned_identity" "adf-mi" {
