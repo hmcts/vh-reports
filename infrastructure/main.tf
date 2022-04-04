@@ -7,7 +7,7 @@ data "azurerm_key_vault" "core-kv" {
 
 resource "azurerm_resource_group" "vh-reporting-rg" {
   name     = "vh-reporting-infra-${var.env}"
-  location = "${var.location}"
+  location = var.location
 }
 
 resource "azurerm_data_factory" "adf" {
