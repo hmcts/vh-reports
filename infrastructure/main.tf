@@ -40,8 +40,6 @@ resource "azurerm_mssql_database" "vhreporting" {
   license_type   = "LicenseIncluded"
   max_size_gb    = 2
   read_scale     = true
-  zone_redundant = true
-
 }
 
 resource "azurerm_user_assigned_identity" "adf-mi" {
