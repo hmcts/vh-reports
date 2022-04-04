@@ -5,6 +5,16 @@ data "azurerm_key_vault" "core-kv" {
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
+data "azurerm_storage_account" "core-sa" {
+  name                = "vhcoreinfra${var.env}"
+  resource_group_name = "vh-core-infra-${var.env}"
+}
+
+data "azurerm_mssql_server" "core-sql-server" {
+  name                = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-core-infra-${var.env}"
+}
+
 resource "azurerm_resource_group" "vh-reporting-rg" {
   name     = "vh-reporting-infra-${var.env}"
   location = var.location
@@ -20,6 +30,19 @@ resource "azurerm_logic_app_workflow" "logicapp" {
   name                = "vh-reporting-${var.env}"
   location            = azurerm_resource_group.vh-reporting-rg.location
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
+}
+
+
+resource "azurerm_mssql_database" "test" {
+  name           = "vhreporting"
+  server_id      = data.azurerm_mssql_server.core-sql-server.id
+  collation      = "SQL_Latin1_General_CP1_CI_AS"
+  license_type   = "LicenseIncluded"
+  max_size_gb    = 4
+  read_scale     = true
+  sku_name       = "BC_Gen5_2"
+  zone_redundant = true
+
 }
 
 resource "azurerm_user_assigned_identity" "adf-mi" {
@@ -44,5 +67,10 @@ resource "azurerm_key_vault_access_policy" "kvaccess" {
 
 }
 
+resource "azurerm_storage_container" "example" {
+  name                  = "vhreporting"
+  storage_account_name  = data.azurerm_storage_account.core-sa.name
+  container_access_type = "private"
+}
 
 
