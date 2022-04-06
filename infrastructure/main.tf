@@ -45,7 +45,7 @@ resource "azurerm_user_assigned_identity" "adf-mi" {
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
   location            = azurerm_resource_group.vh-reporting-rg.location
 
-  name = "adf-MI-${var.env}"
+  name = "vh-adf-mi-${var.env}"
 }
 
 resource "azurerm_key_vault_access_policy" "kvaccess" {
@@ -63,7 +63,7 @@ resource "azurerm_key_vault_access_policy" "kvaccess" {
 
 }
 
-resource "azurerm_storage_container" "example" {
+resource "azurerm_storage_container" "vhreporting" {
   name                  = "vhreporting"
   storage_account_name  = data.azurerm_storage_account.core-sa.name
   container_access_type = "private"

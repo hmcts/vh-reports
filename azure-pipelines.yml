@@ -45,7 +45,7 @@ stages:
           subscription: $(subscription)
           environment: ${{ parameters.environment }}
           location: $(location)
-          resourceGroup: vh-core-infra-dev
+          resourceGroup: vh-core-infra-${{ parameters.environment }}
           storageAccount: $(storageAccount)
           containerName: $(containerName)
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
@@ -72,10 +72,10 @@ stages:
           dependsOn: Wait
           location: $(location)
           environment: ${{ parameters.environment }}
-          resourceGroup: vh-core-infra-dev
+          resourceGroup: vh-core-infra-${{ parameters.environment }}
           storageAccount: $(storageAccount)
           containerName: $(containerName)
-          stateKey: $(stateKey)
+          stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
           outputName: ${{ parameters.environment }}
           workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
 

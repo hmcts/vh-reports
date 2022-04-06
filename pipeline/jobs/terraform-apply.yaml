@@ -32,7 +32,6 @@ parameters:
 
   - name: product
     type: string
-    default: ''
 
   - name: stateKey
     type: string
@@ -49,7 +48,7 @@ jobs:
 - job: Terraform
   displayName: TF Apply
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'latest'
     
   steps:
 
