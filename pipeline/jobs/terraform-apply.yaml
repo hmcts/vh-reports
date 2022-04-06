@@ -45,7 +45,7 @@ jobs:
 - job: Terraform
   displayName: TF Apply
   pool:
-    vmImage: latest
+    vmImage: 'ubuntu-latest'
     
   steps:
 

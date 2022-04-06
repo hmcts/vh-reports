@@ -23,7 +23,7 @@ jobs:
 - job: TerraformPlan
   displayName: TF Plan
   pool:
-    vmImage: latest
+    vmImage: 'ubuntu-latest'
   steps:
   - template: ../steps/tf-install.yaml
   - template: ../steps/tf-init.yaml
