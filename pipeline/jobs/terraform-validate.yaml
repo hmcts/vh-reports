@@ -6,7 +6,7 @@ jobs:
 - job: TerraformValidate
   displayName: 'Validate Terraform'
   pool:
-    vmImage: latest
+    vmImage: 'ubuntu-latest'
   steps:
   - template: ../steps/tf-install.yaml
   - template: templates/tests/terraform/allTests.yaml@templates
