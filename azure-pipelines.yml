@@ -45,7 +45,7 @@ stages:
           subscription: $(subscription)
           environment: ${{ parameters.environment }}
           location: $(location)
-          resourceGroup: vh-core-infra-${{ parameters.environment }}
+          resourceGroup: $(resourceGroup)
           storageAccount: $(storageAccount)
           containerName: $(containerName)
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
@@ -72,7 +72,7 @@ stages:
           dependsOn: Wait
           location: $(location)
           environment: ${{ parameters.environment }}
-          resourceGroup: vh-core-infra-${{ parameters.environment }}
+          resourceGroup: $(resourceGroup)
           storageAccount: $(storageAccount)
           containerName: $(containerName)
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
