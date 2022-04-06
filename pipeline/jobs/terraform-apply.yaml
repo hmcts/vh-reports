@@ -30,9 +30,6 @@ parameters:
     type: string
     default: ''
 
-  - name: product
-    type: string
-
   - name: stateKey
     type: string
 
