@@ -19,4 +19,4 @@ steps:
     workingDirectory: ${{parameters.workingDirectory}}
     command: apply
     environmentServiceName: "Reform-CFT-VH-Dev"
-    commandOptions: -auto-approve "${{ parameters.planLocation }}" -input=false
+    commandOptions: -auto-approve "${{ parameters.planLocation }}"
