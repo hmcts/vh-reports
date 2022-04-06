@@ -68,7 +68,7 @@ stages:
     jobs:
       - template: pipeline/jobs/terraform-apply.yaml
         parameters:
-          subscription: "Reform-CFT-VH-Dev"
+          subscription: $(subscription)
           dependsOn: Wait
           location: $(location)
           environment: ${{ parameters.environment }}
