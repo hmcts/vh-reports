@@ -1,3 +1,7 @@
+locals {
+  arm_file_path = "../logicApp/appInsightsToStorage.json"
+}
+
 data "azurerm_client_config" "current" {}
 
 data "azurerm_key_vault" "core-kv" {
@@ -13,6 +17,10 @@ data "azurerm_storage_account" "core-sa" {
 data "azurerm_mssql_server" "core-sql-server" {
   name                = "vh-core-infra-${var.env}"
   resource_group_name = "vh-core-infra-${var.env}"
+}
+
+data "template_file" "workflow" {
+  template = file(local.arm_file_path)
 }
 
 resource "azurerm_resource_group" "vh-reporting-rg" {
@@ -32,6 +40,23 @@ resource "azurerm_logic_app_workflow" "logicapp" {
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 }
 
+resource "azurerm_template_deployment" "workflow" {
+  depends_on = [azurerm_logic_app_workflow.logicapp]
+
+  resource_group_name = azurerm_resource_group.vh-reporting-rg.name
+  parameters = merge({
+    "workflowName" = "temp",
+    "location"     = azurerm_resource_group.vh-reporting-rg.location
+  }, var.parameters)
+
+  template_body = data.template_file.workflow.template
+
+  # The filemd5 forces this to run when the file is changed
+  # this ensures the keys are up-to-date
+  name            = "workflow-${filemd5(local.arm_file_path)}"
+  deployment_mode = "Incremental"
+
+}
 
 resource "azurerm_mssql_database" "vhreporting" {
   name         = "vhreporting"
