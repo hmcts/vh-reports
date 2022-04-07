@@ -50,7 +50,7 @@ resource "azurerm_template_deployment" "workflow" {
     "resourcegroups" = "vh-core-infra-${var.env}"
     "resourcename"   = "vh-core-infra-${var.env}"
     "reportingrg"    = "vh-reporting-infra-${var.env}"
-  }, var.parameters)
+  })
 
   template_body = data.template_file.workflow.template
 
