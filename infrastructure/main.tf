@@ -34,11 +34,11 @@ resource "azurerm_data_factory" "adf" {
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 }
 
-resource "azurerm_logic_app_workflow" "logicapp" {
-  name                = "vh-reporting-${var.env}"
-  location            = azurerm_resource_group.vh-reporting-rg.location
-  resource_group_name = azurerm_resource_group.vh-reporting-rg.name
-}
+#resource "azurerm_logic_app_workflow" "logicapp" {
+#  name                = "vh-reporting-${var.env}"
+#  location            = azurerm_resource_group.vh-reporting-rg.location
+#  resource_group_name = azurerm_resource_group.vh-reporting-rg.name
+#}
 
 resource "azurerm_template_deployment" "workflow" {
   depends_on = [azurerm_logic_app_workflow.logicapp]
