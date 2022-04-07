@@ -1,7 +1,7 @@
 {
-    "definition": {
-        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-        "actions": {
+    
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "actions": {
             "Compose": {
                 "inputs": "@body('Run_query_and_list_results')",
                 "runAfter": {
@@ -63,32 +63,12 @@
                 "runAfter": {},
                 "type": "ApiConnection"
             }
-        },
-        "contentVersion": "1.0.0.0",
-        "outputs": {},
-        "parameters": {
-            "$connections": {
-                "defaultValue": {},
-                "type": "Object"
-            }
-        },
-        "triggers": {
-            "Recurrence": {
-                "evaluatedRecurrence": {
-                    "frequency": "Minute",
-                    "interval": 30
-                },
-                "recurrence": {
-                    "frequency": "Minute",
-                    "interval": 30
-                },
-                "type": "Recurrence"
-            }
-        }
     },
+    "contentVersion": "1.0.0.0",
+    "outputs": {},
     "parameters": {
         "$connections": {
-            "value": {
+            "defaultValue": {
                 "azureblob": {
                     "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-dev/providers/Microsoft.Web/connections/azureblob",
                     "connectionName": "azureblob",
@@ -99,7 +79,22 @@
                     "connectionName": "azuremonitorlogs",
                     "id": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/northcentralus/managedApis/azuremonitorlogs"
                 }
-            }
+            },
+            "type": "Object"
+        }
+    },
+    "triggers": {
+        "Recurrence": {
+            "evaluatedRecurrence": {
+                "frequency": "Minute",
+                "interval": 30
+            },
+            "recurrence": {
+                "frequency": "Minute",
+                "interval": 30
+            },
+            "type": "Recurrence"
         }
     }
+    
 }
