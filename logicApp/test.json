@@ -1,0 +1,105 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Compose": {
+                "inputs": "@body('Run_query_and_list_results')",
+                "runAfter": {
+                    "Run_query_and_list_results": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Compose"
+            },
+            "Create_blob_(V2)": {
+                "inputs": {
+                    "body": "@outputs('Compose')",
+                    "headers": {
+                        "ReadFileMetadataFromServer": true
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['azureblob']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/files",
+                    "queries": {
+                        "folderPath": "/vhreporting/AppInsightsTrace",
+                        "name": "@{subtractFromTime(formatDateTime(utcNow(),'yyyy-MM-ddTHH:00:00'), 1,'Hour')}",
+                        "queryParametersSingleEncoded": true
+                    }
+                },
+                "runAfter": {
+                    "Compose": [
+                        "Succeeded"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    }
+                },
+                "type": "ApiConnection"
+            },
+            "Run_query_and_list_results": {
+                "inputs": {
+                    "body": "traces\n| extend getTxt = parse_json (customDimensions)\n| project\n    message,\n    customDimensions,\n    user_Id,\n    client_Model,\n    timestamp,\n    currentConferenceId = getTxt.currentConferenceId,\n    conference = getTxt.conference,\n    participant = getTxt.participant,\n    errorInformation = getTxt.errorInformation,\n    HostInstanceId = getTxt.HostInstanceId,\n    ProcessId = getTxt.ProcessId,\n    LogLevel = getTxt.LogLevel,\n    pexipError = getTxt.pexipError\n| where customDimensions != \"\"",
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/queryData",
+                    "queries": {
+                        "resourcegroups": "vh-core-infra-dev",
+                        "resourcename": "vh-core-infra-dev",
+                        "resourcetype": "Application Insights",
+                        "subscriptions": "705b2731-0e0b-4df7-8630-95f157f0a347",
+                        "timerange": "Last hour"
+                    }
+                },
+                "runAfter": {},
+                "type": "ApiConnection"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "Recurrence": {
+                "evaluatedRecurrence": {
+                    "frequency": "Minute",
+                    "interval": 30
+                },
+                "recurrence": {
+                    "frequency": "Minute",
+                    "interval": 30
+                },
+                "type": "Recurrence"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "azureblob": {
+                    "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-dev/providers/Microsoft.Web/connections/azureblob",
+                    "connectionName": "azureblob",
+                    "id": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/northcentralus/managedApis/azureblob"
+                },
+                "azuremonitorlogs": {
+                    "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-dev/providers/Microsoft.Web/connections/azuremonitorlogs",
+                    "connectionName": "azuremonitorlogs",
+                    "id": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/northcentralus/managedApis/azuremonitorlogs"
+                }
+            }
+        }
+    }
+}
