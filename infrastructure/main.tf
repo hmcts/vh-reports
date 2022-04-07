@@ -45,8 +45,11 @@ resource "azurerm_template_deployment" "workflow" {
 
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
   parameters = merge({
-    "workflowName" = "temp",
-    "location"     = azurerm_resource_group.vh-reporting-rg.location
+    "workflowName" = "vh-appinsights-",
+    "location"     = azurerm_resource_group.vh-reporting-rg.location,
+    "resourcegroups"  = "vh-core-infra-${var.env}"
+    "resourcename"    = "vh-core-infra-${var.env}"
+    "reportingrg"     = "vh-reporting-infra-${var.env}"
   }, var.parameters)
 
   template_body = data.template_file.workflow.template
