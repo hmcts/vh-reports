@@ -39,7 +39,7 @@
                     "description": "Microsoft Azure Storage provides a massively scalable, durable, and highly available storage for data on the cloud, and serves as the data storage solution for modern applications. Connect to Blob Storage to perform various operations such as create, update, get and delete on blobs in your Azure Storage account.",
                     "iconUri": "[concat('https://connectoricons-prod.azureedge.net/releases/v1.0.1563/1.0.1563.2732/', parameters('connections_azureblob_name'), '/icon.png')]",
                     "brandColor": "#804998",
-                    "id": "[concat('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/northcentralus/managedApis/', parameters('connections_azureblob_name'))]",
+                    "id": "[concat('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/', parameters('connections_azureblob_name'))]",
                     "type": "Microsoft.Web/locations/managedApis"
                 },
                 "testLinks": [
@@ -68,7 +68,7 @@
                     "description": "Use this connector to query your Azure Monitor Logs across Log Analytics workspace and Application Insights component, to list or visualize results.",
                     "iconUri": "[concat('https://connectoricons-prod.azureedge.net/releases/v1.0.1559/1.0.1559.2723/', parameters('connections_azuremonitorlogs_name'), '/icon.png')]",
                     "brandColor": "#0072C6",
-                    "id": "[concat('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/northcentralus/managedApis/', parameters('connections_azuremonitorlogs_name'))]",
+                    "id": "[concat('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/', parameters('connections_azuremonitorlogs_name'))]",
                     "type": "Microsoft.Web/locations/managedApis"
                 },
                 "testLinks": []
