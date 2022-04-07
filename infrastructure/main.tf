@@ -41,8 +41,6 @@ resource "azurerm_data_factory" "adf" {
 #}
 
 resource "azurerm_template_deployment" "workflow" {
-  depends_on = [azurerm_logic_app_workflow.logicapp]
-
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 
   template_body = data.template_file.workflow.template
