@@ -100,7 +100,7 @@ stages:
     displayName: ADF Config
     dependsOn: Apply 
     jobs:
-        - job: UpdateADFPipelines 
+        - job: UpdateADFLinkedService 
           displayName: CreateUpdate ADF linked-service
           steps:
             - task: AzureCLI@2
