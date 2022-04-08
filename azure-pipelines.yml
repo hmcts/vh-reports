@@ -111,7 +111,7 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |
                   az config set extension.use_dynamic_install=yes_without_prompt
-                  az datafactory linked-service create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name
+                  az datafactory linked-service create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name vhcoreinfradev --properties "$(System.DefaultWorkingDirectory)/linkedService/vhcoreinfra${{ parameters.environment }}.json"
 
         - job: UpdateADFPipelines 
           displayName: Create/Update ADF pipelines
@@ -124,25 +124,5 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |
                   az config set extension.use_dynamic_install=yes_without_prompt
-                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafatory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "$(System.DefaultWorkingDirectory)/pipeline/Master_Staging.json"
-            #- task: CopyFiles@2
-            #  displayName: "Download ADF Pipelines"
-            #  inputs:
-            #    SourceFolder: '$(System.DefaultWorkingDirectory)/pipeline'
-            #    Contents: 'Master_Staging.json'
-            #    TargetFolder: '$(build.artifactstagingdirectory)/master'
-            #    CleanTargetFolder: true
-            #    OverWrite: true
-            #    flattenFolders: true
-#
-            #- task: AzureResourceManagerTemplateDeployment@3
-            #  displayName: Deploy ADF pipelines
-            #  inputs:
-            #    ConnectedServiceName: Reform-CFT-VH-Dev
-            #    action: 'Create Or Update Resource Group'
-            #    resourceGroupName: 'vh-reporting-infra-${{ parameters.environment }}'
-            #    location: 'UK South'
-            #    templateLocation: 'Linked artifact'
-            #    csmFile: '$(build.artifactstagingdirectory)/master/Master_Staging.json'
-            #    deploymentMode: 'Incremental'
-
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "$(System.DefaultWorkingDirectory)/pipeline/Master_Staging.json"
+            

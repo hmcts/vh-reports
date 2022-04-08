@@ -1,0 +1,10 @@
+{
+	"name": "vhcoreinfradev",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://vhcoreinfradev.vault.azure.net/"
+		}
+	}
+}
