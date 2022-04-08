@@ -89,7 +89,7 @@ stages:
             - task: AzureCLI@2
               displayName: Azure CLI
               inputs:
-                azureSubscription: $(subscription)
+                azureSubscription: Reform-CFT-VH-Dev
                 scriptType: bash
                 scriptLocation: inlineScript
                 inlineScript: |
