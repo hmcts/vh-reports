@@ -100,18 +100,18 @@ stages:
     displayName: ADF Config
     dependsOn: Apply 
     jobs:
-        - job: UpdateADFLinkedService 
-          displayName: CreateUpdate ADF linked-service
-          steps:
-            - task: AzureCLI@2
-              displayName: Azure CLI
-              inputs:
-                azureSubscription: Reform-CFT-VH-Dev
-                scriptType: bash
-                scriptLocation: inlineScript
-                inlineScript: |
-                  az config set extension.use_dynamic_install=yes_without_prompt
-                  az datafactory linked-service create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name vhcoreinfradev --properties "$(System.DefaultWorkingDirectory)/linkedService/vhcoreinfra${{ parameters.environment }}.json"
+        #- job: UpdateADFLinkedService 
+        #  displayName: CreateUpdate ADF linked-service
+        #  steps:
+        #    - task: AzureCLI@2
+        #      displayName: Azure CLI
+        #      inputs:
+        #        azureSubscription: Reform-CFT-VH-Dev
+        #        scriptType: bash
+        #        scriptLocation: inlineScript
+        #        inlineScript: |
+        #          az config set extension.use_dynamic_install=yes_without_prompt
+        #          az datafactory linked-service create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name vhcoreinfradev --properties "$(System.DefaultWorkingDirectory)/linkedService/vhcoreinfra${{ parameters.environment }}.json"
 
         - job: UpdateADFPipelines 
           displayName: Create/Update ADF pipelines
