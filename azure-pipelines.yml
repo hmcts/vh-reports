@@ -101,7 +101,7 @@ stages:
     dependsOn: Apply 
     jobs:
         - job: UpdateADFPipelines 
-          displayName: CreateUpdate ADF pipelines
+          displayName: CreateUpdate ADF linked-service
           steps:
             - task: AzureCLI@2
               displayName: Azure CLI
