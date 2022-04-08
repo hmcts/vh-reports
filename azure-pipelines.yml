@@ -106,7 +106,7 @@ stages:
             - task: CopyFiles@2
               displayName: "Download ADF Pipelines"
               inputs:
-                SourceFolder: '$(Pipeline.Workspace)/pipeline'
+                SourceFolder: '$(System.DefaultWorkingDirectory)/pipeline'
                 Contents: 'Master_Staging.json'
                 TargetFolder: '$(build.artifactstagingdirectory)/master'
                 CleanTargetFolder: true
@@ -114,7 +114,7 @@ stages:
                 flattenFolders: true
 
             - task: AzureResourceManagerTemplateDeployment@3
-              displayName: Deploy ADDF pipelines
+              displayName: Deploy ADF pipelines
               inputs:
                 ConnectedServiceName: Reform-CFT-VH-Dev
                 action: 'Create Or Update Resource Group'
