@@ -11,17 +11,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'vhreporting_blob'"
 		},
-		"vhreporting_link_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'vhreporting_link'"
-		},
-		"vhvideo_link_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'vhvideo_link'"
-		},
 		"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://vhcoreinfrasandbox.vault.azure.net/"
+		},
+		"vhreporting_link_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "VhReportingDatabaseConnectionString"
+		},
+		"vhvideo_link_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "VhVideoDatabaseConnectionString"
 		},
 		"containerUri": {
 			"type": "string",
@@ -53,14 +53,14 @@
 					"vhreporting_blob_connectionString": {
 						"value": "[parameters('vhreporting_blob_connectionString')]"
 					},
-					"vhreporting_link_connectionString": {
-						"value": "[parameters('vhreporting_link_connectionString')]"
-					},
-					"vhvideo_link_connectionString": {
-						"value": "[parameters('vhvideo_link_connectionString')]"
-					},
 					"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
 						"value": "[parameters('vhcoreinfrasbox_properties_typeProperties_baseUrl')]"
+					},
+					"vhreporting_link_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('vhreporting_link_properties_typeProperties_connectionString_secretName')]"
+					},
+					"vhvideo_link_properties_typeProperties_connectionString_secretName": {
+						"value": "[parameters('vhvideo_link_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},

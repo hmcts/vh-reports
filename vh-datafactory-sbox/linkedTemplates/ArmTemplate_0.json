@@ -11,17 +11,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'vhreporting_blob'"
 		},
-		"vhreporting_link_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'vhreporting_link'"
-		},
-		"vhvideo_link_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'vhvideo_link'"
-		},
 		"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://vhcoreinfrasandbox.vault.azure.net/"
+		},
+		"vhreporting_link_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "VhReportingDatabaseConnectionString"
+		},
+		"vhvideo_link_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "VhVideoDatabaseConnectionString"
 		}
 	},
 	"variables": {
@@ -227,14 +227,13 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"connectionString": "[parameters('vhreporting_link_connectionString')]",
-					"password": {
+					"connectionString": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
 							"referenceName": "vhcoreinfrasbox",
 							"type": "LinkedServiceReference"
 						},
-						"secretName": "hvhearingsapiadmin"
+						"secretName": "[parameters('vhreporting_link_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -250,14 +249,13 @@
 				"annotations": [],
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"connectionString": "[parameters('vhvideo_link_connectionString')]",
-					"password": {
+					"connectionString": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
 							"referenceName": "vhcoreinfrasbox",
 							"type": "LinkedServiceReference"
 						},
-						"secretName": "hvhearingsapiadmin"
+						"secretName": "[parameters('vhvideo_link_properties_typeProperties_connectionString_secretName')]"
 					}
 				}
 			},
@@ -1424,6 +1422,76 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
 				"[concat(variables('factoryId'), '/pipelines/Child_StageAppInsightsTrace')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Daily App Insights Load')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Master_TraceFile",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2022-01-01T00:00:00Z",
+						"timeZone": "UTC",
+						"schedule": {
+							"hours": [
+								6
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Master_TraceFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Daily VH Video Data Load')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Master_Staging",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2022-01-01T00:00:00Z",
+						"timeZone": "UTC",
+						"schedule": {
+							"hours": [
+								6
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Master_Staging')]"
 			]
 		}
 	]

@@ -8,14 +8,14 @@
 		"vhreporting_blob_connectionString": {
 			"value": ""
 		},
-		"vhreporting_link_connectionString": {
-			"value": ""
-		},
-		"vhvideo_link_connectionString": {
-			"value": ""
-		},
 		"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
 			"value": "https://vhcoreinfrasandbox.vault.azure.net/"
+		},
+		"vhreporting_link_properties_typeProperties_connectionString_secretName": {
+			"value": "VhReportingDatabaseConnectionString"
+		},
+		"vhvideo_link_properties_typeProperties_connectionString_secretName": {
+			"value": "VhVideoDatabaseConnectionString"
 		},
 		"containerUri": {
 			"value": ""
