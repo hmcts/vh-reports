@@ -79,4 +79,19 @@ stages:
           outputName: ${{ parameters.environment }}
           workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
 
-      
+  - stage: LogicApp
+    displayName: Logic App Config
+    dependsOn: Apply
+    jobs:
+        - job: UpdateLogicApp
+          displayName: Update Logic App Workflow
+          steps:
+            - task: AzureCLI@2
+              displayName: Azure CLI
+              inputs:
+                azureSubscription: $(subscription)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  az logic workflow create --resource-group vh-reporting-infra-${{ parameters.environment }} --location "uksouth" --name "vh-reporting-${{ parameters.environment }}" --definition "./logicApp/appInsightsToStorage.json"
+
