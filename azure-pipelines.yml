@@ -94,5 +94,33 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |
                   az config set extension.use_dynamic_install=yes_without_prompt
-                  az logic workflow create --resource-group vh-reporting-infra-${{ parameters.environment }} --location "uksouth" --name "vh-reporting-${{ parameters.environment }}" --definition "./logicApp/appInsightsToStorage.json"
+                  az logic workflow create --resource-group vh-reporting-infra-${{ parameters.environment }} --location "uksouth" --name "vh-reporting-${{ parameters.environment }}" --definition "$(System.DefaultWorkingDirectory)/logicApp/appInsightsToStorage.json"
+
+  - stage: ADF
+    displayName: ADF Config
+    dependsOn: Apply 
+    jobs:
+        - job: UpdateADF 
+          displayName: Create/Update ADF config
+          steps:
+            - task: CopyFiles@2
+              displayName: "Download ADF Pipelines"
+              inputs:
+                SourceFolder: '$(Pipeline.Workspace)/src/pipeline'
+                Contents: 'Master_Staging.json'
+                TargetFolder: '$(build.artifactstagingdirectory)/master'
+                CleanTargetFolder: true
+                OverWrite: true
+                flattenFolders: true
+
+            - task: AzureResourceManagerTemplateDeployment@3
+              displayName: Deploy ADDF pipelines
+              inputs:
+                ConnectedServiceName: $(subscription)
+                action: 'Create Or Update Resource Group'
+                resourceGroupName: 'vh-reporting-infra-${{ parameters.environment }}'
+                location: 'UK South'
+                templateLocation: 'Linked artifact'
+                csmFile: '$(build.artifactstagingdirectory)/master/Master_Staging.json'
+                deploymentMode: 'Incremental'
 
