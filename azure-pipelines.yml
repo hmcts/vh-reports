@@ -103,24 +103,32 @@ stages:
         - job: UpdateADF 
           displayName: Create/Update ADF config
           steps:
-            - task: CopyFiles@2
-              displayName: "Download ADF Pipelines"
+            - task: AzureCLI@2
+              displayName: Azure CLI
               inputs:
-                SourceFolder: '$(System.DefaultWorkingDirectory)/pipeline'
-                Contents: 'Master_Staging.json'
-                TargetFolder: '$(build.artifactstagingdirectory)/master'
-                CleanTargetFolder: true
-                OverWrite: true
-                flattenFolders: true
-
-            - task: AzureResourceManagerTemplateDeployment@3
-              displayName: Deploy ADF pipelines
-              inputs:
-                ConnectedServiceName: Reform-CFT-VH-Dev
-                action: 'Create Or Update Resource Group'
-                resourceGroupName: 'vh-reporting-infra-${{ parameters.environment }}'
-                location: 'UK South'
-                templateLocation: 'Linked artifact'
-                csmFile: '$(build.artifactstagingdirectory)/master/Master_Staging.json'
-                deploymentMode: 'Incremental'
+                azureSubscription: Reform-CFT-VH-Dev
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-reporting-${{ parameters.environment }}" --name "Master_Staging" --pipeline "$(System.DefaultWorkingDirectory)/pipeline/Master_Staging.json"
+            #- task: CopyFiles@2
+            #  displayName: "Download ADF Pipelines"
+            #  inputs:
+            #    SourceFolder: '$(System.DefaultWorkingDirectory)/pipeline'
+            #    Contents: 'Master_Staging.json'
+            #    TargetFolder: '$(build.artifactstagingdirectory)/master'
+            #    CleanTargetFolder: true
+            #    OverWrite: true
+            #    flattenFolders: true
+#
+            #- task: AzureResourceManagerTemplateDeployment@3
+            #  displayName: Deploy ADF pipelines
+            #  inputs:
+            #    ConnectedServiceName: Reform-CFT-VH-Dev
+            #    action: 'Create Or Update Resource Group'
+            #    resourceGroupName: 'vh-reporting-infra-${{ parameters.environment }}'
+            #    location: 'UK South'
+            #    templateLocation: 'Linked artifact'
+            #    csmFile: '$(build.artifactstagingdirectory)/master/Master_Staging.json'
+            #    deploymentMode: 'Incremental'
 
