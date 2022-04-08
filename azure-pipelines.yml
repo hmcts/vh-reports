@@ -106,7 +106,7 @@ stages:
             - task: CopyFiles@2
               displayName: "Download ADF Pipelines"
               inputs:
-                SourceFolder: '$(Pipeline.Workspace)/src/pipeline'
+                SourceFolder: '$(Pipeline.Workspace)/pipeline'
                 Contents: 'Master_Staging.json'
                 TargetFolder: '$(build.artifactstagingdirectory)/master'
                 CleanTargetFolder: true
