@@ -1,0 +1,22 @@
+{
+	"name": "Daily VH Video Data Load",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-01-01T00:00:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"hours": [
+						6
+					]
+				}
+			}
+		}
+	}
+}
