@@ -34,23 +34,23 @@ resource "azurerm_data_factory" "adf" {
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 }
 
-resource "azurerm_logic_app_workflow" "logicapp" {
-  name                = "vh-reporting-${var.env}"
-  location            = azurerm_resource_group.vh-reporting-rg.location
-  resource_group_name = azurerm_resource_group.vh-reporting-rg.name
-}
-
-#resource "azurerm_template_deployment" "workflow" {
+#resource "azurerm_logic_app_workflow" "logicapp" {
+#  name                = "vh-reporting-${var.env}"
+#  location            = azurerm_resource_group.vh-reporting-rg.location
 #  resource_group_name = azurerm_resource_group.vh-reporting-rg.name
-#
-#  template_body = data.template_file.workflow.template
-#
-#  # The filemd5 forces this to run when the file is changed
-#  # this ensures the keys are up-to-date
-#  name            = "workflow-${filemd5(local.arm_file_path)}"
-#  deployment_mode = "Incremental"
-#
 #}
+
+resource "azurerm_template_deployment" "workflow" {
+  resource_group_name = azurerm_resource_group.vh-reporting-rg.name
+
+  template_body = data.template_file.workflow.template
+
+  # The filemd5 forces this to run when the file is changed
+  # this ensures the keys are up-to-date
+  name            = "workflow-${filemd5(local.arm_file_path)}"
+  deployment_mode = "Incremental"
+
+}
 
 resource "azurerm_mssql_database" "vhreporting" {
   name         = "vhreporting"
