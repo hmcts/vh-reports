@@ -33,13 +33,13 @@ resource "azurerm_data_factory" "adf" {
   location            = azurerm_resource_group.vh-reporting-rg.location
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 }
-
+#TODO use the below to deploy the logic app
 #resource "azurerm_logic_app_workflow" "logicapp" {
 #  name                = "vh-reporting-${var.env}"
 #  location            = azurerm_resource_group.vh-reporting-rg.location
 #  resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 #}
-
+#TODO remove the below and use azurerm_api_connection to configure the connections and the json deploy task to configure the workflow
 resource "azurerm_template_deployment" "workflow" {
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 
