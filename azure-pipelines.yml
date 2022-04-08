@@ -116,7 +116,7 @@ stages:
             - task: AzureResourceManagerTemplateDeployment@3
               displayName: Deploy ADDF pipelines
               inputs:
-                ConnectedServiceName: $(subscription)
+                ConnectedServiceName: Reform-CFT-VH-Dev
                 action: 'Create Or Update Resource Group'
                 resourceGroupName: 'vh-reporting-infra-${{ parameters.environment }}'
                 location: 'UK South'
