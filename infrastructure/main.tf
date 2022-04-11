@@ -104,6 +104,14 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
   }
 }
 
+resource "azurerm_data_factory_dataset_sql_server_table" "videodataset" {
+  name                = "ASqlSource"
+  data_factory_id     = azurerm_data_factory.adf.id
+  linked_service_name = azurerm_data_factory_linked_service_sql_server.adfvideodb.name
+  table_name = "Conference"
+
+}
+
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingdb" {
   name            = "vhreporting-db"
   data_factory_id = azurerm_data_factory.adf.id
@@ -118,100 +126,100 @@ resource "azurerm_storage_container" "vhreporting" {
   container_access_type = "private"
 }
 
-resource "azurerm_data_factory_pipeline" "MasterStaging" {
-  name            = "MasterStaging"
-  data_factory_id = azurerm_data_factory.adf.id
-  variables       = {}
-  activities_json = <<JSON
-   [
-			{
-				"name": "GetConfig",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderStoredProcedureName": "[dbo].[sp_GetAdfConfig]",
-						"storedProcedureParameters": {
-							"MasterPipeline": {
-								"type": "String",
-								"value": "Master_ErrorFile"
-							}
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "AsqlTarget",
-						"type": "DatasetReference",
-						"parameters": {
-							"SchemaName": "dbo",
-							"TableName": "AdfConfig"
-						}
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "ForEach1",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "GetConfig",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('GetConfig').output.value",
-						"type": "Expression"
-					},
-					"isSequential": false,
-					"batchCount": 4,
-					"activities": [
-						{
-							"name": "StageAndLoad",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "Child_StageAppInsightsError",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": false,
-								"parameters": {
-									"DeltaDateTime": {
-										"value": "@{item().DeltaValue}",
-										"type": "Expression"
-									},
-									"TableName": {
-										"value": "@{item().TableName}",
-										"type": "Expression"
-									},
-									"ProcedureName": {
-										"value": "@{item().ProcedureName}",
-										"type": "Expression"
-									}
-								}
-							}
-						}
-					]
-				}
-			}
-		]
-  JSON
-}
+#resource "azurerm_data_factory_pipeline" "MasterStaging" {
+#  name            = "MasterStaging"
+#  data_factory_id = azurerm_data_factory.adf.id
+#  variables       = {}
+#  activities_json = <<JSON
+#   [
+#			{
+#				"name": "GetConfig",
+#				"type": "Lookup",
+#				"dependsOn": [],
+#				"policy": {
+#					"timeout": "7.00:00:00",
+#					"retry": 0,
+#					"retryIntervalInSeconds": 30,
+#					"secureOutput": false,
+#					"secureInput": false
+#				},
+#				"userProperties": [],
+#				"typeProperties": {
+#					"source": {
+#						"type": "AzureSqlSource",
+#						"sqlReaderStoredProcedureName": "[dbo].[sp_GetAdfConfig]",
+#						"storedProcedureParameters": {
+#							"MasterPipeline": {
+#								"type": "String",
+#								"value": "Master_ErrorFile"
+#							}
+#						},
+#						"queryTimeout": "02:00:00",
+#						"partitionOption": "None"
+#					},
+#					"dataset": {
+#						"referenceName": "AsqlTarget",
+#						"type": "DatasetReference",
+#						"parameters": {
+#							"SchemaName": "dbo",
+#							"TableName": "AdfConfig"
+#						}
+#					},
+#					"firstRowOnly": false
+#				}
+#			},
+#			{
+#				"name": "ForEach1",
+#				"type": "ForEach",
+#				"dependsOn": [
+#					{
+#						"activity": "GetConfig",
+#						"dependencyConditions": [
+#							"Succeeded"
+#						]
+#					}
+#				],
+#				"userProperties": [],
+#				"typeProperties": {
+#					"items": {
+#						"value": "@activity('GetConfig').output.value",
+#						"type": "Expression"
+#					},
+#					"isSequential": false,
+#					"batchCount": 4,
+#					"activities": [
+#						{
+#							"name": "StageAndLoad",
+#							"type": "ExecutePipeline",
+#							"dependsOn": [],
+#							"userProperties": [],
+#							"typeProperties": {
+#								"pipeline": {
+#									"referenceName": "Child_StageAppInsightsError",
+#									"type": "PipelineReference"
+#								},
+#								"waitOnCompletion": false,
+#								"parameters": {
+#									"DeltaDateTime": {
+#										"value": "@{item().DeltaValue}",
+#										"type": "Expression"
+#									},
+#									"TableName": {
+#										"value": "@{item().TableName}",
+#										"type": "Expression"
+#									},
+#									"ProcedureName": {
+#										"value": "@{item().ProcedureName}",
+#										"type": "Expression"
+#									}
+#								}
+#							}
+#						}
+#					]
+#				}
+#			}
+#		]
+#  JSON
+#}
 
 

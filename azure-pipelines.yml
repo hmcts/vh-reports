@@ -110,21 +110,21 @@ stages:
           SqlFileName: '00_init.sql'
 
 
-  #- stage: ADF
-  #  displayName: ADF Config
-  #  dependsOn: Apply 
-  #  jobs:
-  #     
-  #      - job: UpdateADFPipelines 
-  #        displayName: Create/Update ADF pipelines
-  #        steps:
-  #          - task: AzureCLI@2
-  #            displayName: Azure CLI
-  #            inputs:
-  #              azureSubscription: Reform-CFT-VH-Dev
-  #              scriptType: bash
-  #              scriptLocation: inlineScript
-  #              inlineScript: |
-  #                az config set extension.use_dynamic_install=yes_without_prompt
-  #                az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "$(System.DefaultWorkingDirectory)/pipeline/Master_Staging.json"
+  - stage: ADF
+    displayName: ADF Config
+    dependsOn: Apply 
+    jobs:
+       
+        - job: UpdateADFPipelines 
+          displayName: Create/Update ADF pipelines
+          steps:
+            - task: AzureCLI@2
+              displayName: Azure CLI
+              inputs:
+                azureSubscription: Reform-CFT-VH-Dev
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  az config set extension.use_dynamic_install=yes_without_prompt
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "$(System.DefaultWorkingDirectory)/pipeline/Master_Staging.json"
             
