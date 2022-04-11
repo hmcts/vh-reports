@@ -319,13 +319,14 @@ GO
 
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'AppInsightsTrace')
-CREATE TABLE stg.AppInsightsTrace(
+CREATE TABLE stg.AppInsightsTrace (
 	Id uniqueidentifier NOT NULL DEFAULT NEWID(),
 	FileName nvarchar(max) NULL,
 	message nvarchar(max) NOT NULL,
 	customDimensions nvarchar(max) NOT NULL,
 	user_Id nvarchar(255) NOT NULL,
 	client_Model nvarchar(max) NULL,
+	client_OS nvarchar(255) NULL,
 	timestamp nvarchar(max) NOT NULL,
 	currentConferenceId nvarchar(max) NULL,
 	conference nvarchar(max) NULL,
@@ -348,6 +349,7 @@ CREATE TABLE dbo.AppInsightsTrace(
 	customDimensions nvarchar(max) NOT NULL,
 	user_Id nvarchar(255) NOT NULL,
 	client_Model nvarchar(255) NULL,
+	client_OS nvarchar(255) NULL,
 	timestamp datetime2 NOT NULL,
 	currentConferenceId nvarchar(255) NULL,
 	conference nvarchar(max) NULL,

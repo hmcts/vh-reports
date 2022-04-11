@@ -1316,6 +1316,7 @@ SELECT t.id AS [MessageID]
 	,t.[message] AS MessageText
 	,t.[user_Id] AS UserID
 	,t.[client_Model] AS DeviceType
+	,t.[client_OS] AS ClientOS
 	,d.[key] AS CustomDimensionKey
 	,d.[value] AS CustomDimensionValue
 	,CASE WHEN e.errorInformation IS NOT NULL THEN 1 ELSE 0 END AS IsErrorFlag
@@ -1338,6 +1339,7 @@ SELECT t.id AS [MessageID]
 	,t.[message] AS MessageText
 	,t.[user_Id] AS UserID
 	,t.[client_Model] AS DeviceType
+	,t.[client_OS] AS ClientOS
 	,cd.CategoryName
 	,cd.AspNetCoreEnvironment
 	,cd.ParentId
