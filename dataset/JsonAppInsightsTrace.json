@@ -38,57 +38,6 @@
 				}
 			}
 		},
-		"schema": {
-			"type": "object",
-			"properties": {
-				"value": {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {
-							"message": {
-								"type": "string"
-							},
-							"customDimensions": {
-								"type": "string"
-							},
-							"user_Id": {
-								"type": "string"
-							},
-							"client_Model": {
-								"type": "string"
-							},
-							"timestamp": {
-								"type": "string"
-							},
-							"currentConferenceId": {
-								"type": "string"
-							},
-							"conference": {
-								"type": "string"
-							},
-							"participant": {
-								"type": "string"
-							},
-							"errorInformation": {
-								"type": "string"
-							},
-							"HostInstanceId": {
-								"type": "null"
-							},
-							"ProcessId": {
-								"type": "null"
-							},
-							"LogLevel": {
-								"type": "null"
-							},
-							"pexipError": {
-								"type": "string"
-							}
-						}
-					}
-				}
-			}
-		}
+		"schema": {}
 	}
 }
