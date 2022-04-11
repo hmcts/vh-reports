@@ -132,7 +132,14 @@ stages:
                   az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlTarget" --properties dataset/AsqlTarget.json
                   az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsError" --properties dataset/JsonAppInsightsError.json
                   az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsTrace" --properties dataset/JsonAppInsightsTrace.json
-                  
+                  #set up pipelines
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_AsqltoAsql" --pipeline "pipeline/Child_AsqltoAsql.json"
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_AsqltoAsql" --pipeline "pipeline/Child_StageAppInsightsError.json"
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_AsqltoAsql" --pipeline "pipeline/Child_StageAppInsightsTrace.json"
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_AsqltoAsql" --pipeline "pipeline/Master_ErrorFile.json"
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_AsqltoAsql" --pipeline "pipeline/Master_Staging.json"
+                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_AsqltoAsql" --pipeline "pipeline/Master_TraceFile.json"
+
                   ##TODO fix the below
                   #for file in $(System.DefaultWorkingDirectory)/dataset/*
                   #do
@@ -142,10 +149,10 @@ stages:
                   #done
           
 
-                  #set up pipelines
-                  for file in $(System.DefaultWorkingDirectory)/pipeline/*
-                  do
-                    fileName=$(cut -f 1 -d '.' $file)
-                    az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
-                  done
+                  ##set up pipelines
+                  #for file in $(System.DefaultWorkingDirectory)/pipeline/*
+                  #do
+                  #  fileName=$(cut -f 1 -d '.' $file)
+                  #  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
+                  #done
             
