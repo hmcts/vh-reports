@@ -126,6 +126,7 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |
                   az config set extension.use_dynamic_install=yes_without_prompt
+                  ls -ltr $(System.DefaultWorkingDirectory)
                   #set up datasets
                   az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlSource" --properties dataset/AsqlSource.json
                   az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlTarget" --properties dataset/AsqlTarget.json
