@@ -84,13 +84,13 @@ resource "azurerm_key_vault_access_policy" "kvaccess" {
 }
 
 resource "azurerm_data_factory_linked_service_key_vault" "adfkeyvault" {
-  name            = "vhreporting-kv-link-${var.env}"
+  name            = "vhreporting-kv-link"
   data_factory_id = azurerm_data_factory.adf.id
   key_vault_id    = data.azurerm_key_vault.core-kv.id
 }
 
 resource "azurerm_data_factory_linked_service_azure_blob_storage" "adfblob" {
-  name              = "vhreporting-blob-link-${var.env}"
+  name              = "vhreporting_blob"
   data_factory_id   = azurerm_data_factory.adf.id
   connection_string = data.azurerm_storage_account.core-sa.primary_connection_string
 }
@@ -104,13 +104,12 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
   }
 }
 
-resource "azurerm_data_factory_dataset_sql_server_table" "videodataset" {
-  name                = "ASqlSource"
-  data_factory_id     = azurerm_data_factory.adf.id
-  linked_service_name = azurerm_data_factory_linked_service_azure_sql_database.adfvideodb.name
-  table_name          = "Conference"
-
-}
+#resource "azurerm_data_factory_dataset_sql_server_table" "videodataset" {
+#  name                = "ASqlSource"
+#  data_factory_id     = azurerm_data_factory.adf.id
+#  linked_service_name = azurerm_data_factory_linked_service_azure_sql_database.adfvideodb.name
+#  table_name          = "Conference"
+#}
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingdb" {
   name            = "vhreporting_link"
