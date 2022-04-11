@@ -18,8 +18,8 @@ parameters:
 
 
 jobs:
-  - job: CreateReportingDB-${{ parameters.SqlFileName }}
-    displayName: Create/Update ReportingDB
+  - job: CreateReportingDB_${{ parameters.SqlFileName }}
+    displayName: Run Script ${{ parameters.SqlFileName }}
     steps:
       - task: SqlAzureDacpacDeployment@1
         inputs:
