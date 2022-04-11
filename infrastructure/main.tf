@@ -96,7 +96,7 @@ resource "azurerm_data_factory_linked_service_azure_blob_storage" "adfblob" {
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
-  name            = "vhvideo-db"
+  name            = "vhvideo_link"
   data_factory_id = azurerm_data_factory.adf.id
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
@@ -113,7 +113,7 @@ resource "azurerm_data_factory_dataset_sql_server_table" "videodataset" {
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingdb" {
-  name            = "vhreporting-db"
+  name            = "vhreporting_link"
   data_factory_id = azurerm_data_factory.adf.id
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name

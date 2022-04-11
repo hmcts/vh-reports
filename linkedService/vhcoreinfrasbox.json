@@ -1,5 +1,5 @@
 {
-	"name": "vhcoreinfrasbox",
+	"name": "vhreporting-kv-link",
 	"properties": {
 		"annotations": [],
 		"type": "AzureKeyVault",
