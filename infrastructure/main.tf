@@ -121,7 +121,7 @@ resource "azurerm_storage_container" "vhreporting" {
 resource "azurerm_data_factory_pipeline" "MasterStaging" {
   name            = "MasterStaging"
   data_factory_id = azurerm_data_factory.adf.id
-  variables = {}
+  variables       = {}
   activities_json = <<JSON
    [
 			{
