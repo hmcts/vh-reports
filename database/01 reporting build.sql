@@ -18,7 +18,7 @@ CREATE TABLE stg.Conference (
 	JudgeUri nvarchar(max) NULL,
 	ParticipantUri nvarchar(max) NULL,
 	PexipNode nvarchar(max) NULL,
-	State int NULL,
+	[State] int NULL,
 	ClosedDateTime datetime2(7) NULL,
 	HearingVenueName nvarchar(max) NULL,
 	AudioRecordingRequired bit NULL,
@@ -26,6 +26,7 @@ CREATE TABLE stg.Conference (
 	ActualStartTime datetime2(7) NULL,
 	TelephoneConferenceId nvarchar(max) NULL,
 	CreatedDateTime datetime2(7) NULL,
+	UpdatedAt datetime2(7) NULL,
 	CONSTRAINT PK_stg_Conference PRIMARY KEY CLUSTERED (Id ASC))
 GO
 
@@ -34,7 +35,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AN
 CREATE TABLE stg.ConferenceStatus (
 	Id bigint NOT NULL,
 	ConferenceState int NULL,
-	TimeStamp datetime2(7) NULL,
+	[TimeStamp] datetime2(7) NULL,
 	ConferenceId uniqueidentifier NULL,
 	CONSTRAINT PK_stg_ConferenceStatus PRIMARY KEY CLUSTERED (Id ASC ))
 GO
@@ -42,22 +43,24 @@ GO
 
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'Endpoint')
-CREATE TABLE stg.Endpoint (
+CREATE TABLE stg.[Endpoint] (
 	Id uniqueidentifier NOT NULL,
 	DisplayName nvarchar(max) NULL,
 	SipAddress nvarchar(450) NULL,
 	Pin nvarchar(max) NULL,
-	State int NULL,
+	[State] int NULL,
 	ConferenceId uniqueidentifier NULL,
 	DefenceAdvocate nvarchar(450) NULL,
 	CurrentRoom int NULL,
 	CurrentConsultationRoomId bigint NULL,
+	CreatedAt datetime2(7) NULL,
+	UpdatedAt datetime2(7) NULL,
 	CONSTRAINT PK_stg_Endpoint PRIMARY KEY CLUSTERED (Id ASC))
 GO
 
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'Event')
-CREATE TABLE stg.Event (
+CREATE TABLE stg.[Event] (
 	Id bigint NOT NULL,
 	ConferenceId uniqueidentifier NULL,
 	ExternalEventId nvarchar(max) NULL,
@@ -67,7 +70,7 @@ CREATE TABLE stg.Event (
 	TransferredFrom int NULL,
 	TransferredTo int NULL,
 	Reason nvarchar(max) NULL,
-	Timestamp datetime2(7) NULL,
+	[Timestamp] datetime2(7) NULL,
 	EndpointFlag bit NULL,
 	Phone nvarchar(max) NULL,
 	TransferredFromRoomLabel nvarchar(max) NULL,
@@ -89,7 +92,7 @@ CREATE TABLE stg.Heartbeat (
 	OutgoingVideoPercentageLostRecent decimal(18, 2) NULL,
 	IncomingVideoPercentageLost decimal(18, 2) NULL,
 	IncomingVideoPercentageLostRecent decimal(18, 2) NULL,
-	TimeStamp datetime2(7) NULL,
+	[TimeStamp] datetime2(7) NULL,
 	BrowserName nvarchar(max) NULL,
 	BrowserVersion nvarchar(max) NULL,
 	OperatingSystem nvarchar(max) NULL,
@@ -103,7 +106,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AN
 CREATE TABLE stg.Participant (
 	Id uniqueidentifier NOT NULL,
 	ParticipantRefId uniqueidentifier NULL,
-	Name nvarchar(max) NULL,
+	[Name] nvarchar(max) NULL,
 	DisplayName nvarchar(max) NULL,
 	Username nvarchar(max) NULL,
 	UserRole int NULL,
@@ -112,7 +115,7 @@ CREATE TABLE stg.Participant (
 	Representee nvarchar(max) NULL,
 	TestCallResultId bigint NULL,
 	CurrentRoom int NULL,
-	State int NULL,
+	[State] int NULL,
 	FirstName nvarchar(max) NULL,
 	LastName nvarchar(max) NULL,
 	ContactEmail nvarchar(max) NULL,
@@ -120,6 +123,8 @@ CREATE TABLE stg.Participant (
 	HearingRole nvarchar(max) NULL,
 	CurrentConsultationRoomId bigint NULL,
 	Discriminator nvarchar(max) NULL,
+	CreatedAt datetime2(7) NULL,
+	UpdatedAt datetime2(7) NULL,
 	CONSTRAINT PK_stg_Participant PRIMARY KEY CLUSTERED (Id ASC))
 GO
 
@@ -128,7 +133,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AN
 CREATE TABLE stg.ParticipantStatus (
 	Id bigint NOT NULL,
 	ParticipantState int NULL,
-	TimeStamp datetime2(7) NULL,
+	[TimeStamp] datetime2(7) NULL,
 	ParticipantId uniqueidentifier NULL,
 	CONSTRAINT PK_stg_ParticipantStatus PRIMARY KEY CLUSTERED (Id ASC))
 GO
@@ -137,14 +142,16 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AN
 CREATE TABLE stg.Room (
 	Id bigint NOT NULL,
 	ConferenceId uniqueidentifier NULL,
-	Label nvarchar(max) NULL,
-	Type int NULL,
-	Status int NULL,
+	[Label] nvarchar(max) NULL,
+	[Type] int NULL,
+	[Status] int NULL,
 	Locked bit NULL,
 	IngestUrl nvarchar(max) NULL,
 	ParticipantUri nvarchar(max) NULL,
 	PexipNode nvarchar(max) NULL,
 	Discriminator nvarchar(max) NULL,
+	CreatedAt datetime2(7) NULL,
+	UpdatedAt datetime2(7) NULL,
 	CONSTRAINT PK_stg_Room PRIMARY KEY CLUSTERED (Id ASC)
 )
 GO
@@ -164,7 +171,7 @@ CREATE TABLE dbo.Conference (
 	JudgeUri nvarchar(max) NULL,
 	ParticipantUri nvarchar(max) NULL,
 	PexipNode nvarchar(max) NULL,
-	State int NULL,
+	[State] int NULL,
 	ClosedDateTime datetime2(7) NULL,
 	HearingVenueName nvarchar(max) NULL,
 	AudioRecordingRequired bit NULL,
@@ -172,6 +179,7 @@ CREATE TABLE dbo.Conference (
 	ActualStartTime datetime2(7) NULL,
 	TelephoneConferenceId nvarchar(max) NULL,
 	CreatedDateTime datetime2(7) NULL,
+	UpdatedAt datetime2(7) NULL,
 	CONSTRAINT PK_Conference PRIMARY KEY CLUSTERED (Id ASC))
 GO
 
@@ -180,7 +188,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AN
 CREATE TABLE dbo.ConferenceStatus (
 	Id bigint NOT NULL,
 	ConferenceState int NULL,
-	TimeStamp datetime2(7) NULL,
+	[TimeStamp] datetime2(7) NULL,
 	ConferenceId uniqueidentifier NULL,
 	CONSTRAINT PK_ConferenceStatus PRIMARY KEY CLUSTERED (Id ASC ))
 GO
@@ -188,22 +196,24 @@ GO
 
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'Endpoint')
-CREATE TABLE dbo.Endpoint (
+CREATE TABLE dbo.[Endpoint] (
 	Id uniqueidentifier NOT NULL,
 	DisplayName nvarchar(max) NULL,
 	SipAddress nvarchar(450) NULL,
 	Pin nvarchar(max) NULL,
-	State int NULL,
+	[State] int NULL,
 	ConferenceId uniqueidentifier NULL,
 	DefenceAdvocate nvarchar(450) NULL,
 	CurrentRoom int NULL,
 	CurrentConsultationRoomId bigint NULL,
+	CreatedAt datetime2(7) NULL,
+	UpdatedAt datetime2(7) NULL,
 	CONSTRAINT PK_Endpoint PRIMARY KEY CLUSTERED (Id ASC))
 GO
 
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'Event')
-CREATE TABLE dbo.Event (
+CREATE TABLE dbo.[Event] (
 	Id bigint NOT NULL,
 	ConferenceId uniqueidentifier NULL,
 	ExternalEventId nvarchar(max) NULL,
@@ -213,7 +223,7 @@ CREATE TABLE dbo.Event (
 	TransferredFrom int NULL,
 	TransferredTo int NULL,
 	Reason nvarchar(max) NULL,
-	Timestamp datetime2(7) NULL,
+	[Timestamp] datetime2(7) NULL,
 	EndpointFlag bit NULL,
 	Phone nvarchar(max) NULL,
 	TransferredFromRoomLabel nvarchar(max) NULL,
@@ -235,7 +245,7 @@ CREATE TABLE dbo.Heartbeat (
 	OutgoingVideoPercentageLostRecent decimal(18, 2) NULL,
 	IncomingVideoPercentageLost decimal(18, 2) NULL,
 	IncomingVideoPercentageLostRecent decimal(18, 2) NULL,
-	TimeStamp datetime2(7) NULL,
+	[TimeStamp] datetime2(7) NULL,
 	BrowserName nvarchar(max) NULL,
 	BrowserVersion nvarchar(max) NULL,
 	OperatingSystem nvarchar(max) NULL,
@@ -247,7 +257,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AN
 CREATE TABLE dbo.Participant (
 	Id uniqueidentifier NOT NULL,
 	ParticipantRefId uniqueidentifier NULL,
-	Name nvarchar(max) NULL,
+	[Name] nvarchar(max) NULL,
 	DisplayName nvarchar(max) NULL,
 	Username nvarchar(max) NULL,
 	UserRole int NULL,
@@ -256,7 +266,7 @@ CREATE TABLE dbo.Participant (
 	Representee nvarchar(max) NULL,
 	TestCallResultId bigint NULL,
 	CurrentRoom int NULL,
-	State int NULL,
+	[State] int NULL,
 	FirstName nvarchar(max) NULL,
 	LastName nvarchar(max) NULL,
 	ContactEmail nvarchar(max) NULL,
@@ -264,6 +274,8 @@ CREATE TABLE dbo.Participant (
 	HearingRole nvarchar(max) NULL,
 	CurrentConsultationRoomId bigint NULL,
 	Discriminator nvarchar(max) NULL,
+	CreatedAt datetime2(7) NULL,
+	UpdatedAt datetime2(7) NULL,
 	CONSTRAINT PK_Participant PRIMARY KEY CLUSTERED (Id ASC))
 GO
 
@@ -272,7 +284,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AN
 CREATE TABLE dbo.ParticipantStatus (
 	Id bigint NOT NULL,
 	ParticipantState int NULL,
-	TimeStamp datetime2(7) NULL,
+	[TimeStamp] datetime2(7) NULL,
 	ParticipantId uniqueidentifier NULL,
 	CONSTRAINT PK_ParticipantStatus PRIMARY KEY CLUSTERED (Id ASC))
 GO
@@ -281,14 +293,16 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AN
 CREATE TABLE dbo.Room (
 	Id bigint NOT NULL,
 	ConferenceId uniqueidentifier NULL,
-	Label nvarchar(max) NULL,
-	Type int NULL,
-	Status int NULL,
+	[Label] nvarchar(max) NULL,
+	[Type] int NULL,
+	[Status] int NULL,
 	Locked bit NULL,
 	IngestUrl nvarchar(max) NULL,
 	ParticipantUri nvarchar(max) NULL,
 	PexipNode nvarchar(max) NULL,
 	Discriminator nvarchar(max) NULL,
+	CreatedAt datetime2(7) NULL,
+	UpdatedAt datetime2(7) NULL,
 	CONSTRAINT PK_Room PRIMARY KEY CLUSTERED (Id ASC)
 )
 GO
@@ -298,7 +312,7 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'AppInsightsError')
 CREATE TABLE stg.AppInsightsError(
 	Id uniqueidentifier NOT NULL DEFAULT NEWID(),
-	FileName nvarchar(255) NULL,
+	[FileName] nvarchar(255) NULL,
 	ProblemId nvarchar(max) NOT NULL,
 	TotalExceptions tinyint NULL,
 	RunDate datetime2 NULL,
@@ -309,7 +323,7 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'AppInsightsError')
 CREATE TABLE dbo.AppInsightsError(
 	Id uniqueidentifier NOT NULL,
-	FileName nvarchar(255) NULL,
+	[FileName] nvarchar(255) NULL,
 	FileDate datetime2 NULL,
 	ProblemId nvarchar(max) NOT NULL,
 	TotalExceptions tinyint NULL,
@@ -321,13 +335,13 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'AppInsightsTrace')
 CREATE TABLE stg.AppInsightsTrace (
 	Id uniqueidentifier NOT NULL DEFAULT NEWID(),
-	FileName nvarchar(max) NULL,
-	message nvarchar(max) NOT NULL,
+	[FileName] nvarchar(max) NULL,
+	[message] nvarchar(max) NOT NULL,
 	customDimensions nvarchar(max) NOT NULL,
-	user_Id nvarchar(255) NOT NULL,
+	[user_Id] nvarchar(255) NOT NULL,
 	client_Model nvarchar(max) NULL,
 	client_OS nvarchar(255) NULL,
-	timestamp nvarchar(max) NOT NULL,
+	[timestamp] nvarchar(max) NOT NULL,
 	currentConferenceId nvarchar(max) NULL,
 	conference nvarchar(max) NULL,
 	participant nvarchar(max) NULL,
@@ -344,13 +358,13 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'AppInsightsTrace')
 CREATE TABLE dbo.AppInsightsTrace(
 	Id uniqueidentifier NOT NULL DEFAULT NEWID(),
-	FileName nvarchar(255) NULL,
-	message nvarchar(max) NOT NULL,
+	[FileName] nvarchar(255) NULL,
+	[message] nvarchar(max) NOT NULL,
 	customDimensions nvarchar(max) NOT NULL,
-	user_Id nvarchar(255) NOT NULL,
+	[user_Id] nvarchar(255) NOT NULL,
 	client_Model nvarchar(255) NULL,
 	client_OS nvarchar(255) NULL,
-	timestamp datetime2 NOT NULL,
+	[timestamp] datetime2 NOT NULL,
 	currentConferenceId nvarchar(255) NULL,
 	conference nvarchar(max) NULL,
 	participant nvarchar(255) NULL,
@@ -389,4 +403,66 @@ CREATE TABLE dbo.Time (
 	AM_PM CHAR(2) NOT NULL,
 	MinuteOfHour TINYINT NOT NULL,
 	CONSTRAINT PK_Time PRIMARY KEY (TimeOfDay))
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'AppInsightsTrace' and [name] = 'client_OS')
+	ALTER TABLE stg.AppInsightsTrace ADD client_OS nvarchar(255) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'AppInsightsTrace' and [name] = 'client_OS')
+	ALTER TABLE dbo.AppInsightsTrace ADD client_OS nvarchar(255) NULL;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Conference' and [name] = 'UpdatedAt')
+	ALTER TABLE stg.Conference ADD UpdatedAt datetime2(7) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Conference' and [name] = 'UpdatedAt')
+	ALTER TABLE dbo.Conference ADD UpdatedAt datetime2(7) NULL;
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Participant' and [name] = 'CreatedAt')
+	ALTER TABLE stg.Participant ADD CreatedAt datetime2(7) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Participant' and [name] = 'CreatedAt')
+	ALTER TABLE dbo.Participant ADD CreatedAt datetime2(7) NULL;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Participant' and [name] = 'UpdatedAt')
+	ALTER TABLE stg.Participant ADD UpdatedAt datetime2(7) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Participant' and [name] = 'UpdatedAt')
+	ALTER TABLE dbo.Participant ADD UpdatedAt datetime2(7) NULL;
+GO
+
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Endpoint' and [name] = 'CreatedAt')
+	ALTER TABLE stg.[Endpoint] ADD CreatedAt datetime2(7) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Endpoint' and [name] = 'CreatedAt')
+	ALTER TABLE dbo.[Endpoint] ADD CreatedAt datetime2(7) NULL;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Endpoint' and [name] = 'UpdatedAt')
+	ALTER TABLE stg.[Endpoint] ADD UpdatedAt datetime2(7) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Endpoint' and [name] = 'UpdatedAt')
+	ALTER TABLE dbo.[Endpoint] ADD UpdatedAt datetime2(7) NULL;
+GO
+
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Room' and [name] = 'CreatedAt')
+	ALTER TABLE stg.Room ADD CreatedAt datetime2(7) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Room' and [name] = 'CreatedAt')
+	ALTER TABLE dbo.Room ADD CreatedAt datetime2(7) NULL;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Room' and [name] = 'UpdatedAt')
+	ALTER TABLE stg.Room ADD UpdatedAt datetime2(7) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Room' and [name] = 'UpdatedAt')
+	ALTER TABLE dbo.Room ADD UpdatedAt datetime2(7) NULL;
 GO
