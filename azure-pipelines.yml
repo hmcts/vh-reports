@@ -107,7 +107,7 @@ stages:
           environment: ${{ parameters.environment }}
           dbuser: $(dbuser)
           dbuserpass: $(dbuserpass)
-          SqlFileName: '01 reporting build.sql'
+          SqlFileName: '01_reporting_build.sql'
       
       - template: pipeline/jobs/db-config.yaml
         parameters: 
@@ -115,7 +115,7 @@ stages:
           environment: ${{ parameters.environment }}
           dbuser: $(dbuser)
           dbuserpass: $(dbuserpass)
-          SqlFileName: '02 AdfConfig.sql'
+          SqlFileName: '02_AdfConfig.sql'
 
   #- stage: ADF
   #  displayName: ADF Config
