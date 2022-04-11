@@ -127,10 +127,10 @@ stages:
                 inlineScript: |
                   az config set extension.use_dynamic_install=yes_without_prompt
                   #set up datasets
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties dataset/AsqlSource.json
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties dataset/AsqlTarget.json
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties dataset/JsonAppInsightsError.json
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties dataset/JsonAppInsightsTrace.json
+                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlSource" --properties dataset/AsqlSource.json
+                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlTarget" --properties dataset/AsqlTarget.json
+                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsError" --properties dataset/JsonAppInsightsError.json
+                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsTrace" --properties dataset/JsonAppInsightsTrace.json
                   
                   #for file in $(System.DefaultWorkingDirectory)/dataset/*
                   #do
