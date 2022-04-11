@@ -143,7 +143,7 @@ stages:
           
 
                   #set up pipelines
-                  for file in $(System.DefaultWorkingDirectory)/pipline/*
+                  for file in $(System.DefaultWorkingDirectory)/pipeline/*
                   do
                     fileName=$(cut -f 1 -d '.' $file)
                     az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
