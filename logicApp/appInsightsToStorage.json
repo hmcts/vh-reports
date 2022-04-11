@@ -53,8 +53,8 @@
                     "method": "post",
                     "path": "/queryData",
                     "queries": {
-                        "resourcegroups": "vh-core-infra-dev",
-                        "resourcename": "vh-core-infra-dev",
+                        "resourcegroups": "vh-core-infra-@parameters('$environment')",
+                        "resourcename": "vh-core-infra-@parameters('$environment')",
                         "resourcetype": "Application Insights",
                         "subscriptions": "705b2731-0e0b-4df7-8630-95f157f0a347",
                         "timerange": "Last hour"
@@ -70,6 +70,9 @@
             "$connections": {
                 "defaultValue": {},
                 "type": "Object"
+            },
+            "environment":{
+                "type": "String"
             }
         },
         "triggers": {

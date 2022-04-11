@@ -7,7 +7,7 @@
 			"connectionString": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
-					"referenceName": "vhcoreinfrasbox",
+					"referenceName": "vhreporting-kv-link",
 					"type": "LinkedServiceReference"
 				},
 				"secretName": "VhReportingDatabaseConnectionString"

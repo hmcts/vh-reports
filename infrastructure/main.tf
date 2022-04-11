@@ -51,6 +51,10 @@ resource "azurerm_template_deployment" "workflow" {
   name            = "workflow-${filemd5(local.arm_file_path)}"
   deployment_mode = "Incremental"
 
+  parameters = {
+    environment = "${var.env}"
+  }
+
 }
 
 resource "azurerm_mssql_database" "vhreporting" {
