@@ -107,7 +107,7 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
 resource "azurerm_data_factory_dataset_sql_server_table" "videodataset" {
   name                = "ASqlSource"
   data_factory_id     = azurerm_data_factory.adf.id
-  linked_service_name = azurerm_data_factory_linked_service_sql_server.adfvideodb.name
+  linked_service_name = azurerm_data_factory_linked_service_azure_sql_database.adfvideodb.name
   table_name          = "Conference"
 
 }
