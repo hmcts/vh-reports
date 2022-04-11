@@ -96,20 +96,20 @@ resource "azurerm_data_factory_linked_service_azure_blob_storage" "adfblob" {
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
-  name              = "vhvideo-db"
-  data_factory_id   = azurerm_data_factory.adf.id
+  name            = "vhvideo-db"
+  data_factory_id = azurerm_data_factory.adf.id
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
-    secret_name = "VhVideoDatabaseConnectionString"
+    secret_name         = "VhVideoDatabaseConnectionString"
   }
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingdb" {
-  name              = "vhreporting-db"
-  data_factory_id   = azurerm_data_factory.adf.id
+  name            = "vhreporting-db"
+  data_factory_id = azurerm_data_factory.adf.id
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
-    secret_name = "VhReportingDatabaseConnectionString"
+    secret_name         = "VhReportingDatabaseConnectionString"
   }
 }
 resource "azurerm_storage_container" "vhreporting" {
