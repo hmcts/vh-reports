@@ -162,7 +162,61 @@
 						}
 					}
 				},
-				"schema": {}
+				"schema": {
+					"type": "object",
+					"properties": {
+						"value": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"message": {
+										"type": "string"
+									},
+									"customDimensions": {
+										"type": "string"
+									},
+									"user_Id": {
+										"type": "string"
+									},
+									"client_Model": {
+										"type": "string"
+									},
+									"client_OS": {
+										"type": "string"
+									},
+									"timestamp": {
+										"type": "string"
+									},
+									"currentConferenceId": {
+										"type": "null"
+									},
+									"conference": {
+										"type": "null"
+									},
+									"participant": {
+										"type": "null"
+									},
+									"errorInformation": {
+										"type": "null"
+									},
+									"HostInstanceId": {
+										"type": "null"
+									},
+									"ProcessId": {
+										"type": "null"
+									},
+									"LogLevel": {
+										"type": "null"
+									},
+									"pexipError": {
+										"type": "null"
+									}
+								}
+							}
+						}
+					}
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/vhreporting_blob')]"
