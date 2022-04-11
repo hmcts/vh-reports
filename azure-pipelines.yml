@@ -115,13 +115,10 @@ stages:
       - template: pipeline/jobs/db-config.yaml
         parameters: 
           azureSubscription: Reform-CFT-VH-Dev
-          AuthenticationType: 'connectionString'
           environment: ${{ parameters.environment }}
           dbuser: $(dbuser)
           dbuserpass: $(dbuserpass)
-          deployType: 'SqlTask'
-          SqlFile: '02 AdfConfig.sql'
-          IpDetectionMethod: 'AutoDetect'
+          SqlFileName: '02 AdfConfig.sql'
 
   #- stage: ADF
   #  displayName: ADF Config
