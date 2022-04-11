@@ -760,6 +760,110 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Master_TraceFile')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetConfig",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderStoredProcedureName": "[[dbo].[sp_GetAdfConfig]",
+								"storedProcedureParameters": {
+									"MasterPipeline": {
+										"type": "String",
+										"value": "Master_TraceFile"
+									}
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "AsqlTarget",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "dbo",
+									"TableName": "AdfConfig"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetConfig",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetConfig').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"batchCount": 4,
+							"activities": [
+								{
+									"name": "StageAndLoad",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "Child_StageAppInsightsTrace",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": false,
+										"parameters": {
+											"DeltaDateTime": {
+												"value": "@{item().DeltaValue}",
+												"type": "Expression"
+											},
+											"TableName": {
+												"value": "@{item().TableName}",
+												"type": "Expression"
+											},
+											"ProcedureName": {
+												"value": "@{item().ProcedureName}",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
+				"[concat(variables('factoryId'), '/pipelines/Child_StageAppInsightsTrace')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Child_StageAppInsightsTrace')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -857,6 +961,15 @@
 										},
 										"sink": {
 											"name": "client_Model",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['client_OS']"
+										},
+										"sink": {
+											"name": "client_OS",
 											"type": "String"
 										}
 									},
@@ -1318,110 +1431,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
 				"[concat(variables('factoryId'), '/pipelines/Child_AsqlToAsql')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Master_TraceFile')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "GetConfig",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"sqlReaderStoredProcedureName": "[[dbo].[sp_GetAdfConfig]",
-								"storedProcedureParameters": {
-									"MasterPipeline": {
-										"type": "String",
-										"value": "Master_TraceFile"
-									}
-								},
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "AsqlTarget",
-								"type": "DatasetReference",
-								"parameters": {
-									"SchemaName": "dbo",
-									"TableName": "AdfConfig"
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach1",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "GetConfig",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('GetConfig').output.value",
-								"type": "Expression"
-							},
-							"isSequential": false,
-							"batchCount": 4,
-							"activities": [
-								{
-									"name": "StageAndLoad",
-									"type": "ExecutePipeline",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "Child_StageAppInsightsTrace",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": false,
-										"parameters": {
-											"DeltaDateTime": {
-												"value": "@{item().DeltaValue}",
-												"type": "Expression"
-											},
-											"TableName": {
-												"value": "@{item().TableName}",
-												"type": "Expression"
-											},
-											"ProcedureName": {
-												"value": "@{item().ProcedureName}",
-												"type": "Expression"
-											}
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
-				"[concat(variables('factoryId'), '/pipelines/Child_StageAppInsightsTrace')]"
 			]
 		},
 		{

@@ -451,359 +451,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Child_StageAppInsightsTrace')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Stage AppInsightsError",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "Truncate Staging",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"additionalColumns": [
-									{
-										"name": "FileName",
-										"value": "$$FILEPATH"
-									},
-									{
-										"name": "RunDate",
-										"value": {
-											"value": "@variables('RunDate')",
-											"type": "Expression"
-										}
-									}
-								],
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"modifiedDatetimeStart": {
-										"value": "@pipeline().parameters.DeltaDateTime",
-										"type": "Expression"
-									},
-									"wildcardFolderPath": "AppInsightsTrace",
-									"wildcardFileName": "*",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"path": "[['message']"
-										},
-										"sink": {
-											"name": "message",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['customDimensions']"
-										},
-										"sink": {
-											"name": "customDimensions",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['user_Id']"
-										},
-										"sink": {
-											"name": "user_Id",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['client_Model']"
-										},
-										"sink": {
-											"name": "client_Model",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['timestamp']"
-										},
-										"sink": {
-											"name": "timestamp",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['currentConferenceId']"
-										},
-										"sink": {
-											"name": "currentConferenceId",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['conference']"
-										},
-										"sink": {
-											"name": "conference",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['participant']"
-										},
-										"sink": {
-											"name": "participant",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['errorInformation']"
-										},
-										"sink": {
-											"name": "errorInformation",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['HostInstanceId']"
-										},
-										"sink": {
-											"name": "HostInstanceId",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['ProcessId']"
-										},
-										"sink": {
-											"name": "ProcessId",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['LogLevel']"
-										},
-										"sink": {
-											"name": "LogLevel",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "[['pexipError']"
-										},
-										"sink": {
-											"name": "pexipError",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['FileName']"
-										},
-										"sink": {
-											"name": "FileName",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"path": "$['RunDate']"
-										},
-										"sink": {
-											"name": "RunDate",
-											"type": "DateTime"
-										}
-									}
-								],
-								"collectionReference": "$['value']"
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "JsonAppInsightsTrace",
-								"type": "DatasetReference",
-								"parameters": {
-									"Container": "vhreporting",
-									"Folder": "AppInsightsTrace",
-									"FileName": "2022-03-21T14:00:00.0000000"
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "AsqlTarget",
-								"type": "DatasetReference",
-								"parameters": {
-									"SchemaName": "stg",
-									"TableName": {
-										"value": "@pipeline().parameters.TableName",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					},
-					{
-						"name": "Truncate Staging",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Set RunDate",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": "[[stg].[sp_TruncateStagingTable]",
-							"storedProcedureParameters": {
-								"tableName": {
-									"value": {
-										"value": "@pipeline().parameters.TableName",
-										"type": "Expression"
-									},
-									"type": "String"
-								}
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "vhreporting_link",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "LoadTarget",
-						"type": "SqlServerStoredProcedure",
-						"dependsOn": [
-							{
-								"activity": "Stage AppInsightsError",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"storedProcedureName": {
-								"value": "@pipeline().parameters.ProcedureName",
-								"type": "Expression"
-							}
-						},
-						"linkedServiceName": {
-							"referenceName": "vhreporting_link",
-							"type": "LinkedServiceReference"
-						}
-					},
-					{
-						"name": "Set RunDate",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "RunDate",
-							"value": {
-								"value": "@utcnow()",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"parameters": {
-					"Container": {
-						"type": "string",
-						"defaultValue": "vhreporting"
-					},
-					"Folder": {
-						"type": "string",
-						"defaultValue": "AppInsightsTrace"
-					},
-					"FileName": {
-						"type": "string",
-						"defaultValue": "2022-03-21T14:00:00.0000000"
-					},
-					"DeltaDateTime": {
-						"type": "string",
-						"defaultValue": "03/15/2022 00:00:00"
-					},
-					"TableName": {
-						"type": "string",
-						"defaultValue": "AppInsightsTrace"
-					},
-					"ProcedureName": {
-						"type": "string",
-						"defaultValue": "sp_LoadAppInsightsTrace"
-					}
-				},
-				"variables": {
-					"RunDate": {
-						"type": "String",
-						"defaultValue": "03/21/2022 18:26:00"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/JsonAppInsightsTrace')]",
-				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
-				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/Master_ErrorFile')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1492,6 +1139,368 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/Master_Staging')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Child_StageAppInsightsTrace')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Stage AppInsightsError",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"additionalColumns": [
+									{
+										"name": "FileName",
+										"value": "$$FILEPATH"
+									},
+									{
+										"name": "RunDate",
+										"value": {
+											"value": "@variables('RunDate')",
+											"type": "Expression"
+										}
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@pipeline().parameters.DeltaDateTime",
+										"type": "Expression"
+									},
+									"wildcardFolderPath": "AppInsightsTrace",
+									"wildcardFileName": "*",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['message']"
+										},
+										"sink": {
+											"name": "message",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['customDimensions']"
+										},
+										"sink": {
+											"name": "customDimensions",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['user_Id']"
+										},
+										"sink": {
+											"name": "user_Id",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['client_Model']"
+										},
+										"sink": {
+											"name": "client_Model",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['client_OS']"
+										},
+										"sink": {
+											"name": "client_OS",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['timestamp']"
+										},
+										"sink": {
+											"name": "timestamp",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['currentConferenceId']"
+										},
+										"sink": {
+											"name": "currentConferenceId",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['conference']"
+										},
+										"sink": {
+											"name": "conference",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['participant']"
+										},
+										"sink": {
+											"name": "participant",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['errorInformation']"
+										},
+										"sink": {
+											"name": "errorInformation",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['HostInstanceId']"
+										},
+										"sink": {
+											"name": "HostInstanceId",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['ProcessId']"
+										},
+										"sink": {
+											"name": "ProcessId",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['LogLevel']"
+										},
+										"sink": {
+											"name": "LogLevel",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['pexipError']"
+										},
+										"sink": {
+											"name": "pexipError",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['FileName']"
+										},
+										"sink": {
+											"name": "FileName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['RunDate']"
+										},
+										"sink": {
+											"name": "RunDate",
+											"type": "DateTime"
+										}
+									}
+								],
+								"collectionReference": "$['value']"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "JsonAppInsightsTrace",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": "vhreporting",
+									"Folder": "AppInsightsTrace",
+									"FileName": "2022-03-21T14:00:00.0000000"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AsqlTarget",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "stg",
+									"TableName": {
+										"value": "@pipeline().parameters.TableName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "Truncate Staging",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Set RunDate",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[sp_TruncateStagingTable]",
+							"storedProcedureParameters": {
+								"tableName": {
+									"value": {
+										"value": "@pipeline().parameters.TableName",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "vhreporting_link",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "LoadTarget",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Stage AppInsightsError",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": {
+								"value": "@pipeline().parameters.ProcedureName",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "vhreporting_link",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Set RunDate",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "RunDate",
+							"value": {
+								"value": "@utcnow()",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "vhreporting"
+					},
+					"Folder": {
+						"type": "string",
+						"defaultValue": "AppInsightsTrace"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "2022-03-21T14:00:00.0000000"
+					},
+					"DeltaDateTime": {
+						"type": "string",
+						"defaultValue": "03/15/2022 00:00:00"
+					},
+					"TableName": {
+						"type": "string",
+						"defaultValue": "AppInsightsTrace"
+					},
+					"ProcedureName": {
+						"type": "string",
+						"defaultValue": "sp_LoadAppInsightsTrace"
+					}
+				},
+				"variables": {
+					"RunDate": {
+						"type": "String",
+						"defaultValue": "03/21/2022 18:26:00"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/JsonAppInsightsTrace')]",
+				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]",
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]"
 			]
 		}
 	]
