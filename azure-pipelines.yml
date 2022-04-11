@@ -126,5 +126,13 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |
                   az config set extension.use_dynamic_install=yes_without_prompt
+                  #set up datasets
+                  
+                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "	"name": "AsqlTarget" --pipeline "$(System.DefaultWorkingDirectory)/dataset/AsqlTarget.json"
+                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "	"name": "AsqlTarget" --pipeline "$(System.DefaultWorkingDirectory)/dataset/JsonAppInsightsError.json"
+                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "	"name": "AsqlTarget" --pipeline "$(System.DefaultWorkingDirectory)/dataset/JsonAppInsightsTrace.json"
+            
+
+
                   az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "$(System.DefaultWorkingDirectory)/pipeline/Master_Staging.json"
             
