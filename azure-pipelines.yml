@@ -129,14 +129,14 @@ stages:
                   #set up datasets
                   for file in $(System.DefaultWorkingDirectory)/dataset/*
                   do
-                    fileName=`cut -f 1 -d '.' $file
-                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name $fileName --properties "$(System.DefaultWorkingDirectory)/dataset/$file"
+                    fileName=$(cut -f 1 -d '.' "$file")
+                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
                   done
           
 
                   # set up pipelines
                   for file in $(System.DefaultWorkingDirectory)/pipline/*
-                    fileName=`cut -f 1 -d '.' $file
-                    az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name $fileName --pipeline "$(System.DefaultWorkingDirectory)/pipeline/$file"
+                    fileName=$(cut -f 1 -d '.' $file)
+                    az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
                   done
             
