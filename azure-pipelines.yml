@@ -107,15 +107,8 @@ stages:
           environment: ${{ parameters.environment }}
           dbuser: $(dbuser)
           dbuserpass: $(dbuserpass)
-          SqlFileName: '01_reporting_build.sql'
-      
-      - template: pipeline/jobs/db-config.yaml
-        parameters: 
-          azureSubscription: Reform-CFT-VH-Dev
-          environment: ${{ parameters.environment }}
-          dbuser: $(dbuser)
-          dbuserpass: $(dbuserpass)
-          SqlFileName: '02_AdfConfig.sql'
+          SqlFileName: '00_init.sql'
+
 
   #- stage: ADF
   #  displayName: ADF Config
