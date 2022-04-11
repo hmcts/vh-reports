@@ -15,11 +15,10 @@ parameters:
     
   - name: SqlFileName
     type: string
-    default: 'database/vh-reports'
 
 
 jobs:
-  - job: CreateReportingDB 
+  - job: CreateReportingDB-${{ parameters.SqlFileName }}
     displayName: Create/Update ReportingDB
     steps:
       - task: SqlAzureDacpacDeployment@1
