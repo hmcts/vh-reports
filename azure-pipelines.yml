@@ -132,6 +132,7 @@ stages:
                   az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsError" --properties dataset/JsonAppInsightsError.json
                   az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsTrace" --properties dataset/JsonAppInsightsTrace.json
                   
+                  ##TODO fix the below
                   #for file in $(System.DefaultWorkingDirectory)/dataset/*
                   #do
                   #  fileName=$(cut -f 1 -d '.' "$file")
@@ -140,8 +141,9 @@ stages:
                   #done
           
 
-                  # set up pipelines
+                  #set up pipelines
                   for file in $(System.DefaultWorkingDirectory)/pipline/*
+                  do
                     fileName=$(cut -f 1 -d '.' $file)
                     az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
                   done
