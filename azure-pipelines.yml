@@ -127,12 +127,15 @@ stages:
                 inlineScript: |
                   az config set extension.use_dynamic_install=yes_without_prompt
                   #set up datasets
-                  
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "	"name": "AsqlTarget" --pipeline "$(System.DefaultWorkingDirectory)/dataset/AsqlTarget.json"
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "	"name": "AsqlTarget" --pipeline "$(System.DefaultWorkingDirectory)/dataset/JsonAppInsightsError.json"
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "	"name": "AsqlTarget" --pipeline "$(System.DefaultWorkingDirectory)/dataset/JsonAppInsightsTrace.json"
-            
+                  for file in $(System.DefaultWorkingDirectory)/dataset/*
+                  do
+                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "	"name": "AsqlTarget" --pipeline "$(System.DefaultWorkingDirectory)/dataset/$file"
+                  done
+          
 
-
-                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "$(System.DefaultWorkingDirectory)/pipeline/Master_Staging.json"
+                  # set up pipelines
+                  for file in $(System.DefaultWorkingDirectory)/pipline/*
+                    fileName=`cut -f 1 -d '.' $file
+                    az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name $fileName --pipeline "$(System.DefaultWorkingDirectory)/pipeline/$file"
+                  done
             
