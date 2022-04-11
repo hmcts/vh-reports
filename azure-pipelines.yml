@@ -129,7 +129,8 @@ stages:
                   #set up datasets
                   for file in $(System.DefaultWorkingDirectory)/dataset/*
                   do
-                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "	"name": "AsqlTarget" --pipeline "$(System.DefaultWorkingDirectory)/dataset/$file"
+                    fileName=`cut -f 1 -d '.' $file
+                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name $fileName --properties "$(System.DefaultWorkingDirectory)/dataset/$file"
                   done
           
 
