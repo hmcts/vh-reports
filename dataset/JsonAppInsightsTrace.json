@@ -1,6 +1,5 @@
 {
-	"name": "JsonAppInsightsTrace",
-	"properties": {
+
 		"linkedServiceName": {
 			"referenceName": "vhreporting_blob",
 			"type": "LinkedServiceReference"
@@ -93,5 +92,5 @@
 				}
 			}
 		}
-	}
+	
 }

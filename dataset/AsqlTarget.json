@@ -1,6 +1,5 @@
 {
-	"name": "AsqlTarget",
-	"properties": {
+
 		"linkedServiceName": {
 			"referenceName": "vhreporting_link",
 			"type": "LinkedServiceReference"
@@ -28,5 +27,5 @@
 				"type": "Expression"
 			}
 		}
-	}
+	
 }
