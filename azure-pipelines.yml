@@ -106,7 +106,7 @@ stages:
           azureSubscription: Reform-CFT-VH-Dev
           environment: ${{ parameters.environment }}
           dbuser: $(dbuser)
-          dbuserpass: $(dbuserpass)
+          dbuserpass: $(dbuserpass${{ parameters.environment }})
           SqlFileName: '00_init.sql'
 
 
