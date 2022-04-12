@@ -44,7 +44,7 @@
             },
             "Run_query_and_list_results": {
                 "inputs": {
-                    "body": "traces\n| extend getTxt = parse_json (customDimensions)\n| project\n    message,\n    customDimensions,\n    user_Id,\n    client_Model,\n    timestamp,\n    currentConferenceId = getTxt.currentConferenceId,\n    conference = getTxt.conference,\n    participant = getTxt.participant,\n    errorInformation = getTxt.errorInformation,\n    HostInstanceId = getTxt.HostInstanceId,\n    ProcessId = getTxt.ProcessId,\n    LogLevel = getTxt.LogLevel,\n    pexipError = getTxt.pexipError\n| where customDimensions != \"\"",
+                    "body": "traces\n| extend getTxt = parse_json (customDimensions)\n| project\n    message,\n    customDimensions,\n    user_Id,\n    client_Model,\nclient_OS,\n    timestamp,\n    currentConferenceId = getTxt.currentConferenceId,\n    conference = getTxt.conference,\n    participant = getTxt.participant,\n    errorInformation = getTxt.errorInformation,\n    HostInstanceId = getTxt.HostInstanceId,\n    ProcessId = getTxt.ProcessId,\n    LogLevel = getTxt.LogLevel,\n    pexipError = getTxt.pexipError\n| where customDimensions contains \"conferenceId\" or customDimensions contains \"participantId\"",
                     "host": {
                         "connection": {
                             "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
@@ -53,11 +53,11 @@
                     "method": "post",
                     "path": "/queryData",
                     "queries": {
-                        "resourcegroups": "vh-core-infra-test1",
-                        "resourcename": "vh-core-infra-test1",
+                        "resourcegroups": "vh-core-infra-sandbox",
+                        "resourcename": "vh-core-infra-sandbox",
                         "resourcetype": "Application Insights",
                         "subscriptions": "705b2731-0e0b-4df7-8630-95f157f0a347",
-                        "timerange": "Last hour"
+                        "timerange": "Last 24 hours"
                     }
                 },
                 "runAfter": {},
@@ -70,20 +70,27 @@
             "$connections": {
                 "defaultValue": {},
                 "type": "Object"
-            },
-            "environment":{
-                "type": "String"
             }
         },
         "triggers": {
             "Recurrence": {
                 "evaluatedRecurrence": {
-                    "frequency": "Minute",
-                    "interval": 30
+                    "frequency": "Day",
+                    "interval": 1,
+                    "schedule": {
+                        "hours": [
+                            "5"
+                        ]
+                    }
                 },
                 "recurrence": {
-                    "frequency": "Minute",
-                    "interval": 30
+                    "frequency": "Day",
+                    "interval": 1,
+                    "schedule": {
+                        "hours": [
+                            "5"
+                        ]
+                    }
                 },
                 "type": "Recurrence"
             }
@@ -93,12 +100,12 @@
         "$connections": {
             "value": {
                 "azureblob": {
-                    "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-dev/providers/Microsoft.Web/connections/azureblob",
+                    "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-test1/providers/Microsoft.Web/connections/azureblob",
                     "connectionName": "azureblob",
                     "id": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/azureblob"
                 },
                 "azuremonitorlogs": {
-                    "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-dev/providers/Microsoft.Web/connections/azuremonitorlogs",
+                    "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-test1/providers/Microsoft.Web/connections/azuremonitorlogs",
                     "connectionName": "azuremonitorlogs",
                     "id": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/azuremonitorlogs"
                 }
