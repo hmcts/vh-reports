@@ -16,7 +16,7 @@
 			},
 			"FileName": {
 				"type": "string",
-				"defaultValue": "2022-03-21T15:00:00.0000000"
+				"defaultValue": "2022-04-11T09:00:00.0000000"
 			}
 		},
 		"annotations": [],
@@ -58,20 +58,23 @@
 							"client_Model": {
 								"type": "string"
 							},
+							"client_OS": {
+								"type": "string"
+							},
 							"timestamp": {
 								"type": "string"
 							},
 							"currentConferenceId": {
-								"type": "string"
+								"type": "null"
 							},
 							"conference": {
-								"type": "string"
+								"type": "null"
 							},
 							"participant": {
-								"type": "string"
+								"type": "null"
 							},
 							"errorInformation": {
-								"type": "string"
+								"type": "null"
 							},
 							"HostInstanceId": {
 								"type": "null"
@@ -83,7 +86,7 @@
 								"type": "null"
 							},
 							"pexipError": {
-								"type": "string"
+								"type": "null"
 							}
 						}
 					}

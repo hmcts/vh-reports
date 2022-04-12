@@ -570,6 +570,7 @@ BEGIN
 		,customDimensions
 		,user_Id
 		,client_Model
+		,client_OS
 		,timestamp
 		,currentConferenceId
 		,conference
@@ -586,6 +587,7 @@ BEGIN
 		,s.customDimensions
 		,s.user_Id
 		,s.client_Model
+		,s.client_OS
 		,s.timestamp
 		,s.currentConferenceId
 		,s.conference

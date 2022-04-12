@@ -99,6 +99,15 @@
 							},
 							{
 								"source": {
+									"path": "['client_OS']"
+								},
+								"sink": {
+									"name": "client_OS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
 									"path": "['timestamp']"
 								},
 								"sink": {
