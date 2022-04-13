@@ -20,7 +20,7 @@ data "azurerm_mssql_server" "core-sql-server" {
 }
 
 data "azurerm_key_vault_secret" "reporting-db-pass" {
-  name      = "hvhearingsapiadmin"
+  name         = "hvhearingsapiadmin"
   key_vault_id = data.azurerm_key_vault.core-kv.id
 }
 
@@ -39,7 +39,7 @@ resource "azurerm_data_factory" "adf" {
   location            = azurerm_resource_group.vh-reporting-rg.location
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
   identity {
-    type = "UserAssigned"
+    type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.adf-mi.id]
   }
 }
@@ -106,22 +106,22 @@ resource "azurerm_key_vault_access_policy" "kvaccess" {
 }
 
 resource "azurerm_data_factory_linked_service_key_vault" "adfkeyvault" {
-  name            = "vhreporting-kv-link"
-  data_factory_id = azurerm_data_factory.adf.id
-  key_vault_id    = data.azurerm_key_vault.core-kv.id
+  name                = "vhreporting-kv-link"
+  data_factory_id     = azurerm_data_factory.adf.id
+  key_vault_id        = data.azurerm_key_vault.core-kv.id
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
 resource "azurerm_data_factory_linked_service_azure_blob_storage" "adfblob" {
-  name              = "vhreporting_blob"
-  data_factory_id   = azurerm_data_factory.adf.id
-  connection_string = data.azurerm_storage_account.core-sa.primary_connection_string
+  name                = "vhreporting_blob"
+  data_factory_id     = azurerm_data_factory.adf.id
+  connection_string   = data.azurerm_storage_account.core-sa.primary_connection_string
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
-  name            = "vhvideo_link"
-  data_factory_id = azurerm_data_factory.adf.id
+  name                = "vhvideo_link"
+  data_factory_id     = azurerm_data_factory.adf.id
   resource_group_name = "vh-core-infra-${var.env}"
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
@@ -137,8 +137,8 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
 #}
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingdb" {
-  name            = "vhreporting_link"
-  data_factory_id = azurerm_data_factory.adf.id
+  name                = "vhreporting_link"
+  data_factory_id     = azurerm_data_factory.adf.id
   resource_group_name = "vh-core-infra-${var.env}"
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
