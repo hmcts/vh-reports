@@ -71,17 +71,17 @@ resource "azurerm_mssql_database" "vhreporting" {
   max_size_gb  = 2
 }
 
-resource "null_resource" "db_setup" {
-  depends_on = [azurerm_mssql_database.vhreporting]
-
-  triggers = {
-    always_run = timestamp()
-  }
-
-  provisioner "local-exec" {
-    command = "sqlcmd -S ${data.azurerm_mssql_server.core-sql-server.name}.database.windows.net -d ${azurerm_mssql_database.vhreporting.name} -U ${data.azurerm_key_vault_secret.reporting-db-pass.value} -i ../database/auto-tuning.sql"
-  }
-}
+#resource "null_resource" "db_setup" {
+#  depends_on = [azurerm_mssql_database.vhreporting]
+#
+#  triggers = {
+#    always_run = timestamp()
+#  }
+#
+#  provisioner "local-exec" {
+#    command = "sqlcmd -S ${data.azurerm_mssql_server.core-sql-server.name}.database.windows.net -d ${azurerm_mssql_database.vhreporting.name} -U ${data.azurerm_key_vault_secret.reporting-db-pass.value} -i ./auto-tuning.sql"
+#  }
+#}
 
 resource "azurerm_user_assigned_identity" "adf-mi" {
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
