@@ -15,3 +15,5 @@ GO
 GO
 :r "D:\a\1\s\database\08_stg_sp_TruncateTable.sql"
 GO
+:r "D:\a\1\s\database\enable_auto_tune.sql"
+GO
