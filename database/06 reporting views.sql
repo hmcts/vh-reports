@@ -453,7 +453,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo')
 GO
 
 ALTER VIEW dbo.vwConferenceDuration AS
-WITH cs AS (
+WITH cs1 AS (
 	SELECT cs.ConferenceId
 		,cs.timestamp
 		,LEAD(timestamp) OVER (PARTITION BY cs.ConferenceId ORDER BY timestamp, id) AS next_timestamp
@@ -464,7 +464,7 @@ WITH cs AS (
 		AND re.EnumName = 'dbo.ConferenceStatus.ConferenceState'
 	WHERE (try_convert(time,cs.TimeStamp) > '05:30:00' 
 	OR try_convert(time,cs.TimeStamp) < '02:00:00'))
-,ps AS (
+,ps1 AS (
 	SELECT p.ConferenceId
 		,ps.timestamp
 		,LEAD(timestamp) OVER (PARTITION BY p.ConferenceId ORDER BY ps.timestamp, ps.id) AS next_timestamp
@@ -477,6 +477,20 @@ WITH cs AS (
 		AND re.EnumName = 'dbo.ParticipantStatus.ParticipantState'
 	WHERE (try_convert(time,ps.TimeStamp) > '05:30:00' 
 	OR try_convert(time,ps.TimeStamp) < '02:00:00'))
+,cs AS (
+	SELECT ConferenceId
+		,timestamp
+		,CASE WHEN DATEDIFF(hour,TRY_CONVERT(date,timestamp),next_timestamp) <= 26 THEN next_timestamp ELSE NULL END AS next_timestamp
+		,StateDesc
+	FROM cs1
+)
+,ps AS (
+	SELECT ConferenceId
+		,timestamp
+		,CASE WHEN DATEDIFF(hour,TRY_CONVERT(date,timestamp),next_timestamp) <= 26 THEN next_timestamp ELSE NULL END AS next_timestamp
+		,StateDesc
+	FROM ps1
+)
 ,ms AS (
 	SELECT cs.ConferenceId
 		,cs.TimeStamp
