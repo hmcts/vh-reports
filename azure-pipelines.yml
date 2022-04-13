@@ -33,14 +33,14 @@ stages:
   - stage: CIBuild
     displayName: 'Validate Infra'
     jobs: 
-      - template: ado-pipeline/jobs/terraform-validate.yaml@templates
+      - template: ado-pipeline/jobs/terraform-validate.yaml
         parameters:
           terraformPath: $(Build.SourcesDirectory)/infrastructure
 
   - stage: Plan
     displayName: Plan ${{ parameters.environment }}
     jobs:
-      - template: templates/Azure/KeyVault/firewall-exception-add.yaml
+      - template: templates/Azure/KeyVault/firewall-exception-add.yaml@templates
         parameters:
           subscription: $(subscription)
           keyVaultName: vhcoreinfra${{ parameters.environment }}
@@ -59,7 +59,7 @@ stages:
         parameters:
           subscription: $(subscription)
           keyVaultName: vhcoreinfra${{ parameters.environment }}
-
+          
   - stage: Wait
     jobs:
       - job: Wait
