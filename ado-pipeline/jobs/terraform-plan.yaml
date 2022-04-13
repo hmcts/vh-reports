@@ -23,7 +23,6 @@ jobs:
 
 - job: TerraformPlan
   displayName: TF Plan
-  dependsOn: AddFWException
   pool:
     vmImage: 'ubuntu-latest'
   steps:  
@@ -50,7 +49,7 @@ jobs:
     parameters:
       subscription: "${{ parameters.subscription }}"
       keyVaultName: vhcoreinfra${{ parameters.environment }}
-      
+
   - template: ../steps/tf-plan.yaml
     parameters:
       subscription: ${{ parameters.subscription }}
