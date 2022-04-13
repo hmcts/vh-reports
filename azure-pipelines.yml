@@ -33,7 +33,7 @@ stages:
   - stage: CIBuild
     displayName: 'Validate Infra'
     jobs: 
-      - template: ado-pipeline/jobs/terraform-validate.yaml
+      - template: ado-pipeline/jobs/terraform-validate.yaml@templates
         parameters:
           terraformPath: $(Build.SourcesDirectory)/infrastructure
 
@@ -55,11 +55,11 @@ stages:
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
           outputName: ${{ parameters.environment }}
           workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
-      - template: templates/Azure/KeyVault/firewall-exception-remove.yaml
+      - template: templates/Azure/KeyVault/firewall-exception-remove.yaml@templates
         parameters:
           subscription: $(subscription)
           keyVaultName: vhcoreinfra${{ parameters.environment }}
-          
+
   - stage: Wait
     jobs:
       - job: Wait
