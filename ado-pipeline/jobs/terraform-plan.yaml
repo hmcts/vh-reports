@@ -20,11 +20,18 @@ parameters:
     type: string
 
 jobs:
+- job: AddFWException
+  steps:
+  - template: templates/Azure/KeyVault/firewall-exception-add.yaml@templates
+    parameters:
+      subscription: $(subscription)
+      keyVaultName: vhcoreinfra${{ parameters.environment }}
 - job: TerraformPlan
   displayName: TF Plan
   pool:
     vmImage: 'ubuntu-latest'
   steps:
+  
   - template: ../steps/tf-install.yaml
   - template: ../steps/tf-init.yaml
     parameters:
@@ -35,6 +42,10 @@ jobs:
       containerName: ${{ parameters.containerName }}
       workingDirectory: ${{ parameters.workingDirectory }}
       statekey: ${{ parameters.stateKey }}
+  - template: templates/Azure/KeyVault/firewall-exception-remove.yaml@templates
+    parameters:
+      subscription: $(subscription)
+      keyVaultName: vhcoreinfra${{ parameters.environment }}
 
   - bash: |
       mkdir '$(System.DefaultWorkingDirectory)/plans'
