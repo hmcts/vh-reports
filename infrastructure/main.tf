@@ -109,20 +109,20 @@ resource "azurerm_data_factory_linked_service_key_vault" "adfkeyvault" {
   name                = "vhreporting-kv-link"
   data_factory_id     = azurerm_data_factory.adf.id
   key_vault_id        = data.azurerm_key_vault.core-kv.id
-  resource_group_name = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-reporting-infra-${var.env}"
 }
 
 resource "azurerm_data_factory_linked_service_azure_blob_storage" "adfblob" {
   name                = "vhreporting_blob"
   data_factory_id     = azurerm_data_factory.adf.id
   connection_string   = data.azurerm_storage_account.core-sa.primary_connection_string
-  resource_group_name = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-reporting-infra-${var.env}"
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
   name                = "vhvideo_link"
   data_factory_id     = azurerm_data_factory.adf.id
-  resource_group_name = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-reporting-infra-${var.env}"
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
     secret_name         = "VhVideoDatabaseConnectionString"
@@ -139,7 +139,7 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingdb" {
   name                = "vhreporting_link"
   data_factory_id     = azurerm_data_factory.adf.id
-  resource_group_name = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-reporting-infra-${var.env}"
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
     secret_name         = "VhReportingDatabaseConnectionString"
