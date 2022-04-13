@@ -57,6 +57,11 @@ jobs:
       tfVariables: "./environments/${{ parameters.environment }}.tfvars"
       workingDirectory: ${{ parameters.workingDirectory }}
 
+  - template: ../steps/firewall-exception-remove.yaml
+    parameters:
+      subscription: "Reform-CFT-VH-Dev"
+      keyVaultName: vhcoreinfra${{ parameters.environment }}
+
   - task: PublishPipelineArtifact@1
     displayName: 'Publish TF Plan'
     inputs:
