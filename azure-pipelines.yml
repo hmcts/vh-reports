@@ -119,7 +119,7 @@ stages:
           displayName: Create/Update ADF pipelines
           steps:
             - task: AzureCLI@2
-              displayName: Azure CLI
+              displayName: Update datasets
               inputs:
                 azureSubscription: Reform-CFT-VH-Dev
                 scriptType: bash
@@ -140,14 +140,21 @@ stages:
                   #az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "pipeline/Master_Staging.json"
                   #az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_TraceFile" --pipeline "pipeline/Master_TraceFile.json"
 
-                  ##TODO fix the below
+                 
                   for file in $(System.DefaultWorkingDirectory)/dataset/*
                   do
                     fileName="$(basename $file .json)"
                     echo $fileName
                     az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
                   done
-          
+
+            - task: AzureCLI@2
+              displayName: Update ADF pipeines
+              inputs:
+                azureSubscription: Reform-CFT-VH-Dev
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
                   ##set up pipelines
                   for file in $(System.DefaultWorkingDirectory)/pipeline/*
                   do
@@ -156,6 +163,13 @@ stages:
                     az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
                   done
 
+            - task: AzureCLI@2
+              displayName: Update ADF pipeline triggers
+              inputs:
+                azureSubscription: Reform-CFT-VH-Dev
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |                  
                   #set up triggers
                   for file in $(System.DefaultWorkingDirectory)/trigger/*
                   do
