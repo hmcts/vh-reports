@@ -40,10 +40,7 @@ stages:
   - stage: Plan
     displayName: Plan ${{ parameters.environment }}
     jobs:
-      - template: templates/Azure/KeyVault/firewall-exception-add.yaml@templates
-        parameters:
-          subscription: $(subscription)
-          keyVaultName: vhcoreinfra${{ parameters.environment }}
+
       - template: ado-pipeline/jobs/terraform-plan.yaml
         parameters:
           subscription: $(subscription)
@@ -55,10 +52,7 @@ stages:
           stateKey: $(stateKey)-${{ parameters.environment }}.tfstate
           outputName: ${{ parameters.environment }}
           workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
-      - template: templates/Azure/KeyVault/firewall-exception-remove.yaml@templates
-        parameters:
-          subscription: $(subscription)
-          keyVaultName: vhcoreinfra${{ parameters.environment }}
+
           
   - stage: Wait
     jobs:
