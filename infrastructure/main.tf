@@ -32,6 +32,10 @@ resource "azurerm_data_factory" "adf" {
   name                = "vh-datafactory-${var.env}"
   location            = azurerm_resource_group.vh-reporting-rg.location
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.adf-mi.id]
+  }
 }
 #TODO use the below to deploy the logic app
 #resource "azurerm_logic_app_workflow" "logicapp" {

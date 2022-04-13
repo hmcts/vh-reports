@@ -128,31 +128,39 @@ stages:
                   az config set extension.use_dynamic_install=yes_without_prompt
                   ls -ltr $(System.DefaultWorkingDirectory)
                   #set up datasets
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlSource" --properties "dataset/AsqlSource.json"
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlTarget" --properties "dataset/AsqlTarget.json"
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsError" --properties "dataset/JsonAppInsightsError.json"
-                  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsTrace" --properties "dataset/JsonAppInsightsTrace.json"
-                  #set up pipelines
-                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_AsqlToAsql" --pipeline "pipeline/Child_AsqlToAsql.json"
-                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_StageAppInsightsError" --pipeline "pipeline/Child_StageAppInsightsError.json"
-                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_StageAppInsightsTrace" --pipeline "pipeline/Child_StageAppInsightsTrace.json"
-                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_ErrorFile" --pipeline "pipeline/Master_ErrorFile.json"
-                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "pipeline/Master_Staging.json"
-                  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_TraceFile" --pipeline "pipeline/Master_TraceFile.json"
+                  #az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlSource" --properties "dataset/AsqlSource.json"
+                  #az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "AsqlTarget" --properties "dataset/AsqlTarget.json"
+                  #az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsError" --properties "dataset/JsonAppInsightsError.json"
+                  #az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "JsonAppInsightsTrace" --properties "dataset/JsonAppInsightsTrace.json"
+                  ##set up pipelines
+                  #az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_AsqlToAsql" --pipeline "pipeline/Child_AsqlToAsql.json"
+                  #az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_StageAppInsightsError" --pipeline "pipeline/Child_StageAppInsightsError.json"
+                  #az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Child_StageAppInsightsTrace" --pipeline "pipeline/Child_StageAppInsightsTrace.json"
+                  #az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_ErrorFile" --pipeline "pipeline/Master_ErrorFile.json"
+                  #az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_Staging" --pipeline "pipeline/Master_Staging.json"
+                  #az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "Master_TraceFile" --pipeline "pipeline/Master_TraceFile.json"
 
                   ##TODO fix the below
-                  #for file in $(System.DefaultWorkingDirectory)/dataset/*
-                  #do
-                  #  fileName=$(cut -f 1 -d '.' "$file")
-                  #  echo "$fileName"
-                  #  az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
-                  #done
+                  for file in $(System.DefaultWorkingDirectory)/dataset/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
+                  done
           
-
                   ##set up pipelines
-                  #for file in $(System.DefaultWorkingDirectory)/pipeline/*
-                  #do
-                  #  fileName=$(cut -f 1 -d '.' $file)
-                  #  az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
-                  #done
+                  for file in $(System.DefaultWorkingDirectory)/pipeline/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
+                  done
+
+                  #set up triggers
+                  for file in $(System.DefaultWorkingDirectory)/trigger/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory trigger create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
+                  done
             
