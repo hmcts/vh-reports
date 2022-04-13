@@ -70,6 +70,10 @@
             "$connections": {
                 "defaultValue": {},
                 "type": "Object"
+            },
+            "environment": {
+                "defaultValue": "dev",
+                "type": "String"
             }
         },
         "triggers": {
