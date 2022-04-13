@@ -4,7 +4,7 @@ parameters:
     - name: keyVaultName
       type: string
 
-steps:
+
     - task: AzureCLI@2
       displayName: Add FW Exception to ${{ parameters.keyVaultName }}
       inputs:
