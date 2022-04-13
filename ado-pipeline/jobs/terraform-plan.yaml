@@ -22,10 +22,11 @@ parameters:
 jobs:
 - job: AddFWException
   steps:
-  - template: templates/Azure/KeyVault/firewall-exception-add.yaml@templates
+  - template: ../steps/firewall-exception-add.yaml
     parameters:
       subscription: $(subscription)
       keyVaultName: vhcoreinfra${{ parameters.environment }}
+
 - job: TerraformPlan
   displayName: TF Plan
   pool:
