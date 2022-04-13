@@ -33,7 +33,7 @@ stages:
   - stage: CIBuild
     displayName: 'Validate Infra'
     jobs: 
-      - template: pipeline/jobs/terraform-validate.yaml
+      - template: ado-pipeline/jobs/terraform-validate.yaml
         parameters:
           terraformPath: $(Build.SourcesDirectory)/infrastructure
   
@@ -58,7 +58,7 @@ stages:
         displayName: "Wait for approval"
         pool: server
         steps:
-          - template: pipeline/steps/wait.yaml
+          - template: ado-pipeline/steps/wait.yaml
             parameters:
               environment: ${{ parameters.environment }}
             
@@ -101,7 +101,7 @@ stages:
     dependsOn: Apply 
     jobs:
        
-      - template: pipeline/jobs/db-config.yaml
+      - template: ado-pipeline/jobs/db-config.yaml
         parameters: 
           azureSubscription: Reform-CFT-VH-Dev
           environment: ${{ parameters.environment }}
