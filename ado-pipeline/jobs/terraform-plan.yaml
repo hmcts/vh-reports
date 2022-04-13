@@ -20,19 +20,13 @@ parameters:
     type: string
 
 jobs:
-- job: AddFWException
-  steps:
-  - template: ../steps/firewall-exception-add.yaml
-    parameters:
-      subscription: "${{ parameters.subscription }}"
-      keyVaultName: vhcoreinfra${{ parameters.environment }}
 
 - job: TerraformPlan
   displayName: TF Plan
+  dependsOn: AddFWException
   pool:
     vmImage: 'ubuntu-latest'
-  steps:
-  
+  steps:  
   - template: ../steps/tf-install.yaml
   - template: ../steps/tf-init.yaml
     parameters:
@@ -52,6 +46,11 @@ jobs:
       echo $targetPath
     displayName: Create plan directory
 
+  - template: ../steps/firewall-exception-add.yaml
+    parameters:
+      subscription: "${{ parameters.subscription }}"
+      keyVaultName: vhcoreinfra${{ parameters.environment }}
+      
   - template: ../steps/tf-plan.yaml
     parameters:
       subscription: ${{ parameters.subscription }}
