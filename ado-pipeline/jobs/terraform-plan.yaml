@@ -24,7 +24,7 @@ jobs:
   steps:
   - template: ../steps/firewall-exception-add.yaml
     parameters:
-      subscription: "Reform-CFT-VH-Dev"
+      subscription: "${{ parameters.subscription }}"
       keyVaultName: vhcoreinfra${{ parameters.environment }}
 
 - job: TerraformPlan
