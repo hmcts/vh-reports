@@ -2,6 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "environment": {
+            "defaultValue": "dev",
+            "type": "String"
+        },
         "connections_azureblob_name": {
             "defaultValue": "azureblob",
             "type": "String"
@@ -11,9 +15,10 @@
             "type": "String"
         },
         "workflows_vh_reporting_dev_name": {
-            "defaultValue": "vh-reporting-dev",
+            "defaultValue": "[concat('vh-reporting-', parameters('environment'))]",
             "type": "String"
         }
+
     },
     "variables": {},
     "resources": [
@@ -165,8 +170,8 @@
                                 "method": "post",
                                 "path": "/queryData",
                                 "queries": {
-                                    "resourcegroups": "vh-core-infra-dev",
-                                    "resourcename": "vh-core-infra-dev",
+                                    "resourcegroups": "[concat('vh-core-infra-', parameters('environment'))]",
+                                    "resourcename": "[concat('vh-core-infra-', parameters('environment'))]",
                                     "resourcetype": "Application Insights",
                                     "subscriptions": "705b2731-0e0b-4df7-8630-95f157f0a347",
                                     "timerange": "Last hour"

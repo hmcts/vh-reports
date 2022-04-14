@@ -43,6 +43,7 @@ resource "azurerm_data_factory" "adf" {
     identity_ids = [azurerm_user_assigned_identity.adf-mi.id]
   }
 }
+
 #TODO use the below to deploy the logic app
 #resource "azurerm_logic_app_workflow" "logicapp" {
 #  name                = "vh-reporting-${var.env}"
@@ -60,6 +61,9 @@ resource "azurerm_template_deployment" "workflow" {
   # this ensures the keys are up-to-date
   name            = "workflow-${filemd5(local.arm_file_path)}"
   deployment_mode = "Incremental"
+  parameters = {
+    environment = "${var.env}"
+  }
 
 }
 
@@ -70,18 +74,6 @@ resource "azurerm_mssql_database" "vhreporting" {
   license_type = "LicenseIncluded"
   max_size_gb  = 2
 }
-
-#resource "null_resource" "db_setup" {
-#  depends_on = [azurerm_mssql_database.vhreporting]
-#
-#  triggers = {
-#    always_run = timestamp()
-#  }
-#
-#  provisioner "local-exec" {
-#    command = "sqlcmd -S ${data.azurerm_mssql_server.core-sql-server.name}.database.windows.net -d ${azurerm_mssql_database.vhreporting.name} -U ${data.azurerm_key_vault_secret.reporting-db-pass.value} -i ./auto-tuning.sql"
-#  }
-#}
 
 resource "azurerm_user_assigned_identity" "adf-mi" {
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
@@ -117,6 +109,10 @@ resource "azurerm_data_factory_linked_service_azure_blob_storage" "adfblob" {
   data_factory_id     = azurerm_data_factory.adf.id
   connection_string   = data.azurerm_storage_account.core-sa.primary_connection_string
   resource_group_name = "vh-reporting-infra-${var.env}"
+}
+resource "local_file" "logicapp" {
+    content  = "foo!"
+    filename = "${path.module}/foo.bar"
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
