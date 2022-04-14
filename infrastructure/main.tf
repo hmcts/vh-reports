@@ -1,5 +1,5 @@
 locals {
-  arm_file_path = "../logicApp/test.json"
+  arm_file_path = "../logicApp/appInsightsToStorage.json"
 }
 
 data "azurerm_client_config" "current" {}
