@@ -19,12 +19,6 @@ data "azurerm_mssql_server" "core-sql-server" {
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
-data "azurerm_key_vault_secret" "reporting-db-pass" {
-  name         = "hvhearingsapiadmin"
-  key_vault_id = data.azurerm_key_vault.core-kv.id
-}
-
-
 data "template_file" "workflow" {
   template = file(local.arm_file_path)
 }
