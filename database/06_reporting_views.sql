@@ -453,7 +453,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo')
 GO
 
 ALTER VIEW dbo.vwConferenceDuration AS
-WITH cs AS (
+WITH cs1 AS (
 	SELECT cs.ConferenceId
 		,cs.timestamp
 		,LEAD(timestamp) OVER (PARTITION BY cs.ConferenceId ORDER BY timestamp, id) AS next_timestamp
@@ -464,7 +464,7 @@ WITH cs AS (
 		AND re.EnumName = 'dbo.ConferenceStatus.ConferenceState'
 	WHERE (try_convert(time,cs.TimeStamp) > '05:30:00' 
 	OR try_convert(time,cs.TimeStamp) < '02:00:00'))
-,ps AS (
+,ps1 AS (
 	SELECT p.ConferenceId
 		,ps.timestamp
 		,LEAD(timestamp) OVER (PARTITION BY p.ConferenceId ORDER BY ps.timestamp, ps.id) AS next_timestamp
@@ -477,6 +477,20 @@ WITH cs AS (
 		AND re.EnumName = 'dbo.ParticipantStatus.ParticipantState'
 	WHERE (try_convert(time,ps.TimeStamp) > '05:30:00' 
 	OR try_convert(time,ps.TimeStamp) < '02:00:00'))
+,cs AS (
+	SELECT ConferenceId
+		,timestamp
+		,CASE WHEN DATEDIFF(hour,TRY_CONVERT(date,timestamp),next_timestamp) <= 26 THEN next_timestamp ELSE NULL END AS next_timestamp
+		,StateDesc
+	FROM cs1
+)
+,ps AS (
+	SELECT ConferenceId
+		,timestamp
+		,CASE WHEN DATEDIFF(hour,TRY_CONVERT(date,timestamp),next_timestamp) <= 26 THEN next_timestamp ELSE NULL END AS next_timestamp
+		,StateDesc
+	FROM ps1
+)
 ,ms AS (
 	SELECT cs.ConferenceId
 		,cs.TimeStamp
@@ -1468,3 +1482,146 @@ GO
 
 
 
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwDevice'))
+	EXEC('CREATE VIEW dbo.vwDevice AS SELECT 1 AS col1')
+GO
+
+ALTER VIEW dbo.vwDevice AS
+WITH ai AS (
+	SELECT COALESCE(conferenceId,CurrentConferenceId,conferenceId2) AS ConfID
+		,conferenceId,CurrentConferenceId,conferenceId2
+		,participantId
+		,DeviceType
+		,ClientOS
+	FROM [dbo].[vwApplicationInsightsWide] 
+	GROUP BY COALESCE(conferenceId,CurrentConferenceId,conferenceId2)
+		,conferenceId,CurrentConferenceId,conferenceId2
+		,participantId
+		,DeviceType
+		,ClientOS )
+SELECT TOP (1000) 
+	ai.ClientOS
+	,ai.DeviceType
+	,ai.ConferenceId AS [AppInsights.ConferenceId]
+	,ai.ConferenceId2 AS [AppInsights.ConferenceId2]
+	,ai.CurrentConferenceId AS [AppInsights.CurrentConferenceId]
+	,ai.participantId AS [AppInsights.participantId]
+	,c.Id AS [Conference.ConferenceId]
+	,cd.[Hearing Start]
+	,cd.[Hearing End]
+	,cd.[Hearing Duration]
+	,cd.[In Session Duration]
+	,c.HearingRefId AS [Conference.HearingRefId]
+	,c.CaseType AS [Conference.CaseType]
+	,ISNULL(j.Jurisdiction,'N/A') AS Jurisdiction
+	,c.ScheduledDateTime AS [Conference.ScheduledDateTime]
+	,c.CaseNumber AS [Conference.CaseNumber]
+	,c.CaseName AS [Conference.CaseName]
+	,c.ScheduledDuration AS [Conference.ScheduledDuration]
+	,c.AdminUri AS [Conference.AdminUri]
+	,c.JudgeUri AS [Conference.JudgeUri]
+	,c.ParticipantUri AS [Conference.ParticipantUri]
+	,c.PexipNode AS [Conference.PexipNode]
+	,c.State AS [Conference.State]
+	,ISNULL(lcs.EnumString,'Unknown') AS [Conference.State.Desc]
+	,c.ClosedDateTime AS [Conference.ClosedDateTime]
+	,c.HearingVenueName AS [Conference.HearingVenueName]
+	,ISNULL(rg.Region,'N/A') AS Region
+	,c.AudioRecordingRequired AS [Conference.AudioRecordingRequired]
+	,c.IngestUrl AS [Conference.IngestUrl]
+	,c.ActualStartTime AS [Conference.ActualStartTime]
+	,c.TelephoneConferenceId AS [Conference.TelephoneConferenceId]
+	,c.CreatedDateTime AS [Conference.CreatedDateTime]
+	,ISNULL(jg.JudgeName,'NA') AS JudgeName
+	,ISNULL(ep.HybridHearingFlag,0) AS [Conference.HybridHearingCount]
+	,ISNULL(r.RoomCount,0) AS [Conference.RoomCount]
+	,ISNULL(ic.InConsultationFlag,0) AS InConsultationFlag
+	,ISNULL(pcc.PrivateConsultationCount,0) AS PrivateConsultationCount
+	,ISNULL(pc.ParticipantCount,0) AS ParticipantCount
+	,ISNULL(pc.QuickLinkFeatureCount,0) AS QuickLinkFeatureCount
+	,ISNULL(pc.DualHostFeatureCount,0) AS DualHostFeatureCount
+
+	,p.ParticipantRefId AS [Participant.ParticipantRefId]
+	,p.Name AS [Participant.Name]
+	,p.DisplayName AS [Participant.DisplayName]
+	,p.Username AS [Participant.Username]
+	,p.UserRole AS [Participant.UserRole]
+	,ISNULL(lur.EnumString,'Unknown') AS [Participant.UserRoleDesc]
+	,p.CaseTypeGroup AS [Participant.CaseTypeGroup]
+	,p.Representee AS [Participant.Representee]
+	,p.TestCallResultId AS [Participant.TestCallResultId]
+	,p.CurrentRoom AS [Participant.CurrentRoom]
+	,p.State AS [Participant.State]
+	,ISNULL(lps.EnumString,'Unknown') AS [Participant.State.Desc]
+	,p.FirstName AS [Participant.FirstName]
+	,p.LastName AS [Participant.LastName]
+	,p.ContactEmail AS [Participant.ContactEmail]
+	,p.ContactTelephone AS [Participant.ContactTelephone]
+	,p.HearingRole AS [Participant.HearingRole]
+	,p.CurrentConsultationRoomId AS [Participant.CurrentConsultationRoomId]
+	,p.Discriminator AS [Participant.Discriminator]
+FROM ai
+INNER JOIN dbo.Conference c
+	ON TRY_CONVERT(varchar(100),c.ID) = ai.ConfID
+INNER JOIN dbo.vwConferenceDuration cd
+	ON cd.ConferenceId = c.Id
+LEFT JOIN dbo.ReportingEnums lcs
+	ON lcs.EnumName = 'dbo.Conference.State'
+	AND lcs.EnumNumber = c.State
+LEFT JOIN dbo.vwRegion rg
+	ON c.HearingVenueName = rg.HearingVenueName
+LEFT JOIN dbo.vwJurisdiction j
+	ON j.CaseType = c.CaseType
+OUTER APPLY (
+	SELECT TOP(1) 1 AS HybridHearingFlag
+	FROM dbo.EndPoint ep
+	WHERE ep.ConferenceId = c.Id ) ep
+OUTER APPLY (
+	SELECT COUNT(*) AS RoomCount
+	FROM dbo.Room r
+	WHERE r.ConferenceId = c.Id) r
+OUTER APPLY (
+	SELECT TOP 1 DisplayName AS JudgeName
+	FROM dbo.Participant p
+	INNER JOIN dbo.ReportingEnums ur
+		ON ur.EnumName = 'dbo.Participant.UserRole'
+		AND ur.EnumNumber = p.UserRole
+		AND ur.EnumString IN ('Judge')
+	WHERE p.ConferenceId = c.Id ) jg
+OUTER APPLY (
+	SELECT SUM(1) AS ParticipantCount
+		,SUM(CASE WHEN ur.EnumString IN ('QuickLinkParticipant','QuickLinkObserver') THEN 1 ELSE 0 END) AS QuickLinkFeatureCount
+		,SUM(CASE WHEN ur.EnumString = 'StaffMember' THEN 1 ELSE 0 END) AS DualHostFeatureCount
+	FROM dbo.Participant p
+	LEFT JOIN dbo.ReportingEnums ur
+		ON ur.EnumName = 'dbo.Participant.UserRole'
+		AND ur.EnumNumber = p.UserRole
+		AND ur.EnumString IN ('StaffMember','QuickLinkParticipant','QuickLinkObserver')
+	WHERE p.ConferenceId = c.Id ) pc
+OUTER APPLY (
+	SELECT TOP(1) 1 AS InConsultationFlag
+	FROM dbo.Participant p
+	INNER JOIN dbo.ParticipantStatus ps
+		ON p.Id = ps.ParticipantId
+	INNER JOIN dbo.ReportingEnums st
+		ON st.EnumName = 'dbo.ParticipantStatus.ParticipantState'
+		AND st.EnumNumber = ps.ParticipantState
+		AND st.EnumString = 'InConsultation'
+	WHERE p.ConferenceId = c.Id ) ic
+OUTER APPLY (
+	SELECT COUNT(*) AS PrivateConsultationCount
+	FROM dbo.Room r
+	INNER JOIN dbo.ReportingEnums rt
+		ON rt.EnumName = 'dbo.Room.Type'
+		AND rt.EnumNumber = r.Type
+		AND rt.EnumString = 'ConsultationRoom'
+	WHERE r.ConferenceId = c.Id
+	AND ic.InConsultationFlag = 1 ) pcc
+LEFT JOIN dbo.Participant p
+	ON TRY_CONVERT(varchar(100),p.ID) = ai.participantId
+LEFT JOIN dbo.ReportingEnums lps
+	ON lps.EnumName = 'dbo.Participant.State'
+	AND lps.EnumNumber = p.State
+LEFT JOIN dbo.ReportingEnums lur
+	ON lur.EnumName = 'dbo.Participant.UserRole'
+	AND lur.EnumNumber = p.UserRole
