@@ -111,8 +111,8 @@ resource "azurerm_data_factory_linked_service_azure_blob_storage" "adfblob" {
   resource_group_name = "vh-reporting-infra-${var.env}"
 }
 resource "local_file" "logicapp" {
-    content  = "foo!"
-    filename = "${path.module}/foo.bar"
+  content  = "foo!"
+  filename = "${path.module}/foo.bar"
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
