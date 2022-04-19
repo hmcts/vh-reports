@@ -1486,25 +1486,20 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo')
 	EXEC('CREATE VIEW dbo.vwDevice AS SELECT 1 AS col1')
 GO
 
-ALTER VIEW dbo.vwDevice AS
+ALTER VIEW [dbo].[vwDevice] AS
 WITH ai AS (
-	SELECT COALESCE(conferenceId,CurrentConferenceId,conferenceId2) AS ConfID
-		,conferenceId,CurrentConferenceId,conferenceId2
+	SELECT COALESCE(NULLIF(conferenceId,'null'),NULLIF(CurrentConferenceId,'null'),NULLIF(conferenceId2,'null')) AS ConfID
 		,participantId
 		,DeviceType
 		,ClientOS
 	FROM [dbo].[vwApplicationInsightsWide] 
-	GROUP BY COALESCE(conferenceId,CurrentConferenceId,conferenceId2)
-		,conferenceId,CurrentConferenceId,conferenceId2
+	GROUP BY COALESCE(NULLIF(conferenceId,'null'),NULLIF(CurrentConferenceId,'null'),NULLIF(conferenceId2,'null')) 
 		,participantId
 		,DeviceType
 		,ClientOS )
-SELECT TOP (1000) 
-	ai.ClientOS
+SELECT ai.ClientOS
 	,ai.DeviceType
-	,ai.ConferenceId AS [AppInsights.ConferenceId]
-	,ai.ConferenceId2 AS [AppInsights.ConferenceId2]
-	,ai.CurrentConferenceId AS [AppInsights.CurrentConferenceId]
+	,ai.ConfId AS [AppInsights.ConferenceId]
 	,ai.participantId AS [AppInsights.participantId]
 	,c.Id AS [Conference.ConferenceId]
 	,cd.[Hearing Start]
@@ -1625,3 +1620,6 @@ LEFT JOIN dbo.ReportingEnums lps
 LEFT JOIN dbo.ReportingEnums lur
 	ON lur.EnumName = 'dbo.Participant.UserRole'
 	AND lur.EnumNumber = p.UserRole
+GO
+
+
