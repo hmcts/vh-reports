@@ -30,8 +30,8 @@ resource "azurerm_resource_group" "vh-reporting-rg" {
 module "data_factory_config" {
   source = "./modules/adf"
 
-  env = "${var.env}"
-  rg_name = azurerm_resource_group.vh-reporting-rg.name
+  env         = var.env
+  rg_name     = azurerm_resource_group.vh-reporting-rg.name
   rg_location = azurerm_resource_group.vh-reporting-rg.location
 
 }
