@@ -22,14 +22,14 @@ Also connect to the logic app in the portal and authorize the api connection:
 Alternatively:
 
 ### Infrastructure 
-Run locally from the infrastructure pipeline via terraform.
+Run locally from the infrastructure folder via terraform.
 ### DB config
 Run each of the scripts in the database folder.
 ### ADF config
-Run the az cli commands from the pipeline to configure 
+Run the az cli commands from the pipeline to configure: 
 * [the datasets](https://github.com/hmcts/vh-reports/blob/b34d41f746aa03baec6073306779a9e7e600de6f/azure-pipelines.yml#L119)
 * [pipelines](https://github.com/hmcts/vh-reports/blob/b34d41f746aa03baec6073306779a9e7e600de6f/azure-pipelines.yml#L134)
-* and [triggers](az datafactory trigger create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file")
+* and [triggers](https://github.com/hmcts/vh-reports/blob/f11a7fa9c72a1852d7ebf4c44a9aa3d8a47b69e8/azure-pipelines.yml#L149)
 supplying the relevant files from the dataset/pipeline/trigger folders.
 
 
