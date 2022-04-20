@@ -14,10 +14,19 @@ Running [this pipeline](https://hmctsreform.visualstudio.com/VirtualHearings/_bu
 
 ## Getting Started
 Run the [vh-reports pipeline](https://hmctsreform.visualstudio.com/VirtualHearings/_build?definitionId=214)
-Then log in to the ADF instance provisioned and set up the MI:
+Then log in to the ADF instance and set up the MI:
+* Go to Manage -> Credentials -> Create New
+* Give it a sensible name (like vh-adf-mid-<env>)
+* Choose User Assigned Managed Identity for type
+* Select the relevant subscription and then choose the vh-adf-mi-<env> Managed Identity:
+![Alt text](images/ADF_Credentials.png?raw=true "Logic App Authorize API")
+* Publish your change
+* Finally go to Linked Services -> vhreporting-kv-link
+* Change the Authentication to User Assigned Managed Identity and choose the Credential created above.
+* Hit Save and Publish your changes 
 
-Also connect to the logic app in the portal and authorize the api connection:
-
+Connect to the logic app in the portal and authorize the api connection:
+![Alt text](images/logic_app_auth.png?raw=true "Logic App Authorize API")
 
 Alternatively:
 
