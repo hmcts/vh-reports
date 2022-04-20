@@ -1486,25 +1486,20 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo')
 	EXEC('CREATE VIEW dbo.vwDevice AS SELECT 1 AS col1')
 GO
 
-ALTER VIEW dbo.vwDevice AS
+ALTER VIEW [dbo].[vwDevice] AS
 WITH ai AS (
-	SELECT COALESCE(conferenceId,CurrentConferenceId,conferenceId2) AS ConfID
-		,conferenceId,CurrentConferenceId,conferenceId2
+	SELECT COALESCE(NULLIF(conferenceId,'null'),NULLIF(CurrentConferenceId,'null'),NULLIF(conferenceId2,'null')) AS ConfID
 		,participantId
 		,DeviceType
 		,ClientOS
 	FROM [dbo].[vwApplicationInsightsWide] 
-	GROUP BY COALESCE(conferenceId,CurrentConferenceId,conferenceId2)
-		,conferenceId,CurrentConferenceId,conferenceId2
+	GROUP BY COALESCE(NULLIF(conferenceId,'null'),NULLIF(CurrentConferenceId,'null'),NULLIF(conferenceId2,'null')) 
 		,participantId
 		,DeviceType
 		,ClientOS )
-SELECT TOP (1000) 
-	ai.ClientOS
+SELECT ai.ClientOS
 	,ai.DeviceType
-	,ai.ConferenceId AS [AppInsights.ConferenceId]
-	,ai.ConferenceId2 AS [AppInsights.ConferenceId2]
-	,ai.CurrentConferenceId AS [AppInsights.CurrentConferenceId]
+	,ai.ConfId AS [AppInsights.ConferenceId]
 	,ai.participantId AS [AppInsights.participantId]
 	,c.Id AS [Conference.ConferenceId]
 	,cd.[Hearing Start]
@@ -1625,3 +1620,43 @@ LEFT JOIN dbo.ReportingEnums lps
 LEFT JOIN dbo.ReportingEnums lur
 	ON lur.EnumName = 'dbo.Participant.UserRole'
 	AND lur.EnumNumber = p.UserRole
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwNetworkDataIssue'))
+	EXEC('CREATE VIEW dbo.vwNetworkDataIssue AS SELECT 1 AS col1')
+GO
+
+ALTER VIEW dbo.vwNetworkDataIssue AS
+WITH threshold AS (
+	SELECT 0.10 AS pct_heartbeats_lost_threshold
+		,0.05 AS video_audio_loss_threshold
+		,30 AS period_minutes )
+,heartbeats AS (
+	SELECT CASE WHEN h.OutgoingAudioPercentageLostRecent > t.video_audio_loss_threshold THEN 1 
+			WHEN h.IncomingAudioPercentageLostRecent > t.video_audio_loss_threshold THEN 1 
+			WHEN h.OutgoingVideoPercentageLostRecent > t.video_audio_loss_threshold THEN 1 
+			WHEN h.IncomingVideoPercentageLostRecent > t.video_audio_loss_threshold THEN 1 
+			ELSE 0 END AS bad_heartbeat_flag
+		,TRY_CONVERT(datetime,TRY_CONVERT(date,h.[timestamp])) AS heartbeat_date
+		,h.[timestamp] AS heartbeat_time
+		,DATEDIFF(minute,TRY_CONVERT(datetime,TRY_CONVERT(date,h.[timestamp])),h.[timestamp]) AS heartbeat_minute
+		,DATEDIFF(minute,TRY_CONVERT(datetime,TRY_CONVERT(date,h.[timestamp])),h.[timestamp]) / period_minutes AS heartbeat_period
+		,t.period_minutes
+		,t.pct_heartbeats_lost_threshold
+		,h.*
+	FROM dbo.Heartbeat h
+	INNER JOIN threshold t ON 1 = 1 )
+SELECT heartbeat_date
+	,heartbeat_period
+	,DATEADD(minute,period_minutes*heartbeat_period,heartbeat_date) AS start_of_period
+	,DATEADD(minute,period_minutes*(heartbeat_period+1),heartbeat_date) AS end_of_period
+	,COUNT(*) AS total_heartbeats
+	,SUM(bad_heartbeat_flag) AS bad_heartbeats
+	,CASE WHEN ((SUM(bad_heartbeat_flag) * 1.0) / COUNT(*)) >= pct_heartbeats_lost_threshold THEN 1 ELSE 0 END AS NetworkDataIssueFlag
+FROM heartbeats
+GROUP BY heartbeat_date
+	,heartbeat_period
+	,period_minutes
+	,pct_heartbeats_lost_threshold
+GO
