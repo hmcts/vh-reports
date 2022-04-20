@@ -15,5 +15,5 @@ steps:
     inputs:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
-      environmentServiceName: "Reform-CFT-VH-Dev"
+      environmentServiceName: ${{ parameters.subscription }}
       commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan'

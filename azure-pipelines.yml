@@ -86,7 +86,7 @@ stages:
        
       - template: ado-pipeline/jobs/db-config.yaml
         parameters: 
-          azureSubscription: Reform-CFT-VH-Dev
+          azureSubscription: $(subscription)
           environment: ${{ parameters.environment }}
           dbuser: $(dbuser)
           dbuserpass: $(dbuserpass${{ parameters.environment }})
@@ -104,7 +104,7 @@ stages:
             - task: AzureCLI@2
               displayName: Update datasets
               inputs:
-                azureSubscription: Reform-CFT-VH-Dev
+                azureSubscription: $(subscription)
                 scriptType: bash
                 scriptLocation: inlineScript
                 inlineScript: |
@@ -122,7 +122,7 @@ stages:
             - task: AzureCLI@2
               displayName: Update ADF pipeines
               inputs:
-                azureSubscription: Reform-CFT-VH-Dev
+                azureSubscription: $(subscription)
                 scriptType: bash
                 scriptLocation: inlineScript
                 inlineScript: |
@@ -137,7 +137,7 @@ stages:
             - task: AzureCLI@2
               displayName: Update ADF pipeline triggers
               inputs:
-                azureSubscription: Reform-CFT-VH-Dev
+                azureSubscription: $(subscription)
                 scriptType: bash
                 scriptLocation: inlineScript
                 inlineScript: |                  
