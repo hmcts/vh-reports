@@ -32,7 +32,7 @@ steps:
     commandOptions: -reconfigure
     workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
-    backendServiceArm: ${{ parameters.subscription }}
+    backendServiceArm: "${{ parameters.subscription }}"
     backendAzureRmResourceGroupName: ${{ parameters.resourceGroup }}
     backendAzureRmResourceGroupLocation: ${{ parameters.location }}
     backendAzureRmStorageAccountName: ${{ parameters.storageAccount }}
