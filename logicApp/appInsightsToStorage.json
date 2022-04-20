@@ -105,16 +105,26 @@
                     },
                     "triggers": {
                         "Recurrence": {
-                            "recurrence": {
-                                "frequency": "Minute",
-                                "interval": 30
-                            },
                             "evaluatedRecurrence": {
-                                "frequency": "Minute",
-                                "interval": 30
+                                "frequency": "Day",
+                                "interval": 1,
+                                "schedule": {
+                                    "hours": [
+                                        "5"
+                                    ]
+                                }
                             },
-                            "type": "Recurrence"
+                            "recurrence": {
+                                "frequency": "Day",
+                                "interval": 1,
+                                "schedule": {
+                                    "hours": [
+                                        "5"
+                                    ]
                         }
+                },
+                "type": "Recurrence"
+            }
                     },
                     "actions": {
                         "Compose": {
