@@ -86,7 +86,7 @@ stages:
        
       - template: ado-pipeline/jobs/db-config.yaml
         parameters: 
-          azureSubscription: $(subscription)
+          azureSubscription: Reform-CFT-VH-Dev
           environment: ${{ parameters.environment }}
           dbuser: $(dbuser)
           dbuserpass: $(dbuserpass${{ parameters.environment }})
