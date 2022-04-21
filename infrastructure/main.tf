@@ -2,13 +2,7 @@ locals {
   arm_file_path = "../logicApp/appInsightsToStorage.json"
 }
 
-
-
-#data "azurerm_key_vault" "core-kv" {
-#  name                = "vhcoreinfra${var.env}"
-#  resource_group_name = "vh-core-infra-${var.env}"
-#}
-
+data "azurerm_client_config" "current" {}
 data "azurerm_mssql_server" "core-sql-server" {
   name                = "vh-core-infra-${var.env}"
   resource_group_name = "vh-core-infra-${var.env}"
@@ -48,6 +42,8 @@ resource "azurerm_template_deployment" "workflow" {
   deployment_mode = "Incremental"
   parameters = {
     environment = "${var.env}"
+    location   = "${var.location}"
+    subscription = "${data.azurerm_client_config.current.subscription_id}"
   }
 
 }
