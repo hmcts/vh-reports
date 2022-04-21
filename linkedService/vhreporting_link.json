@@ -12,6 +12,10 @@
 				},
 				"secretName": "VhReportingDatabaseConnectionString"
 			}
+		},
+		"connectVia": {
+			"referenceName": "ADFVnet",
+			"type": "IntegrationRuntimeReference"
 		}
 	}
 }
