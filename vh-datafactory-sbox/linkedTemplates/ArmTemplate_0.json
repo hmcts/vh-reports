@@ -15,6 +15,14 @@
 			"type": "string",
 			"defaultValue": "https://vhcoreinfrasandbox.vault.azure.net/"
 		},
+		"vhcoreinfrasbox_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-sandbox/providers/Microsoft.Sql/servers/vh-core-infra-sandbox"
+		},
+		"vhcoreinfrasbox_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
+		},
 		"vhreporting_link_properties_typeProperties_connectionString_secretName": {
 			"type": "string",
 			"defaultValue": "VhReportingDatabaseConnectionString"
@@ -52,6 +60,13 @@
 					"connectionString": "[parameters('vhreporting_blob_connectionString')]"
 				}
 			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+			"apiVersion": "2018-06-01",
+			"properties": {},
 			"dependsOn": []
 		},
 		{
@@ -223,6 +238,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ADFVnet')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "UK West",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false
+						}
+					}
+				},
+				"managedVirtualNetwork": {
+					"type": "ManagedVirtualNetworkReference",
+					"referenceName": "default"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default/vhcoreinfrasbox')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"privateLinkResourceId": "[parameters('vhcoreinfrasbox_properties_privateLinkResourceId')]",
+				"groupId": "[parameters('vhcoreinfrasbox_properties_groupId')]"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/vhreporting_link')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -237,10 +290,18 @@
 							"type": "LinkedServiceReference"
 						},
 						"secretName": "[parameters('vhreporting_link_properties_typeProperties_connectionString_secretName')]"
+					},
+					"alwaysEncryptedSettings": {
+						"alwaysEncryptedAkvAuthType": "ManagedIdentity"
 					}
+				},
+				"connectVia": {
+					"referenceName": "ADFVnet",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/ADFVnet')]",
 				"[concat(variables('factoryId'), '/linkedServices/vhcoreinfrasbox')]"
 			]
 		},
@@ -259,10 +320,18 @@
 							"type": "LinkedServiceReference"
 						},
 						"secretName": "[parameters('vhvideo_link_properties_typeProperties_connectionString_secretName')]"
+					},
+					"alwaysEncryptedSettings": {
+						"alwaysEncryptedAkvAuthType": "ManagedIdentity"
 					}
+				},
+				"connectVia": {
+					"referenceName": "ADFVnet",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/ADFVnet')]",
 				"[concat(variables('factoryId'), '/linkedServices/vhcoreinfrasbox')]"
 			]
 		},
