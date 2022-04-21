@@ -41,8 +41,8 @@ resource "azurerm_template_deployment" "workflow" {
   name            = "workflow-${filemd5(local.arm_file_path)}"
   deployment_mode = "Incremental"
   parameters = {
-    environment = "${var.env}"
-    location   = "${var.location}"
+    environment  = "${var.env}"
+    location     = "${var.location}"
     subscription = "${data.azurerm_client_config.current.subscription_id}"
   }
 
