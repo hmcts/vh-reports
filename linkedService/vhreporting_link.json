@@ -11,6 +11,9 @@
 					"type": "LinkedServiceReference"
 				},
 				"secretName": "VhReportingDatabaseConnectionString"
+			},
+			"alwaysEncryptedSettings": {
+				"alwaysEncryptedAkvAuthType": "ManagedIdentity"
 			}
 		},
 		"connectVia": {
