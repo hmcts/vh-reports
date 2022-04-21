@@ -1,5 +1,5 @@
 env = "sbox"
-location = "UK South"
+location = "uksouth"
 
 builtFrom   = "vh-reports"
 product     = "vh"

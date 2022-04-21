@@ -1,5 +1,5 @@
 env = "test1"
-location = "UK South"
+location = "uksouth"
 
 builtFrom   = "vh-reports"
 product     = "vh"

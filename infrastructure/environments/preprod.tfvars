@@ -1,5 +1,5 @@
 env = "preprod"
-location = "UK West"
+location = "ukwest"
 
 builtFrom   = "vh-reports"
 product     = "vh"
