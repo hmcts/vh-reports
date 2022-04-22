@@ -6,6 +6,10 @@
             "defaultValue": "dev",
             "type": "String"
         },
+        "location": {
+            "defaultValue": "uksouth",
+            "type": "string"
+        },
         "connections_azureblob_name": {
             "defaultValue": "azureblob",
             "type": "String"

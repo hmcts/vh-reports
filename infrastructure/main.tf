@@ -30,7 +30,6 @@ module "data_factory_config" {
 
 }
 
-#TODO remove the below and use azurerm_api_connection to configure the connections and the json deploy task to configure the workflow
 resource "azurerm_template_deployment" "workflow" {
   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 
