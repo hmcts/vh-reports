@@ -466,3 +466,27 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Room' and [name] = 'UpdatedAt')
 	ALTER TABLE dbo.Room ADD UpdatedAt datetime2(7) NULL;
 GO
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'NetworkProblemConfiguration')
+CREATE TABLE dbo.NetworkProblemConfiguration (
+	Id TINYINT NOT NULL,
+	PctHeartbeatsLostThreshold DECIMAL(5,2),
+	VideoAudioLossThreshold DECIMAL(5,2),
+	ReportingPeriodMinutes TINYINT,
+	CONSTRAINT PK_NetworkProblemConfiguration PRIMARY KEY CLUSTERED (Id ASC ))
+GO
+
+TRUNCATE TABLE dbo.NetworkProblemConfiguration 
+GO
+
+INSERT INTO dbo.NetworkProblemConfiguration (
+	Id
+	,PctHeartbeatsLostThreshold
+	,VideoAudioLossThreshold
+	,ReportingPeriodMinutes )
+SELECT 1 AS Id
+	,0.10 AS PctHeartbeatsLostThreshold
+	,0.05 AS VideoAudioLossThreshold
+	,5 AS ReportingPeriodMinutes ;
+GO
