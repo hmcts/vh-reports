@@ -22,18 +22,15 @@ parameters:
       - test1
       - preview
       - preprod
-      
-  - name: prodEnvs
-    displayName: Environments Using Prod Subscription
-    type: object
-    default:
-      - prod
-      - preprod
-    
+         
 
 variables:
+  - name: prodEnv
+    value: prod
+  - name: preProdEnv
+    value: preprod
   - group: vh-reporting-infra
-  - ${{ if containsValue(parameters.prodEnvs, parameters.environment) }}:
+  - ${{ if or(eq(variables.prodEnv, parameters.environment), eq(variables.preProdEnv, parameters.environment)) }}:
     - group: vh-reporting-infra-upper
 
 stages:
