@@ -1,6 +1,5 @@
 {
-	"name": "AsqlSource",
-	"properties": {
+
 		"linkedServiceName": {
 			"referenceName": "vhvideo_link",
 			"type": "LinkedServiceReference"
@@ -28,5 +27,5 @@
 				"type": "Expression"
 			}
 		}
-	}
+	
 }

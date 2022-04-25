@@ -1,105 +1,234 @@
 {
-    "definition": {
-        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-        "actions": {
-            "Compose": {
-                "inputs": "@body('Run_query_and_list_results')",
-                "runAfter": {
-                    "Run_query_and_list_results": [
-                        "Succeeded"
-                    ]
-                },
-                "type": "Compose"
-            },
-            "Create_blob_(V2)": {
-                "inputs": {
-                    "body": "@outputs('Compose')",
-                    "headers": {
-                        "ReadFileMetadataFromServer": true
-                    },
-                    "host": {
-                        "connection": {
-                            "name": "@parameters('$connections')['azureblob']['connectionId']"
-                        }
-                    },
-                    "method": "post",
-                    "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/files",
-                    "queries": {
-                        "folderPath": "/vhreporting/AppInsightsTrace",
-                        "name": "@{subtractFromTime(formatDateTime(utcNow(),'yyyy-MM-ddTHH:00:00'), 1,'Hour')}",
-                        "queryParametersSingleEncoded": true
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environment": {
+            "defaultValue": "dev",
+            "type": "String"
+        },
+        "location": {
+            "defaultValue": "uksouth",
+            "type": "string"
+        },
+        "subscription":{
+            "type": "string"
+        },
+        "connections_azureblob_name": {
+            "defaultValue": "azureblob",
+            "type": "String"
+        },
+        "connections_azuremonitorlogs_name": {
+            "defaultValue": "azuremonitorlogs",
+            "type": "String"
+        },
+        "workflows_vh_reporting_dev_name": {
+            "defaultValue": "[concat('vh-reporting-', parameters('environment'))]",
+            "type": "String"
+        },
+        "azureapi_sub_url": {
+            "defaultValue": "[replace('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/','705b2731-0e0b-4df7-8630-95f157f0a347', parameters('subscription'))]",
+            "type": "String"
+        },
+        "azureblob_url": {
+            "defaultValue": "[concat(parameters('azureapi_sub_url'), 'azureblob')]",
+            "type": "String"
+        },
+        "azuremonitorlogs_url": {
+            "defaultValue": "[concat(parameters('azureapi_sub_url'),'azuremonitorlogs')]",
+            "type": "String"
+        }
+
+
+
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_azureblob_name')]",
+            "location": "uksouth",
+            "kind": "V1",
+            "properties": {
+                "displayName": "vhreporting",
+                "statuses": [
+                    {
+                        "status": "Connected"
                     }
+                ],
+                "customParameterValues": {},
+                "createdTime": "2022-03-15T14:31:16.2923608Z",
+                "changedTime": "2022-03-15T14:31:16.3704809Z",
+                "api": {
+                    "name": "[parameters('connections_azureblob_name')]",
+                    "displayName": "Azure Blob Storage",
+                    "description": "Microsoft Azure Storage provides a massively scalable, durable, and highly available storage for data on the cloud, and serves as the data storage solution for modern applications. Connect to Blob Storage to perform various operations such as create, update, get and delete on blobs in your Azure Storage account.",
+                    "iconUri": "[concat('https://connectoricons-prod.azureedge.net/releases/v1.0.1563/1.0.1563.2732/', parameters('connections_azureblob_name'), '/icon.png')]",
+                    "brandColor": "#804998",
+                    "id": "[parameters('azureblob_url')]",
+                    "type": "Microsoft.Web/locations/managedApis"
                 },
-                "runAfter": {
-                    "Compose": [
-                        "Succeeded"
-                    ]
-                },
-                "runtimeConfiguration": {
-                    "contentTransfer": {
-                        "transferMode": "Chunked"
+                "testLinks": [
+                    {
+                        "requestUri": "[concat('https://management.azure.com:443/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-dev/providers/Microsoft.Web/connections/', parameters('connections_azureblob_name'), '/extensions/proxy/testconnection?api-version=2016-06-01')]",
+                        "method": "get"
                     }
-                },
-                "type": "ApiConnection"
-            },
-            "Run_query_and_list_results": {
-                "inputs": {
-                    "body": "traces\n| extend getTxt = parse_json (customDimensions)\n| project\n    message,\n    customDimensions,\n    user_Id,\n    client_Model,\n    timestamp,\n    currentConferenceId = getTxt.currentConferenceId,\n    conference = getTxt.conference,\n    participant = getTxt.participant,\n    errorInformation = getTxt.errorInformation,\n    HostInstanceId = getTxt.HostInstanceId,\n    ProcessId = getTxt.ProcessId,\n    LogLevel = getTxt.LogLevel,\n    pexipError = getTxt.pexipError\n| where customDimensions != \"\"",
-                    "host": {
-                        "connection": {
-                            "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
-                        }
-                    },
-                    "method": "post",
-                    "path": "/queryData",
-                    "queries": {
-                        "resourcegroups": "vh-core-infra-sandbox",
-                        "resourcename": "vh-core-infra-sandbox",
-                        "resourcetype": "Application Insights",
-                        "subscriptions": "705b2731-0e0b-4df7-8630-95f157f0a347",
-                        "timerange": "Last hour"
-                    }
-                },
-                "runAfter": {},
-                "type": "ApiConnection"
+                ]
             }
         },
-        "contentVersion": "1.0.0.0",
-        "outputs": {},
-        "parameters": {
-            "$connections": {
-                "defaultValue": {},
-                "type": "Object"
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_azuremonitorlogs_name')]",
+            "location": "uksouth",
+            "kind": "V1",
+            "properties": {
+                "customParameterValues": {},
+                "nonSecretParameterValues": {
+                    "token:TenantId": "531ff96d-0ae9-462a-8d2d-bec7c0b42082",
+                    "token:grantType": "code"
+                },
+                "api": {
+                    "name": "[parameters('connections_azuremonitorlogs_name')]",
+                    "displayName": "Azure Monitor Logs",
+                    "description": "Use this connector to query your Azure Monitor Logs across Log Analytics workspace and Application Insights component, to list or visualize results.",
+                    "iconUri": "[concat('https://connectoricons-prod.azureedge.net/releases/v1.0.1559/1.0.1559.2723/', parameters('connections_azuremonitorlogs_name'), '/icon.png')]",
+                    "brandColor": "#0072C6",
+                    "id": "[parameters('azuremonitorlogs_url')]",
+                    "type": "Microsoft.Web/locations/managedApis"
+                },
+                "testLinks": []
             }
         },
-        "triggers": {
-            "Recurrence": {
-                "evaluatedRecurrence": {
-                    "frequency": "Minute",
-                    "interval": 30
-                },
-                "recurrence": {
-                    "frequency": "Minute",
-                    "interval": 30
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_vh_reporting_dev_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]",
+                "[resourceId('Microsoft.Web/connections', parameters('connections_azuremonitorlogs_name'))]"
+            ],
+            "tags": {
+                "product": "vh",
+                "project": "reform"
+            },
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "Recurrence": {
+                            "evaluatedRecurrence": {
+                                "frequency": "Day",
+                                "interval": 1,
+                                "schedule": {
+                                    "hours": [
+                                        "5"
+                                    ]
+                                }
+                            },
+                            "recurrence": {
+                                "frequency": "Day",
+                                "interval": 1,
+                                "schedule": {
+                                    "hours": [
+                                        "5"
+                                    ]
+                        }
                 },
                 "type": "Recurrence"
             }
-        }
-    },
-    "parameters": {
-        "$connections": {
-            "value": {
-                "azureblob": {
-                    "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-sbox/providers/Microsoft.Web/connections/azureblob",
-                    "connectionName": "azureblob",
-                    "id": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/northcentralus/managedApis/azureblob"
+                    },
+                    "actions": {
+                        "Compose": {
+                            "runAfter": {
+                                "Run_query_and_list_results": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Compose",
+                            "inputs": "@body('Run_query_and_list_results')"
+                        },
+                        "Create_blob_(V2)": {
+                            "runAfter": {
+                                "Compose": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": "@outputs('Compose')",
+                                "headers": {
+                                    "ReadFileMetadataFromServer": true
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azureblob']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/files",
+                                "queries": {
+                                    "folderPath": "/vhreporting/AppInsightsTrace",
+                                    "name": "@{subtractFromTime(formatDateTime(utcNow(),'yyyy-MM-ddTHH:00:00'), 1,'Hour')}",
+                                    "queryParametersSingleEncoded": true
+                                }
+                            },
+                            "runtimeConfiguration": {
+                                "contentTransfer": {
+                                    "transferMode": "Chunked"
+                                }
+                            }
+                        },
+                        "Run_query_and_list_results": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": "traces\n| extend getTxt = parse_json (customDimensions)\n| project\n    message,\n    customDimensions,\n    user_Id,\n    client_Model,\n    timestamp,\n    currentConferenceId = getTxt.currentConferenceId,\n    conference = getTxt.conference,\n    participant = getTxt.participant,\n    errorInformation = getTxt.errorInformation,\n    HostInstanceId = getTxt.HostInstanceId,\n    ProcessId = getTxt.ProcessId,\n    LogLevel = getTxt.LogLevel,\n    pexipError = getTxt.pexipError\n| where customDimensions != \"\"",
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/queryData",
+                                "queries": {
+                                    "resourcegroups": "[concat('vh-core-infra-', parameters('environment'))]",
+                                    "resourcename": "[concat('vh-core-infra-', parameters('environment'))]",
+                                    "resourcetype": "Application Insights",
+                                    "subscriptions": "[parameters('subscription')]",
+                                    "timerange": "Last hour"
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {}
                 },
-                "azuremonitorlogs": {
-                    "connectionId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-sbox/providers/Microsoft.Web/connections/azuremonitorlogs",
-                    "connectionName": "azuremonitorlogs",
-                    "id": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/northcentralus/managedApis/azuremonitorlogs"
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "azureblob": {
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]",
+                                "connectionName": "azureblob",
+                                "id": "[parameters('azureblob_url')]"
+                            },
+                            "azuremonitorlogs": {
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azuremonitorlogs_name'))]",
+                                "connectionName": "azuremonitorlogs",
+                                "id": "[parameters('azuremonitorlogs_url')]"
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
+    ]
 }

@@ -20,27 +20,33 @@ parameters:
       - dev
       - sandbox
       - test1
-      - test2
-      - demo
-      - aat
       - preview
+      - preprod
+         
 
 variables:
+  - name: prodEnv
+    value: prod
+  - name: preProdEnv
+    value: preprod
   - group: vh-reporting-infra
+  - ${{ if or(eq(variables.prodEnv, parameters.environment), eq(variables.preProdEnv, parameters.environment)) }}:
+    - group: vh-reporting-infra-upper
 
 stages:
 
   - stage: CIBuild
     displayName: 'Validate Infra'
     jobs: 
-      - template: pipeline/jobs/terraform-validate.yaml
+      - template: ado-pipeline/jobs/terraform-validate.yaml
         parameters:
           terraformPath: $(Build.SourcesDirectory)/infrastructure
-  
+
   - stage: Plan
     displayName: Plan ${{ parameters.environment }}
     jobs:
-      - template: pipeline/jobs/terraform-plan.yaml
+
+      - template: ado-pipeline/jobs/terraform-plan.yaml
         parameters:
           subscription: $(subscription)
           environment: ${{ parameters.environment }}
@@ -52,13 +58,14 @@ stages:
           outputName: ${{ parameters.environment }}
           workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
 
+          
   - stage: Wait
     jobs:
       - job: Wait
         displayName: "Wait for approval"
         pool: server
         steps:
-          - template: pipeline/steps/wait.yaml
+          - template: ado-pipeline/steps/wait.yaml
             parameters:
               environment: ${{ parameters.environment }}
             
@@ -66,7 +73,7 @@ stages:
     displayName: Apply ${{ parameters.environment }}
     dependsOn: Wait 
     jobs:
-      - template: pipeline/jobs/terraform-apply.yaml
+      - template: ado-pipeline/jobs/terraform-apply.yaml
         parameters:
           subscription: $(subscription)
           dependsOn: Wait
@@ -79,4 +86,73 @@ stages:
           outputName: ${{ parameters.environment }}
           workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
 
-      
+  - stage: ReportingDB
+    displayName: Reporting DB Build
+    dependsOn: Apply 
+    jobs:
+       
+      - template: ado-pipeline/jobs/db-config.yaml
+        parameters: 
+          azureSubscription: $(subscription)
+          environment: ${{ parameters.environment }}
+          dbuser: $(dbuser)
+          dbuserpass: $(dbuserpass${{ parameters.environment }})
+          SqlFileName: '00_init.sql'
+
+
+  - stage: ADF
+    displayName: ADF Config
+    dependsOn: Apply 
+    jobs:
+       
+        - job: UpdateADFPipelines 
+          displayName: Create/Update ADF-${{ parameters.environment }} datasets
+          steps:
+            - task: AzureCLI@2
+              displayName: Update datasets
+              inputs:
+                azureSubscription: $(subscription)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  az config set extension.use_dynamic_install=yes_without_prompt
+                  ls -ltr $(System.DefaultWorkingDirectory)
+                  #set up datasets
+                 
+                  for file in $(System.DefaultWorkingDirectory)/dataset/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
+                  done
+
+            - task: AzureCLI@2
+              displayName: Update ADF-${{ parameters.environment }} pipeines
+              inputs:
+                azureSubscription: $(subscription)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  ##set up pipelines
+                  for file in $(System.DefaultWorkingDirectory)/pipeline/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
+                  done
+
+            - task: AzureCLI@2
+              displayName: Update ADF-${{ parameters.environment }} pipeline triggers
+              inputs:
+                azureSubscription: $(subscription)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |                  
+                  #set up triggers
+                  for file in $(System.DefaultWorkingDirectory)/trigger/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory trigger create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
+                  done
+            

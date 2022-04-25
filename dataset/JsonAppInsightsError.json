@@ -1,6 +1,5 @@
 {
-	"name": "JsonAppInsightsError",
-	"properties": {
+
 		"linkedServiceName": {
 			"referenceName": "vhreporting_blob",
 			"type": "LinkedServiceReference"
@@ -57,5 +56,5 @@
 				}
 			}
 		}
-	}
+	
 }

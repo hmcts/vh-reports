@@ -1,4 +1,4 @@
-env = "dev"
+env = "sbox"
 location = "uksouth"
 
 builtFrom   = "vh-reports"
