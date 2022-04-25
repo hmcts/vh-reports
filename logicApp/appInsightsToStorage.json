@@ -24,7 +24,16 @@
         "workflows_vh_reporting_dev_name": {
             "defaultValue": "[concat('vh-reporting-', parameters('environment'))]",
             "type": "String"
+        },
+        "azuremonitorblob_sub_url": {
+            "defaultValue": "[replace('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/azureblob', '705b2731-0e0b-4df7-8630-95f157f0a347', parameters('subscription'))]",
+            "type": "String"
+        },
+        "azuremonitorlogs_sub_url": {
+            "defaultValue": "[replace('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/azuremonitorlogs','705b2731-0e0b-4df7-8630-95f157f0a347', parameters('subscription'))]",
+            "type": "String"
         }
+
 
     },
     "variables": {},
@@ -204,12 +213,12 @@
                             "azureblob": {
                                 "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]",
                                 "connectionName": "azureblob",
-                                "id": "[replace('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/azureblob', 'uksouth', parameters('location'))]"
+                                "id": "[replace(parameters('azuremonitorblob_sub_url'), 'uksouth', parameters('location'))]"
                             },
                             "azuremonitorlogs": {
                                 "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azuremonitorlogs_name'))]",
                                 "connectionName": "azuremonitorlogs",
-                                "id": "[replace('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/azuremonitorlogs','uksouth', parameters('location'))]"
+                                "id": "[replace(parameters('azuremonitorlogs_sub_url'),'uksouth', parameters('location'))]"
                             }
                         }
                     }
