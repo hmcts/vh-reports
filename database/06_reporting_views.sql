@@ -1629,34 +1629,87 @@ GO
 
 ALTER VIEW dbo.vwNetworkDataIssue AS
 WITH threshold AS (
-	SELECT 0.10 AS pct_heartbeats_lost_threshold
-		,0.05 AS video_audio_loss_threshold
-		,30 AS period_minutes )
+	SELECT PctHeartbeatsLostThreshold
+		,VideoAudioLossThreshold
+		,ReportingPeriodMinutes
+	FROm dbo.NetworkProblemConfiguration
+	WHERE Id = 1 )
 ,heartbeats AS (
-	SELECT CASE WHEN h.OutgoingAudioPercentageLostRecent > t.video_audio_loss_threshold THEN 1 
-			WHEN h.IncomingAudioPercentageLostRecent > t.video_audio_loss_threshold THEN 1 
-			WHEN h.OutgoingVideoPercentageLostRecent > t.video_audio_loss_threshold THEN 1 
-			WHEN h.IncomingVideoPercentageLostRecent > t.video_audio_loss_threshold THEN 1 
+	SELECT CASE WHEN h.OutgoingAudioPercentageLostRecent > t.VideoAudioLossThreshold THEN 1 
+			WHEN h.IncomingAudioPercentageLostRecent > t.VideoAudioLossThreshold THEN 1 
+			WHEN h.OutgoingVideoPercentageLostRecent > t.VideoAudioLossThreshold THEN 1 
+			WHEN h.IncomingVideoPercentageLostRecent > t.VideoAudioLossThreshold THEN 1 
 			ELSE 0 END AS bad_heartbeat_flag
 		,TRY_CONVERT(datetime,TRY_CONVERT(date,h.[timestamp])) AS heartbeat_date
 		,h.[timestamp] AS heartbeat_time
 		,DATEDIFF(minute,TRY_CONVERT(datetime,TRY_CONVERT(date,h.[timestamp])),h.[timestamp]) AS heartbeat_minute
-		,DATEDIFF(minute,TRY_CONVERT(datetime,TRY_CONVERT(date,h.[timestamp])),h.[timestamp]) / period_minutes AS heartbeat_period
-		,t.period_minutes
-		,t.pct_heartbeats_lost_threshold
+		,DATEDIFF(minute,TRY_CONVERT(datetime,TRY_CONVERT(date,h.[timestamp])),h.[timestamp]) / ReportingPeriodMinutes AS heartbeat_period
+		,t.ReportingPeriodMinutes
+		,t.PctHeartbeatsLostThreshold
 		,h.*
 	FROM dbo.Heartbeat h
 	INNER JOIN threshold t ON 1 = 1 )
-SELECT heartbeat_date
-	,heartbeat_period
-	,DATEADD(minute,period_minutes*heartbeat_period,heartbeat_date) AS start_of_period
-	,DATEADD(minute,period_minutes*(heartbeat_period+1),heartbeat_date) AS end_of_period
-	,COUNT(*) AS total_heartbeats
-	,SUM(bad_heartbeat_flag) AS bad_heartbeats
-	,CASE WHEN ((SUM(bad_heartbeat_flag) * 1.0) / COUNT(*)) >= pct_heartbeats_lost_threshold THEN 1 ELSE 0 END AS NetworkDataIssueFlag
-FROM heartbeats
-GROUP BY heartbeat_date
-	,heartbeat_period
-	,period_minutes
-	,pct_heartbeats_lost_threshold
+,results AS (
+	SELECT h.heartbeat_date
+		,h.ConferenceId AS [Heartbeat.ConferenceId]
+		,DATEADD(minute,h.ReportingPeriodMinutes*h.heartbeat_period,h.heartbeat_date) AS start_of_period
+		,DATEADD(minute,h.ReportingPeriodMinutes*(h.heartbeat_period+1),h.heartbeat_date) AS end_of_period
+		,COUNT(*) AS total_heartbeats
+		,SUM(h.bad_heartbeat_flag) AS bad_heartbeats
+		,CASE WHEN ((SUM(h.bad_heartbeat_flag) * 1.0) / COUNT(*)) >= h.PctHeartbeatsLostThreshold THEN 1 ELSE 0 END AS NetworkDataIssueFlag
+	FROM heartbeats h
+	GROUP BY h.heartbeat_date
+		,h.ConferenceId
+		,h.heartbeat_period
+		,h.ReportingPeriodMinutes
+		,h.PctHeartbeatsLostThreshold )
+SELECT rs.*
+	,c.Id AS [Conference.Id]
+	,cd.[Hearing Start]
+	,cd.[Hearing End]
+	,cd.[Hearing Duration]
+	,cd.[In Session Duration]
+	,c.HearingRefId AS [Conference.HearingRefId]
+	,c.CaseType AS [Conference.CaseType]
+	,ISNULL(j.Jurisdiction,'N/A') AS Jurisdiction
+	,c.ScheduledDateTime AS [Conference.ScheduledDateTime]
+	,c.CaseNumber AS [Conference.CaseNumber]
+	,c.CaseName AS [Conference.CaseName]
+	,c.ScheduledDuration AS [Conference.ScheduledDuration]
+	,c.AdminUri AS [Conference.AdminUri]
+	,c.JudgeUri AS [Conference.JudgeUri]
+	,c.ParticipantUri AS [Conference.ParticipantUri]
+	,c.PexipNode AS [Conference.PexipNode]
+	,c.State AS [Conference.State]
+	,ISNULL(lcs.EnumString,'Unknown') AS [Conference.State.Desc]
+	,c.ClosedDateTime AS [Conference.ClosedDateTime]
+	,c.HearingVenueName AS [Conference.HearingVenueName]
+	,ISNULL(rg.Region,'N/A') AS Region
+	,c.AudioRecordingRequired AS [Conference.AudioRecordingRequired]
+	,c.IngestUrl AS [Conference.IngestUrl]
+	,c.ActualStartTime AS [Conference.ActualStartTime]
+	,c.TelephoneConferenceId AS [Conference.TelephoneConferenceId]
+	,c.CreatedDateTime AS [Conference.CreatedDateTime]
+	,ISNULL(ep.HybridHearingFlag,0) AS [Conference.HybridHearingFlag]
+	,ISNULL(r.RoomCount,0) AS [Conference.RoomCount]
+FROM results rs
+INNER JOIN dbo.Conference c
+	ON c.Id = rs.[Heartbeat.ConferenceId]
+LEFT JOIN dbo.vwConferenceDuration cd
+	ON cd.ConferenceId = rs.[Heartbeat.ConferenceId]
+LEFT JOIN dbo.ReportingEnums lcs
+	ON lcs.EnumName = 'dbo.Conference.State'
+	AND lcs.EnumNumber = c.State
+LEFT JOIN dbo.vwRegion rg
+	ON c.HearingVenueName = rg.HearingVenueName
+LEFT JOIN dbo.vwJurisdiction j
+	ON j.CaseType = c.CaseType
+OUTER APPLY (
+	SELECT TOP(1) 1 AS HybridHearingFlag
+	FROM dbo.EndPoint ep
+	WHERE ep.ConferenceId = c.Id ) ep
+OUTER APPLY (
+	SELECT COUNT(*) AS RoomCount
+	FROM dbo.Room r
+	WHERE r.ConferenceId = c.Id) r
 GO
