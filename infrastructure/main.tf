@@ -1,11 +1,12 @@
 locals {
   arm_file_path = "../logicApp/appInsightsToStorage.json"
+  core_infra_name = "vh-core-infra-${var.env}" 
 }
 
 data "azurerm_client_config" "current" {}
 data "azurerm_mssql_server" "core-sql-server" {
-  name                = "vh-core-infra-${var.env}"
-  resource_group_name = "vh-core-infra-${var.env}"
+  name                = local.core_infra_name
+  resource_group_name = local.core_infra_name
 }
 
 data "template_file" "workflow" {
@@ -14,7 +15,7 @@ data "template_file" "workflow" {
 
 data "azurerm_storage_account" "core-sa" {
   name                = "vhcoreinfra${var.env}"
-  resource_group_name = "vh-core-infra-${var.env}"
+  resource_group_name = local.core_infra_name
 }
 
 resource "azurerm_resource_group" "vh-reporting-rg" {
