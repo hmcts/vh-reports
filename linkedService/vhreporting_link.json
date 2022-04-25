@@ -11,7 +11,14 @@
 					"type": "LinkedServiceReference"
 				},
 				"secretName": "VhReportingDatabaseConnectionString"
+			},
+			"alwaysEncryptedSettings": {
+				"alwaysEncryptedAkvAuthType": "ManagedIdentity"
 			}
+		},
+		"connectVia": {
+			"referenceName": "ADFVnet",
+			"type": "IntegrationRuntimeReference"
 		}
 	}
 }

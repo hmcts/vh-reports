@@ -11,7 +11,14 @@
 					"type": "LinkedServiceReference"
 				},
 				"secretName": "VhVideoDatabaseConnectionString"
+			},
+			"alwaysEncryptedSettings": {
+				"alwaysEncryptedAkvAuthType": "ManagedIdentity"
 			}
+		},
+		"connectVia": {
+			"referenceName": "ADFVnet",
+			"type": "IntegrationRuntimeReference"
 		}
 	}
 }
