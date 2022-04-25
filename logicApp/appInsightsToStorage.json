@@ -47,7 +47,7 @@
             "type": "Microsoft.Web/connections",
             "apiVersion": "2016-06-01",
             "name": "[parameters('connections_azureblob_name')]",
-            "location": "[parameters('location')]",
+            "location": "uksouth",
             "kind": "V1",
             "properties": {
                 "displayName": "vhreporting",
