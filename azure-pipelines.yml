@@ -106,7 +106,7 @@ stages:
     jobs:
        
         - job: UpdateADFPipelines 
-          displayName: Create/Update ADF pipelines
+          displayName: Create/Update ADF-${{ parameters.environment }} datasets
           steps:
             - task: AzureCLI@2
               displayName: Update datasets
@@ -127,7 +127,7 @@ stages:
                   done
 
             - task: AzureCLI@2
-              displayName: Update ADF pipeines
+              displayName: Update ADF-${{ parameters.environment }} pipeines
               inputs:
                 azureSubscription: $(subscription)
                 scriptType: bash
@@ -142,7 +142,7 @@ stages:
                   done
 
             - task: AzureCLI@2
-              displayName: Update ADF pipeline triggers
+              displayName: Update ADF-${{ parameters.environment }} pipeline triggers
               inputs:
                 azureSubscription: $(subscription)
                 scriptType: bash
