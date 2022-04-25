@@ -1,6 +1,6 @@
 locals {
-  arm_file_path = "../logicApp/appInsightsToStorage.json"
-  core_infra_name = "vh-core-infra-${var.env}" 
+  arm_file_path   = "../logicApp/appInsightsToStorage.json"
+  core_infra_name = "vh-core-infra-${var.env}"
 }
 
 data "azurerm_client_config" "current" {}
