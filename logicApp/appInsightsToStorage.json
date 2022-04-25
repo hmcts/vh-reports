@@ -218,12 +218,12 @@
                             "azureblob": {
                                 "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]",
                                 "connectionName": "azureblob",
-                                "id": "[replace(parameters('azureblob_url'), 'uksouth', parameters('location'))]"
+                                "id": "[parameters('azureblob_url')]"
                             },
                             "azuremonitorlogs": {
                                 "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azuremonitorlogs_name'))]",
                                 "connectionName": "azuremonitorlogs",
-                                "id": "[replace(parameters('azuremonitorlogs_url'),'uksouth', parameters('location'))]"
+                                "id": "[parameters('azuremonitorlogs_url')]"
                             }
                         }
                     }
