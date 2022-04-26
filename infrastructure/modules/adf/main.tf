@@ -91,6 +91,7 @@ resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
 resource "azurerm_data_factory_integration_runtime_azure" "adfintegration" {
   name                    = "vh-adf-integration"
   data_factory_id         = azurerm_data_factory.adf.id
+  resource_group_name     = var.rg_name
   location                = var.rg_location
   time_to_live_min        = 10
   virtual_network_enabled = true
