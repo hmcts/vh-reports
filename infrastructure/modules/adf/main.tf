@@ -91,6 +91,7 @@ resource "azurerm_data_factory_integration_runtime_azure" "adfintegration" {
   virtual_network_enabled = true
 }
 
+# Added a depends on that may not be needed
 resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
   name               = "vhadfendpoint"
   data_factory_id    = azurerm_data_factory.adf.id
