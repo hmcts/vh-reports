@@ -8,6 +8,11 @@ data "azurerm_storage_account" "core-sa" {
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
+data "azurerm_sql_server" "core-sql-server" {
+  name                = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-core-infra-${var.env}"
+}
+
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_data_factory" "adf" {
@@ -74,4 +79,19 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingd
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
     secret_name         = "VhReportingDatabaseConnectionString"
   }
+}
+
+resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
+  name               = "vh-adf-endpoint"
+  data_factory_id    = azurerm_data_factory.adf.id
+  target_resource_id = data.azurerm_sql_server.core-sql-server.id
+  subresource_name   = "sqlServer"
+}
+
+resource "azurerm_data_factory_integration_runtime_azure" "adfintegration" {
+  name                    = "vh-adf-integration"
+  data_factory_id         = azurerm_data_factory.adf.id
+  location                = var.rg_location
+  time_to_live_min        = 10
+  virtual_network_enabled = true
 }
