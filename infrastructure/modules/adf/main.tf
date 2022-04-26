@@ -97,6 +97,6 @@ resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
   subresource_name   = "sqlServer"
 
   depends_on = [
-    azurerm_data_factory_integration_runtime_azure.vhadfendpoint,  
+    azurerm_data_factory_integration_runtime_azure.adfintegration,  
   ]
 }
