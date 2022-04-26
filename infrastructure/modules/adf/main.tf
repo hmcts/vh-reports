@@ -81,13 +81,6 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingd
   }
 }
 
-resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
-  name               = "vhadfendpoint"
-  data_factory_id    = azurerm_data_factory.adf.id
-  target_resource_id = data.azurerm_sql_server.core-sql-server.id
-  subresource_name   = "sqlServer"
-}
-
 resource "azurerm_data_factory_integration_runtime_azure" "adfintegration" {
   name                    = "vh-adf-integration"
   data_factory_id         = azurerm_data_factory.adf.id
@@ -95,4 +88,11 @@ resource "azurerm_data_factory_integration_runtime_azure" "adfintegration" {
   location                = var.rg_location
   time_to_live_min        = 10
   virtual_network_enabled = true
+}
+
+resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
+  name               = "vhadfendpoint"
+  data_factory_id    = azurerm_data_factory.adf.id
+  target_resource_id = data.azurerm_sql_server.core-sql-server.id
+  subresource_name   = "sqlServer"
 }
