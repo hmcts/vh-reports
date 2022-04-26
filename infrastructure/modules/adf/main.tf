@@ -82,7 +82,7 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingd
 }
 
 resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
-  name               = "vh-adf-endpoint"
+  name               = "vhadfendpoint"
   data_factory_id    = azurerm_data_factory.adf.id
   target_resource_id = data.azurerm_sql_server.core-sql-server.id
   subresource_name   = "sqlServer"
