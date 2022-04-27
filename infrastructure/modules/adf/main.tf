@@ -66,7 +66,7 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
   name                = "vhvideo_link"
   data_factory_id     = azurerm_data_factory.adf.id
   resource_group_name = "vh-reporting-infra-${var.env}"
-  use_managed_identity      = azurerm_user_assigned_identity.adf-mi.id
+  use_managed_identity      = true
   integration_runtime_name  = azurerm_data_factory_integration_runtime_azure.adfintegration.name
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
@@ -78,7 +78,7 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingd
   name                      = "vhreporting_link"
   data_factory_id           = azurerm_data_factory.adf.id
   resource_group_name       = "vh-reporting-infra-${var.env}"
-  use_managed_identity      = azurerm_user_assigned_identity.adf-mi.id
+  use_managed_identity      = true
   integration_runtime_name  = azurerm_data_factory_integration_runtime_azure.adfintegration.name
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
