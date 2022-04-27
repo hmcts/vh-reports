@@ -102,7 +102,7 @@ resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
   target_resource_id = data.azurerm_sql_server.core-sql-server.id
   subresource_name   = "adf2sqlServer"
 
-  depends_on = [
-    azurerm_data_factory_integration_runtime_azure.adfintegration,  
-  ]
+  # depends_on = [
+  #   azurerm_data_factory_integration_runtime_azure.adfintegration,  
+  # ]
 }
