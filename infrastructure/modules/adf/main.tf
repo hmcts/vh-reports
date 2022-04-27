@@ -16,10 +16,11 @@ data "azurerm_sql_server" "core-sql-server" {
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_data_factory" "adf" {
-  name                = "vh-datafactory-${var.env}"
-  location            = var.rg_location
-  resource_group_name = var.rg_name
+  name                            = "vh-datafactory-${var.env}"
+  location                        = var.rg_location
+  resource_group_name             = var.rg_name
   managed_virtual_network_enabled = true
+  public_network_enabled          = false
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.adf-mi.id]
