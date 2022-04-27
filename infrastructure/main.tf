@@ -60,6 +60,7 @@ resource "azurerm_mssql_database" "vhreporting" {
   license_type = "LicenseIncluded"
   max_size_gb  = 250
   sku_name     = "S0"
+  min_capacity = 5
 }
 
 
