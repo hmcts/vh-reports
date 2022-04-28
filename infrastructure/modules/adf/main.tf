@@ -5,8 +5,7 @@ data "azurerm_key_vault" "core-kv" {
 
 data "azurerm_storage_account" "core-sta" {
   name                = "vhcoreinfra${var.env}"
-  resource_group_name = local.core_infra_name
-  #resource_group_name = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-core-infra-${var.env}"
 }
 
 data "azurerm_sql_server" "core-sql-server" {
