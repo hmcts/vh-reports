@@ -69,6 +69,3 @@ resource "azurerm_storage_container" "vhreporting" {
   storage_account_name  = data.azurerm_storage_account.core-sa.name
   container_access_type = "private"
 }
-
-
-

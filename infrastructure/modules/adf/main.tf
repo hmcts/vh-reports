@@ -3,10 +3,10 @@ data "azurerm_key_vault" "core-kv" {
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
-data "azurerm_storage_account" "core-sa" {
-  name                = "vhcoreinfra${var.env}"
-  resource_group_name = "vh-core-infra-${var.env}"
-}
+# data "azurerm_storage_account" "core-sa" {
+#   name                = "vhcoreinfra${var.env}"
+#   resource_group_name = "vh-core-infra-${var.env}"
+# }
 
 data "azurerm_sql_server" "core-sql-server" {
   name                = "vh-core-infra-${var.env}"
