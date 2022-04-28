@@ -92,6 +92,8 @@ resource "azurerm_data_factory_integration_runtime_azure" "adfintegration" {
   data_factory_id         = azurerm_data_factory.adf.id
   resource_group_name     = var.rg_name
   location                = var.rg_location
+  compute_type            = General
+  core_count              = 16
   time_to_live_min        = 10
   virtual_network_enabled = true
 }
@@ -103,7 +105,4 @@ resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
   target_resource_id = data.azurerm_sql_server.core-sql-server.id
   subresource_name   = "sqlServer"
 
-  # depends_on = [
-  #   azurerm_data_factory_integration_runtime_azure.adfintegration,  
-  # ]
 }
