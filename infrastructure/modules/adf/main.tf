@@ -122,7 +122,7 @@ resource "azurerm_resource_group_template_deployment" "ARMdeploy-storage-acct" {
       value = "vhreporting"
     },
     "access-key" = {
-      value = data.azurerm_storage_account.core-sta.primary_connection_string
+      value = data.azurerm_storage_account.core-sta.primary_access_key
     }
   })
   # the actual ARM template file we will use
