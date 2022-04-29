@@ -3,7 +3,7 @@ data "azurerm_key_vault" "core-kv" {
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
-data "azurerm_storage_account" "core-sta" {
+data "azurerm_storage_account" "core-sa" {
   name                = "vhcoreinfra${var.env}"
   resource_group_name = "vh-core-infra-${var.env}"
 }
@@ -59,7 +59,7 @@ resource "azurerm_data_factory_linked_service_key_vault" "adfkeyvault" {
 resource "azurerm_data_factory_linked_service_azure_blob_storage" "adfblob" {
   name                = "vhreporting_blob"
   data_factory_id     = azurerm_data_factory.adf.id
-  connection_string   = data.azurerm_storage_account.core-sta.primary_connection_string
+  connection_string   = data.azurerm_storage_account.core-sa.primary_connection_string
   resource_group_name = "vh-reporting-infra-${var.env}"
 }
 
@@ -122,7 +122,7 @@ resource "azurerm_resource_group_template_deployment" "ARMdeploy-storage-acct" {
       value = "vhcoreinfra${var.env}"
     },
     "access-key" = {
-      value = data.azurerm_storage_account.core-sta.primary_access_key
+      value = data.azurerm_storage_account.core-sa.primary_access_key
     }
   })
   # the actual ARM template file we will use
