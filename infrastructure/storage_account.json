@@ -23,7 +23,7 @@
                 "displayName": "vhreporting",
                 "authenticatedUser": {},
                 "parameterValues": {
-                    "accountName": "vhreporting",
+                    "accountName": "[parameters('accountName')]",
                     "accessKey": "[parameters('access-key')]"
                 },
                 "customParameterValues": {},
