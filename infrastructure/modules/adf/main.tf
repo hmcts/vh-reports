@@ -98,11 +98,33 @@ resource "azurerm_data_factory_integration_runtime_azure" "adfintegration" {
   virtual_network_enabled = true
 }
 
-# Added a depends on that may not be needed
 resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
   name               = "vhadfendpoint"
   data_factory_id    = azurerm_data_factory.adf.id
   target_resource_id = data.azurerm_sql_server.core-sql-server.id
   subresource_name   = "sqlServer"
 
+}
+
+resource "azurerm_resource_group_template_deployment" "ARMdeploy-automation-acct" {
+  name                = "ARM-storage-account-${var.env}"
+  resource_group_name = var.rg_name
+
+  # "Incremental" ADDS the resource to already existing resources. "Complete" destroys all other resources and creates the new one
+  deployment_mode     = "Incremental"
+
+  # the parameters below can be found near the top of the ARM file
+  parameters_content = jsonencode({
+    "connections_azureblob_name" = {
+      value = "azureblob"
+    },
+    "accountName" = {
+      value = "vhreporting"
+    },
+    "access-key" = {
+      value = data.azurerm_storage_account.core-sta.primary_connection_string
+    }
+  })
+  # the actual ARM template file we will use
+  template_content = file("storage_account.json")
 }
