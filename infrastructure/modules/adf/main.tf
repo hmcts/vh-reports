@@ -119,7 +119,7 @@ resource "azurerm_resource_group_template_deployment" "ARMdeploy-storage-acct" {
       value = "azureblob"
     },
     "accountName" = {
-      value = "vhreporting"
+      value = "vhcoreinfra${var.env}"
     },
     "access-key" = {
       value = data.azurerm_storage_account.core-sta.primary_access_key
