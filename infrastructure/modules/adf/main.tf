@@ -106,7 +106,7 @@ resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
 
 }
 
-resource "azurerm_resource_group_template_deployment" "ARMdeploy-automation-acct" {
+resource "azurerm_resource_group_template_deployment" "ARMdeploy-storage-acct" {
   name                = "ARM-storage-account-${var.env}"
   resource_group_name = var.rg_name
 
