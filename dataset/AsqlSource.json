@@ -1,5 +1,6 @@
 {
-
+	"name": "AsqlSource",
+	"properties": {
 		"linkedServiceName": {
 			"referenceName": "vhvideo_link",
 			"type": "LinkedServiceReference"
@@ -27,5 +28,6 @@
 				"type": "Expression"
 			}
 		}
-	
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }
