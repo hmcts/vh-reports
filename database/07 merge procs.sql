@@ -25,7 +25,8 @@ BEGIN
 			,t.IngestUrl			  = s.IngestUrl			 
 			,t.ActualStartTime		  = s.ActualStartTime		 
 			,t.TelephoneConferenceId  = s.TelephoneConferenceId 
-			,t.CreatedDateTime		  = s.CreatedDateTime		 
+			,t.CreatedDateTime		  = s.CreatedDateTime	
+			,t.UpdatedAt			  = s.UpdatedAt	 
 	WHEN NOT MATCHED THEN 
 	INSERT (
 		Id
@@ -46,7 +47,8 @@ BEGIN
 		,IngestUrl
 		,ActualStartTime
 		,TelephoneConferenceId
-		,CreatedDateTime )
+		,CreatedDateTime
+		,UpdatedAt )
 	VALUES (
 		s.Id
 		,s.HearingRefId
@@ -67,6 +69,7 @@ BEGIN
 		,s.ActualStartTime
 		,s.TelephoneConferenceId
 		,s.CreatedDateTime
+		,s.UpdatedAt
 	);
 
 END
@@ -82,7 +85,7 @@ BEGIN
 	MERGE INTO dbo.Participant AS t
 	USING stg.Participant AS s
 		ON (s.ID = t.ID)
-	WHEN MATCHED THEN UPDATE
+	WHEN MATCHED AND t.Name != 'Purged' THEN UPDATE
 		SET t.ParticipantRefId = s.ParticipantRefId 	
 			,t.Name = s.Name 	
 			,t.DisplayName = s.DisplayName 	
@@ -100,7 +103,9 @@ BEGIN
 			,t.ContactTelephone = s.ContactTelephone 	
 			,t.HearingRole = s.HearingRole 	
 			,t.CurrentConsultationRoomId = s.CurrentConsultationRoomId
-			,t.Discriminator = s.Discriminator				 
+			,t.Discriminator = s.Discriminator	
+			,t.CreatedAt = s.CreatedAt
+			,t.UpdatedAt = s.UpdatedAt
 	WHEN NOT MATCHED THEN 
 	INSERT (
 		Id
@@ -121,7 +126,9 @@ BEGIN
 		,ContactTelephone
 		,HearingRole
 		,CurrentConsultationRoomId
-		,Discriminator )
+		,Discriminator
+		,CreatedAt
+		,UpdatedAt )
 	VALUES (
 		s.Id
 		,s.ParticipantRefId
@@ -142,6 +149,8 @@ BEGIN
 		,s.HearingRole
 		,s.CurrentConsultationRoomId
 		,s.Discriminator
+		,s.CreatedAt
+		,s.UpdatedAt
 	);
 END
 GO
@@ -206,6 +215,8 @@ BEGIN
 			,t.ParticipantUri = s.ParticipantUri
 			,t.PexipNode = s.PexipNode 
 			,t.Discriminator = s.Discriminator 	
+			,t.CreatedAt = s.CreatedAt
+			,t.UpdatedAt = s.UpdatedAt
 	WHEN NOT MATCHED THEN 
 	INSERT (
 		Id
@@ -217,7 +228,9 @@ BEGIN
 		,IngestUrl
 		,ParticipantUri
 		,PexipNode
-		,Discriminator )
+		,Discriminator
+		,CreatedAt
+		,UpdatedAt )
 	VALUES (
 		s.Id
 		,s.ConferenceId
@@ -229,6 +242,8 @@ BEGIN
 		,s.ParticipantUri
 		,s.PexipNode
 		,s.Discriminator
+		,s.CreatedAt
+		,s.UpdatedAt
 	);
 END
 GO
@@ -242,7 +257,7 @@ BEGIN
 	MERGE INTO dbo.Endpoint AS t
 	USING stg.Endpoint AS s
 		ON (s.ID = t.ID)
-	WHEN MATCHED THEN UPDATE
+	WHEN MATCHED AND t.DefenceAdvocate != 'Purged' THEN UPDATE
 		SET t.DisplayName = s.DisplayName 
 			,t.SipAddress = s.SipAddress 
 			,t.Pin = s.Pin 
@@ -251,6 +266,8 @@ BEGIN
 			,t.DefenceAdvocate = s.DefenceAdvocate 
 			,t.CurrentRoom = s.CurrentRoom 
 			,t.CurrentConsultationRoomId = s.CurrentConsultationRoomId	
+			,t.CreatedAt = s.CreatedAt
+			,t.UpdatedAt = s.UpdatedAt
 	WHEN NOT MATCHED THEN 
 	INSERT (
 		Id
@@ -261,7 +278,9 @@ BEGIN
 		,ConferenceId
 		,DefenceAdvocate
 		,CurrentRoom
-		,CurrentConsultationRoomId )
+		,CurrentConsultationRoomId
+		,CreatedAt
+		,UpdatedAt )
 	VALUES (
 		s.Id
 		,s.DisplayName
@@ -272,6 +291,8 @@ BEGIN
 		,s.DefenceAdvocate
 		,s.CurrentRoom
 		,s.CurrentConsultationRoomId
+		,s.CreatedAt
+		,s.UpdatedAt
 	);
 END
 GO
@@ -285,7 +306,7 @@ BEGIN
 	MERGE INTO dbo.Event AS t
 	USING stg.Event AS s
 		ON (s.ID = t.ID)
-	WHEN MATCHED THEN UPDATE
+	WHEN MATCHED AND t.Phone != 'Purged' THEN UPDATE
 		SET t.ConferenceId = s.ConferenceId 
 			,t.ExternalEventId = s.ExternalEventId 
 			,t.EventType = s.EventType 
