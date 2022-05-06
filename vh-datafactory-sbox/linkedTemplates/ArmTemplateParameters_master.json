@@ -8,7 +8,7 @@
 		"vhreporting_blob_connectionString": {
 			"value": ""
 		},
-		"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
+		"vhreporting-kv-link_properties_typeProperties_baseUrl": {
 			"value": "https://vhcoreinfrasandbox.vault.azure.net/"
 		},
 		"vhreporting_link_properties_typeProperties_connectionString_secretName": {

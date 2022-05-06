@@ -11,7 +11,7 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'vhreporting_blob'"
 		},
-		"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
+		"vhreporting-kv-link_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://vhcoreinfrasandbox.vault.azure.net/"
 		},
@@ -61,8 +61,8 @@
 					"vhreporting_blob_connectionString": {
 						"value": "[parameters('vhreporting_blob_connectionString')]"
 					},
-					"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
-						"value": "[parameters('vhcoreinfrasbox_properties_typeProperties_baseUrl')]"
+					"vhreporting-kv-link_properties_typeProperties_baseUrl": {
+						"value": "[parameters('vhreporting-kv-link_properties_typeProperties_baseUrl')]"
 					},
 					"vhcoreinfrasbox_properties_privateLinkResourceId": {
 						"value": "[parameters('vhcoreinfrasbox_properties_privateLinkResourceId')]"

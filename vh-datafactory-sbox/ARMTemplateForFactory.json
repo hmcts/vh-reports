@@ -11,7 +11,7 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'vhreporting_blob'"
 		},
-		"vhcoreinfrasbox_properties_typeProperties_baseUrl": {
+		"vhreporting-kv-link_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://vhcoreinfrasandbox.vault.azure.net/"
 		},
@@ -450,7 +450,8 @@
 						"type": "String"
 					}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2022-04-25T13:14:06Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/JsonAppInsightsError')]",
@@ -678,7 +679,7 @@
 								"parameters": {
 									"Container": "vhreporting",
 									"Folder": "AppInsightsTrace",
-									"FileName": "2022-03-21T14:00:00.0000000"
+									"FileName": "2022-03-21T14:00:00Z"
 								}
 							}
 						],
@@ -791,7 +792,7 @@
 					},
 					"FileName": {
 						"type": "string",
-						"defaultValue": "2022-03-21T14:00:00.0000000"
+						"defaultValue": "2022-03-21T14:00:00Z"
 					},
 					"DeltaDateTime": {
 						"type": "string",
@@ -812,7 +813,8 @@
 						"defaultValue": "03/21/2022 18:26:00"
 					}
 				},
-				"annotations": []
+				"annotations": [],
+				"lastPublishTime": "2022-04-25T13:14:07Z"
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/JsonAppInsightsTrace')]",
@@ -1292,7 +1294,7 @@
 					},
 					"FileName": {
 						"type": "string",
-						"defaultValue": "2022-04-11T09:00:00.0000000"
+						"defaultValue": "2022-04-11T09:00:00Z"
 					}
 				},
 				"annotations": [],
@@ -1375,14 +1377,14 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/vhcoreinfrasbox')]",
+			"name": "[concat(parameters('factoryName'), '/vhreporting-kv-link')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
 				"type": "AzureKeyVault",
 				"typeProperties": {
-					"baseUrl": "[parameters('vhcoreinfrasbox_properties_typeProperties_baseUrl')]"
+					"baseUrl": "[parameters('vhreporting-kv-link_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -1411,7 +1413,7 @@
 					"connectionString": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
-							"referenceName": "vhcoreinfrasbox",
+							"referenceName": "vhreporting-kv-link",
 							"type": "LinkedServiceReference"
 						},
 						"secretName": "[parameters('vhreporting_link_properties_typeProperties_connectionString_secretName')]"
@@ -1427,7 +1429,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/ADFVnet')]",
-				"[concat(variables('factoryId'), '/linkedServices/vhcoreinfrasbox')]"
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting-kv-link')]"
 			]
 		},
 		{
@@ -1441,7 +1443,7 @@
 					"connectionString": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
-							"referenceName": "vhcoreinfrasbox",
+							"referenceName": "vhreporting-kv-link",
 							"type": "LinkedServiceReference"
 						},
 						"secretName": "[parameters('vhvideo_link_properties_typeProperties_connectionString_secretName')]"
@@ -1457,11 +1459,11 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/ADFVnet')]",
-				"[concat(variables('factoryId'), '/linkedServices/vhcoreinfrasbox')]"
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting-kv-link')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Daily App Insights Load')]",
+			"name": "[concat(parameters('factoryName'), '/Daily_App_Insights_Load')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1496,7 +1498,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Daily VH Video Data Load')]",
+			"name": "[concat(parameters('factoryName'), '/Daily_VH_Video_Data_Load')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
