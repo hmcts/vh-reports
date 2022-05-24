@@ -8,6 +8,11 @@ data "azurerm_storage_account" "core-sa" {
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
+data "azurerm_sql_server" "core-sql-server" {
+  name                = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-core-infra-${var.env}"
+}
+
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_data_factory" "adf" {
