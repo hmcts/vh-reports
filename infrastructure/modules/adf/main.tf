@@ -14,6 +14,7 @@ resource "azurerm_data_factory" "adf" {
   name                = "vh-datafactory-${var.env}"
   location            = var.rg_location
   resource_group_name = var.rg_name
+  public_network_enabled = false
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.adf-mi.id]
