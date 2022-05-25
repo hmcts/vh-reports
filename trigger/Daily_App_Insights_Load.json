@@ -1,6 +1,6 @@
 {
-	"name": "Daily_App_Insights_Load",
 	"properties": {
+		"name": "Daily_App_Insights_Load",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
