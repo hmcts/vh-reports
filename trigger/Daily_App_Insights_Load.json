@@ -1,17 +1,9 @@
 {
+	
 	"properties": {
 		"name": "Daily_App_Insights_Load",
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "Master_TraceFile",
-					"type": "PipelineReference"
-				},
-				"parameters": {}
-			}
-		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
@@ -25,6 +17,16 @@
 					]
 				}
 			}
-		}
+		},
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Master_TraceFile",
+					"type": "PipelineReference"
+				},
+				"parameters": {}
+			}
+		]
+		
 	}
 }
