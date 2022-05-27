@@ -31,22 +31,22 @@ module "data_factory_config" {
 
 }
 
-resource "azurerm_template_deployment" "workflow" {
-  resource_group_name = azurerm_resource_group.vh-reporting-rg.name
+# resource "azurerm_template_deployment" "workflow" {
+#   resource_group_name = azurerm_resource_group.vh-reporting-rg.name
 
-  template_body = data.template_file.workflow.template
+#   template_body = data.template_file.workflow.template
 
-  # The filemd5 forces this to run when the file is changed
-  # this ensures the keys are up-to-date
-  name            = "workflow-${filemd5(local.arm_file_path)}"
-  deployment_mode = "Incremental"
-  parameters = {
-    environment  = "${var.env}"
-    location     = "${var.location}"
-    subscription = "${data.azurerm_client_config.current.subscription_id}"
-  }
+#   # The filemd5 forces this to run when the file is changed
+#   # this ensures the keys are up-to-date
+#   name            = "workflow-${filemd5(local.arm_file_path)}"
+#   deployment_mode = "Incremental"
+#   parameters = {
+#     environment  = "${var.env}"
+#     location     = "${var.location}"
+#     subscription = "${data.azurerm_client_config.current.subscription_id}"
+#   }
 
-}
+# }
 
 resource "local_file" "logicapp" {
   content  = "foo!"
