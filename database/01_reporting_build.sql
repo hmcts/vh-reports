@@ -81,22 +81,41 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'Heartbeat')
 CREATE TABLE stg.Heartbeat (
-	Id bigint NOT NULL,
-	ConferenceId uniqueidentifier NULL,
-	ParticipantId uniqueidentifier NULL,
-	OutgoingAudioPercentageLost decimal(18, 2) NULL,
-	OutgoingAudioPercentageLostRecent decimal(18, 2) NULL,
-	IncomingAudioPercentageLost decimal(18, 2) NULL,
-	IncomingAudioPercentageLostRecent decimal(18, 2) NULL,
-	OutgoingVideoPercentageLost decimal(18, 2) NULL,
-	OutgoingVideoPercentageLostRecent decimal(18, 2) NULL,
-	IncomingVideoPercentageLost decimal(18, 2) NULL,
-	IncomingVideoPercentageLostRecent decimal(18, 2) NULL,
-	[TimeStamp] datetime2(7) NULL,
-	BrowserName nvarchar(max) NULL,
-	BrowserVersion nvarchar(max) NULL,
-	OperatingSystem nvarchar(max) NULL,
-	OperatingSystemVersion nvarchar(max) NULL,
+	[Id] [bigint] NOT NULL,
+	[ConferenceId] [uniqueidentifier] NOT NULL,
+	[ParticipantId] [uniqueidentifier] NOT NULL,
+	[OutgoingAudioPercentageLost] [decimal](18, 2) NOT NULL,
+	[OutgoingAudioPercentageLostRecent] [decimal](18, 2) NOT NULL,
+	[IncomingAudioPercentageLost] [decimal](18, 2) NOT NULL,
+	[IncomingAudioPercentageLostRecent] [decimal](18, 2) NOT NULL,
+	[OutgoingVideoPercentageLost] [decimal](18, 2) NOT NULL,
+	[OutgoingVideoPercentageLostRecent] [decimal](18, 2) NOT NULL,
+	[IncomingVideoPercentageLost] [decimal](18, 2) NOT NULL,
+	[IncomingVideoPercentageLostRecent] [decimal](18, 2) NOT NULL,
+	[TimeStamp] [datetime2](7) NOT NULL,
+	[BrowserName] [nvarchar](max) NULL,
+	[BrowserVersion] [nvarchar](max) NULL,
+	[OperatingSystem] [nvarchar](max) NULL,
+	[OperatingSystemVersion] [nvarchar](max) NULL,
+	[OutgoingAudioPacketSent] [int] NULL,
+	[OutgoingAudioPacketsLost] [int] NULL,
+	[OutgoingVideoPacketSent] [int] NULL,
+	[OutgoingVideoPacketsLost] [int] NULL,
+	[IncomingAudioPacketReceived] [int] NULL,
+	[IncomingAudioPacketsLost] [int] NULL,
+	[IncomingVideoPacketReceived] [int] NULL,
+	[IncomingVideoPacketsLost] [int] NULL,
+	[OutgoingVideoFramerate] [int] NULL,
+	[OutgoingVideoBitrate] [nvarchar](50) NULL,
+	[OutgoingVideoCodec] [nvarchar](50) NULL,
+	[OutgoingVideoResolution] [nvarchar](50) NULL,
+	[OutgoingAudioBitrate] [nvarchar](50) NULL,
+	[OutgoingAudioCodec] [nvarchar](50) NULL,
+	[IncomingAudioBitrate] [nvarchar](50) NULL,
+	[IncomingAudioCodec] [nvarchar](50) NULL,
+	[IncomingVideoBitrate] [nvarchar](50) NULL,
+	[IncomingVideoCodec] [nvarchar](50) NULL,
+	[IncomingVideoResolution] [nvarchar](50) NULL,
 	CONSTRAINT PK_stg_Heartbeat PRIMARY KEY CLUSTERED (	Id ASC ))
 GO
 
@@ -234,22 +253,41 @@ GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'Heartbeat')
 CREATE TABLE dbo.Heartbeat (
-	Id bigint NOT NULL,
-	ConferenceId uniqueidentifier NULL,
-	ParticipantId uniqueidentifier NULL,
-	OutgoingAudioPercentageLost decimal(18, 2) NULL,
-	OutgoingAudioPercentageLostRecent decimal(18, 2) NULL,
-	IncomingAudioPercentageLost decimal(18, 2) NULL,
-	IncomingAudioPercentageLostRecent decimal(18, 2) NULL,
-	OutgoingVideoPercentageLost decimal(18, 2) NULL,
-	OutgoingVideoPercentageLostRecent decimal(18, 2) NULL,
-	IncomingVideoPercentageLost decimal(18, 2) NULL,
-	IncomingVideoPercentageLostRecent decimal(18, 2) NULL,
-	[TimeStamp] datetime2(7) NULL,
-	BrowserName nvarchar(max) NULL,
-	BrowserVersion nvarchar(max) NULL,
-	OperatingSystem nvarchar(max) NULL,
-	OperatingSystemVersion nvarchar(max) NULL,
+	[Id] [bigint] NOT NULL,
+	[ConferenceId] [uniqueidentifier] NOT NULL,
+	[ParticipantId] [uniqueidentifier] NOT NULL,
+	[OutgoingAudioPercentageLost] [decimal](18, 2) NOT NULL,
+	[OutgoingAudioPercentageLostRecent] [decimal](18, 2) NOT NULL,
+	[IncomingAudioPercentageLost] [decimal](18, 2) NOT NULL,
+	[IncomingAudioPercentageLostRecent] [decimal](18, 2) NOT NULL,
+	[OutgoingVideoPercentageLost] [decimal](18, 2) NOT NULL,
+	[OutgoingVideoPercentageLostRecent] [decimal](18, 2) NOT NULL,
+	[IncomingVideoPercentageLost] [decimal](18, 2) NOT NULL,
+	[IncomingVideoPercentageLostRecent] [decimal](18, 2) NOT NULL,
+	[TimeStamp] [datetime2](7) NOT NULL,
+	[BrowserName] [nvarchar](max) NULL,
+	[BrowserVersion] [nvarchar](max) NULL,
+	[OperatingSystem] [nvarchar](max) NULL,
+	[OperatingSystemVersion] [nvarchar](max) NULL,
+	[OutgoingAudioPacketSent] [int] NULL,
+	[OutgoingAudioPacketsLost] [int] NULL,
+	[OutgoingVideoPacketSent] [int] NULL,
+	[OutgoingVideoPacketsLost] [int] NULL,
+	[IncomingAudioPacketReceived] [int] NULL,
+	[IncomingAudioPacketsLost] [int] NULL,
+	[IncomingVideoPacketReceived] [int] NULL,
+	[IncomingVideoPacketsLost] [int] NULL,
+	[OutgoingVideoFramerate] [int] NULL,
+	[OutgoingVideoBitrate] [nvarchar](50) NULL,
+	[OutgoingVideoCodec] [nvarchar](50) NULL,
+	[OutgoingVideoResolution] [nvarchar](50) NULL,
+	[OutgoingAudioBitrate] [nvarchar](50) NULL,
+	[OutgoingAudioCodec] [nvarchar](50) NULL,
+	[IncomingAudioBitrate] [nvarchar](50) NULL,
+	[IncomingAudioCodec] [nvarchar](50) NULL,
+	[IncomingVideoBitrate] [nvarchar](50) NULL,
+	[IncomingVideoCodec] [nvarchar](50) NULL,
+	[IncomingVideoResolution] [nvarchar](50) NULL,
 	CONSTRAINT PK_Heartbeat PRIMARY KEY CLUSTERED (	Id ASC ))
 GO
 
@@ -489,4 +527,17 @@ SELECT 1 AS Id
 	,0.10 AS PctHeartbeatsLostThreshold
 	,0.05 AS VideoAudioLossThreshold
 	,5 AS ReportingPeriodMinutes ;
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE [name] = 'IX_ParticipantStatus_ParticipantState')
+CREATE NONCLUSTERED INDEX IX_ParticipantStatus_ParticipantState
+ON [dbo].[ParticipantStatus] ([ParticipantState])
+INCLUDE ([TimeStamp],[ParticipantId])
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE [name] = 'IX_Participant_ConferenceId')
+CREATE NONCLUSTERED INDEX IX_Participant_ConferenceId
+ON [dbo].[Participant] ([ConferenceId])
+
 GO
