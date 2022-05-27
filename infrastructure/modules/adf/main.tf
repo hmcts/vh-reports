@@ -106,25 +106,25 @@ resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
 
 }
 
-resource "azurerm_resource_group_template_deployment" "ARMdeploy-storage-acct" {
-  name                = "ARM-storage-account-${var.env}"
-  resource_group_name = var.rg_name
+# resource "azurerm_resource_group_template_deployment" "ARMdeploy-storage-acct" {
+#   name                = "ARM-storage-account-${var.env}"
+#   resource_group_name = var.rg_name
 
-  # "Incremental" ADDS the resource to already existing resources. "Complete" destroys all other resources and creates the new one
-  deployment_mode = "Incremental"
+#   # "Incremental" ADDS the resource to already existing resources. "Complete" destroys all other resources and creates the new one
+#   deployment_mode = "Incremental"
 
-  # the parameters below can be found near the top of the ARM file
-  parameters_content = jsonencode({
-    "connections_azureblob_name" = {
-      value = "azureblob"
-    },
-    "accountName" = {
-      value = "vhcoreinfra${var.env}"
-    },
-    "access-key" = {
-      value = data.azurerm_storage_account.core-sa.primary_access_key
-    }
-  })
-  # the actual ARM template file we will use
-  template_content = file("storage_account.json")
-}
+#   # the parameters below can be found near the top of the ARM file
+#   parameters_content = jsonencode({
+#     "connections_azureblob_name" = {
+#       value = "azureblob"
+#     },
+#     "accountName" = {
+#       value = "vhcoreinfra${var.env}"
+#     },
+#     "access-key" = {
+#       value = data.azurerm_storage_account.core-sa.primary_access_key
+#     }
+#   })
+#   # the actual ARM template file we will use
+#   template_content = file("storage_account.json")
+# }
