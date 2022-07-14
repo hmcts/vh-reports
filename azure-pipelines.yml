@@ -101,59 +101,59 @@ stages:
           SqlFileName: '00_init.sql'
 
 
-  # - stage: ADF
-  #   displayName: ADF Config
-  #   dependsOn: Apply 
-  #   jobs:
+  - stage: ADF
+    displayName: ADF Config
+    dependsOn: Apply 
+    jobs:
        
-  #       - job: UpdateADFPipelines 
-  #         displayName: Create/Update ADF-${{ parameters.environment }} datasets
-  #         steps:
-  #           - task: AzureCLI@2
-  #             displayName: Update datasets
-  #             inputs:
-  #               azureSubscription: $(subscription)
-  #               scriptType: bash
-  #               scriptLocation: inlineScript
-  #               inlineScript: |
-  #                 az config set extension.use_dynamic_install=yes_without_prompt
-  #                 ls -ltr $(System.DefaultWorkingDirectory)
-  #                 #set up datasets
+        - job: UpdateADFPipelines 
+          displayName: Create/Update ADF-${{ parameters.environment }} datasets
+          steps:
+            - task: AzureCLI@2
+              displayName: Update datasets
+              inputs:
+                azureSubscription: $(subscription)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  az config set extension.use_dynamic_install=yes_without_prompt
+                  ls -ltr $(System.DefaultWorkingDirectory)
+                  #set up datasets
                  
-  #                 for file in $(System.DefaultWorkingDirectory)/dataset/*
-  #                 do
-  #                   fileName="$(basename $file .json)"
-  #                   echo $fileName
-  #                   az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
-  #                 done
+                  for file in $(System.DefaultWorkingDirectory)/dataset/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
+                  done
 
-  #           - task: AzureCLI@2
-  #             displayName: Update ADF-${{ parameters.environment }} pipeines
-  #             inputs:
-  #               azureSubscription: $(subscription)
-  #               scriptType: bash
-  #               scriptLocation: inlineScript
-  #               inlineScript: |
-  #                 ##set up pipelines
-  #                 for file in $(System.DefaultWorkingDirectory)/pipeline/*
-  #                 do
-  #                   fileName="$(basename $file .json)"
-  #                   echo $fileName
-  #                   az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
-  #                 done
+            - task: AzureCLI@2
+              displayName: Update ADF-${{ parameters.environment }} pipeines
+              inputs:
+                azureSubscription: $(subscription)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |
+                  ##set up pipelines
+                  for file in $(System.DefaultWorkingDirectory)/pipeline/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
+                  done
 
-  #           - task: AzureCLI@2
-  #             displayName: Update ADF-${{ parameters.environment }} pipeline triggers
-  #             inputs:
-  #               azureSubscription: $(subscription)
-  #               scriptType: bash
-  #               scriptLocation: inlineScript
-  #               inlineScript: |                  
-  #                 #set up triggers
-  #                 for file in $(System.DefaultWorkingDirectory)/trigger/*
-  #                 do
-  #                   fileName="$(basename $file .json)"
-  #                   echo $fileName
-  #                   az datafactory trigger create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
-  #                 done
+            - task: AzureCLI@2
+              displayName: Update ADF-${{ parameters.environment }} pipeline triggers
+              inputs:
+                azureSubscription: $(subscription)
+                scriptType: bash
+                scriptLocation: inlineScript
+                inlineScript: |                  
+                  #set up triggers
+                  for file in $(System.DefaultWorkingDirectory)/trigger/*
+                  do
+                    fileName="$(basename $file .json)"
+                    echo $fileName
+                    az datafactory trigger create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
+                  done
             

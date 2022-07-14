@@ -4,7 +4,7 @@
     "parameters": {
         "environment": {
             "defaultValue": "dev",
-            "type": "String"
+            "type": "string"
         },
         "location": {
             "defaultValue": "uksouth",
@@ -15,27 +15,27 @@
         },
         "connections_azureblob_name": {
             "defaultValue": "azureblob",
-            "type": "String"
+            "type": "string"
         },
         "connections_azuremonitorlogs_name": {
             "defaultValue": "azuremonitorlogs",
-            "type": "String"
+            "type": "string"
         },
         "workflows_vh_reporting_dev_name": {
             "defaultValue": "[concat('vh-reporting-', parameters('environment'))]",
-            "type": "String"
+            "type": "string"
         },
         "azureapi_sub_url": {
             "defaultValue": "[replace('/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/providers/Microsoft.Web/locations/uksouth/managedApis/','705b2731-0e0b-4df7-8630-95f157f0a347', parameters('subscription'))]",
-            "type": "String"
+            "type": "string"
         },
         "azureblob_url": {
             "defaultValue": "[concat(parameters('azureapi_sub_url'), 'azureblob')]",
-            "type": "String"
+            "type": "string"
         },
         "azuremonitorlogs_url": {
             "defaultValue": "[concat(parameters('azureapi_sub_url'),'azuremonitorlogs')]",
-            "type": "String"
+            "type": "string"
         }
 
 
@@ -205,7 +205,7 @@
                                     "resourcename": "[concat('vh-core-infra-', parameters('environment'))]",
                                     "resourcetype": "Application Insights",
                                     "subscriptions": "[parameters('subscription')]",
-                                    "timerange": "Last hour"
+                                    "timerange": "Last 24 hours"
                                 }
                             }
                         }
