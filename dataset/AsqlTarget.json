@@ -1,5 +1,4 @@
 {
-	"name": "AsqlTarget",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "vhreporting_link",

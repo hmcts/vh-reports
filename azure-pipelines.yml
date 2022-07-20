@@ -22,6 +22,7 @@ parameters:
       - test1
       - preview
       - preprod
+      - prod
          
 
 variables:
