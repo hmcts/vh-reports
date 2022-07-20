@@ -58,14 +58,14 @@ resource "azurerm_mssql_database" "vhreporting" {
   server_id    = data.azurerm_mssql_server.core-sql-server.id
   collation    = "SQL_Latin1_General_CP1_CI_AS"
   license_type = "LicenseIncluded"
-  max_size_gb  = 2
+  max_size_gb  = 250
+  sku_name     = "S0"
+  min_capacity = 5
 }
+
 
 resource "azurerm_storage_container" "vhreporting" {
   name                  = "vhreporting"
   storage_account_name  = data.azurerm_storage_account.core-sa.name
   container_access_type = "private"
 }
-
-
-

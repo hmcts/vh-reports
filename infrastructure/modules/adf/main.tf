@@ -8,12 +8,19 @@ data "azurerm_storage_account" "core-sa" {
   resource_group_name = "vh-core-infra-${var.env}"
 }
 
+data "azurerm_sql_server" "core-sql-server" {
+  name                = "vh-core-infra-${var.env}"
+  resource_group_name = "vh-core-infra-${var.env}"
+}
+
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_data_factory" "adf" {
-  name                = "vh-datafactory-${var.env}"
-  location            = var.rg_location
-  resource_group_name = var.rg_name
+  name                            = "vh-datafactory-${var.env}"
+  location                        = var.rg_location
+  resource_group_name             = var.rg_name
+  managed_virtual_network_enabled = true
+  public_network_enabled          = false
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.adf-mi.id]
@@ -60,6 +67,8 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
   name                = "vhvideo_link"
   data_factory_id     = azurerm_data_factory.adf.id
   resource_group_name = "vh-reporting-infra-${var.env}"
+  use_managed_identity      = true
+  integration_runtime_name  = azurerm_data_factory_integration_runtime_azure.adfintegration.name
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
     secret_name         = "VhVideoDatabaseConnectionString"
@@ -67,11 +76,55 @@ resource "azurerm_data_factory_linked_service_azure_sql_database" "adfvideodb" {
 }
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "adfreportingdb" {
-  name                = "vhreporting_link"
-  data_factory_id     = azurerm_data_factory.adf.id
-  resource_group_name = "vh-reporting-infra-${var.env}"
+  name                      = "vhreporting_link"
+  data_factory_id           = azurerm_data_factory.adf.id
+  resource_group_name       = "vh-reporting-infra-${var.env}"
+  use_managed_identity      = true
+  integration_runtime_name  = azurerm_data_factory_integration_runtime_azure.adfintegration.name
   key_vault_connection_string {
     linked_service_name = azurerm_data_factory_linked_service_key_vault.adfkeyvault.name
     secret_name         = "VhReportingDatabaseConnectionString"
   }
+}
+
+resource "azurerm_data_factory_integration_runtime_azure" "adfintegration" {
+  name                    = "vh-adf-integration"
+  data_factory_id         = azurerm_data_factory.adf.id
+  resource_group_name     = var.rg_name
+  location                = var.rg_location
+  compute_type            = "General"
+  core_count              = 16
+  time_to_live_min        = 10
+  virtual_network_enabled = true
+}
+
+resource "azurerm_data_factory_managed_private_endpoint" "adfendpoint" {
+  name               = "vhadfendpoint"
+  data_factory_id    = azurerm_data_factory.adf.id
+  target_resource_id = data.azurerm_sql_server.core-sql-server.id
+  subresource_name   = "sqlServer"
+
+}
+
+resource "azurerm_resource_group_template_deployment" "ARMdeploy-storage-acct" {
+  name                = "ARM-storage-account-${var.env}"
+  resource_group_name = var.rg_name
+
+  # "Incremental" ADDS the resource to already existing resources. "Complete" destroys all other resources and creates the new one
+  deployment_mode     = "Incremental"
+
+  # the parameters below can be found near the top of the ARM file
+  parameters_content = jsonencode({
+    "connections_azureblob_name" = {
+      value = "azureblob"
+    },
+    "accountName" = {
+      value = "vhcoreinfra${var.env}"
+    },
+    "access-key" = {
+      value = data.azurerm_storage_account.core-sa.primary_access_key
+    }
+  })
+  # the actual ARM template file we will use
+  template_content = file("storage_account.json")
 }
