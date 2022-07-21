@@ -41,6 +41,7 @@ Run the az cli commands from the pipeline to configure:
 * and [triggers](https://github.com/hmcts/vh-reports/blob/f11a7fa9c72a1852d7ebf4c44a9aa3d8a47b69e8/azure-pipelines.yml#L149)
 supplying the relevant files from the dataset/pipeline/trigger folders.
 
+Confluence:[Confluence page on deployment](https://tools.hmcts.net/confluence/display/VIH/Deployment+of+Current+VH-Reporting+Infrastructure)
 
 
 
