@@ -541,3 +541,124 @@ CREATE NONCLUSTERED INDEX IX_Participant_ConferenceId
 ON [dbo].[Participant] ([ConferenceId])
 
 GO
+
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioPacketSent')
+	ALTER TABLE stg.Heartbeat ADD OutgoingAudioPacketSent [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioPacketsLost')
+	ALTER TABLE stg.Heartbeat ADD OutgoingAudioPacketsLost [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoPacketSent')
+	ALTER TABLE stg.Heartbeat ADD OutgoingVideoPacketSent [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoPacketsLost')
+	ALTER TABLE stg.Heartbeat ADD OutgoingVideoPacketsLost [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingAudioPacketReceived')
+	ALTER TABLE stg.Heartbeat ADD IncomingAudioPacketReceived [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingAudioPacketsLost')
+	ALTER TABLE stg.Heartbeat ADD IncomingAudioPacketsLost [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoPacketReceived')
+	ALTER TABLE stg.Heartbeat ADD IncomingVideoPacketReceived [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoPacketsLost')
+	ALTER TABLE stg.Heartbeat ADD IncomingVideoPacketsLost [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoFramerate')
+	ALTER TABLE stg.Heartbeat ADD OutgoingVideoFramerate [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoBitrate')
+	ALTER TABLE stg.Heartbeat ADD OutgoingVideoBitrate [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoCodec')
+	ALTER TABLE stg.Heartbeat ADD OutgoingVideoCodec [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoResolution')
+	ALTER TABLE stg.Heartbeat ADD OutgoingVideoResolution [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioBitrate')
+	ALTER TABLE stg.Heartbeat ADD OutgoingAudioBitrate [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioCodec')
+	ALTER TABLE stg.Heartbeat ADD OutgoingAudioCodec [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingAudioBitrate')
+	ALTER TABLE stg.Heartbeat ADD IncomingAudioBitrate [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingAudioCodec')
+	ALTER TABLE stg.Heartbeat ADD IncomingAudioCodec [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoBitrate')
+	ALTER TABLE stg.Heartbeat ADD IncomingVideoBitrate [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoCodec')
+	ALTER TABLE stg.Heartbeat ADD IncomingVideoCodec [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoResolution')
+	ALTER TABLE stg.Heartbeat ADD IncomingVideoResolution [nvarchar](50) NULL;
+GO
+
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioPacketSent')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingAudioPacketSent [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioPacketsLost')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingAudioPacketsLost [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoPacketSent')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingVideoPacketSent [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoPacketsLost')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingVideoPacketsLost [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingAudioPacketReceived')
+	ALTER TABLE dbo.Heartbeat ADD IncomingAudioPacketReceived [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingAudioPacketsLost')
+	ALTER TABLE dbo.Heartbeat ADD IncomingAudioPacketsLost [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoPacketReceived')
+	ALTER TABLE dbo.Heartbeat ADD IncomingVideoPacketReceived [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoPacketsLost')
+	ALTER TABLE dbo.Heartbeat ADD IncomingVideoPacketsLost [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoFramerate')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingVideoFramerate [int] NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoBitrate')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingVideoBitrate [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoCodec')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingVideoCodec [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingVideoResolution')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingVideoResolution [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioBitrate')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingAudioBitrate [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioCodec')
+	ALTER TABLE dbo.Heartbeat ADD OutgoingAudioCodec [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingAudioBitrate')
+	ALTER TABLE dbo.Heartbeat ADD IncomingAudioBitrate [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingAudioCodec')
+	ALTER TABLE dbo.Heartbeat ADD IncomingAudioCodec [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoBitrate')
+	ALTER TABLE dbo.Heartbeat ADD IncomingVideoBitrate [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoCodec')
+	ALTER TABLE dbo.Heartbeat ADD IncomingVideoCodec [nvarchar](50) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoResolution')
+	ALTER TABLE dbo.Heartbeat ADD IncomingVideoResolution [nvarchar](50) NULL;
+GO
+
