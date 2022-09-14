@@ -372,7 +372,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AN
 	EXEC('CREATE PROCEDURE dbo.sp_LoadHeartbeat AS BEGIN SELECT 1 END')
 GO
 
-ALTER PROCEDURE dbo.sp_LoadHeartbeat AS
+ALTER PROCEDURE [dbo].[sp_LoadHeartbeat] AS
 BEGIN
 	MERGE INTO dbo.Heartbeat AS t
 	USING stg.Heartbeat AS s
@@ -393,6 +393,25 @@ BEGIN
 			,t.BrowserVersion = s.BrowserVersion 
 			,t.OperatingSystem = s.OperatingSystem 
 			,t.OperatingSystemVersion = s.OperatingSystemVersion 
+			,t.OutgoingAudioPacketSent = s.OutgoingAudioPacketSent		
+			,t.OutgoingAudioPacketsLost = s.OutgoingAudioPacketsLost		
+			,t.OutgoingVideoPacketSent = s.OutgoingVideoPacketSent		
+			,t.OutgoingVideoPacketsLost = s.OutgoingVideoPacketsLost		
+			,t.IncomingAudioPacketReceived = s.IncomingAudioPacketReceived	
+			,t.IncomingAudioPacketsLost = s.IncomingAudioPacketsLost		
+			,t.IncomingVideoPacketReceived = s.IncomingVideoPacketReceived	
+			,t.IncomingVideoPacketsLost = s.IncomingVideoPacketsLost		
+			,t.OutgoingVideoFramerate = s.OutgoingVideoFramerate		
+			,t.OutgoingVideoBitrate = s.OutgoingVideoBitrate			
+			,t.OutgoingVideoCodec = s.OutgoingVideoCodec			
+			,t.OutgoingVideoResolution = s.OutgoingVideoResolution		
+			,t.OutgoingAudioBitrate = s.OutgoingAudioBitrate			
+			,t.OutgoingAudioCodec = s.OutgoingAudioCodec			
+			,t.IncomingAudioBitrate = s.IncomingAudioBitrate			
+			,t.IncomingAudioCodec = s.IncomingAudioCodec			
+			,t.IncomingVideoBitrate = s.IncomingVideoBitrate			
+			,t.IncomingVideoCodec = s.IncomingVideoCodec			
+			,t.IncomingVideoResolution = s.IncomingVideoResolution
 	WHEN NOT MATCHED THEN 
 	INSERT (
 		Id
@@ -410,7 +429,26 @@ BEGIN
 		,BrowserName
 		,BrowserVersion
 		,OperatingSystem
-		,OperatingSystemVersion )
+		,OperatingSystemVersion 
+		,OutgoingAudioPacketSent
+		,OutgoingAudioPacketsLost
+		,OutgoingVideoPacketSent
+		,OutgoingVideoPacketsLost
+		,IncomingAudioPacketReceived
+		,IncomingAudioPacketsLost
+		,IncomingVideoPacketReceived
+		,IncomingVideoPacketsLost
+		,OutgoingVideoFramerate
+		,OutgoingVideoBitrate
+		,OutgoingVideoCodec
+		,OutgoingVideoResolution
+		,OutgoingAudioBitrate
+		,OutgoingAudioCodec
+		,IncomingAudioBitrate
+		,IncomingAudioCodec
+		,IncomingVideoBitrate
+		,IncomingVideoCodec
+		,IncomingVideoResolution )
 	VALUES (
 		s.Id
 		,s.ConferenceId
@@ -428,6 +466,25 @@ BEGIN
 		,s.BrowserVersion
 		,s.OperatingSystem
 		,s.OperatingSystemVersion
+		,s.OutgoingAudioPacketSent
+		,s.OutgoingAudioPacketsLost
+		,s.OutgoingVideoPacketSent
+		,s.OutgoingVideoPacketsLost
+		,s.IncomingAudioPacketReceived
+		,s.IncomingAudioPacketsLost
+		,s.IncomingVideoPacketReceived
+		,s.IncomingVideoPacketsLost
+		,s.OutgoingVideoFramerate
+		,s.OutgoingVideoBitrate
+		,s.OutgoingVideoCodec
+		,s.OutgoingVideoResolution
+		,s.OutgoingAudioBitrate
+		,s.OutgoingAudioCodec
+		,s.IncomingAudioBitrate
+		,s.IncomingAudioCodec
+		,s.IncomingVideoBitrate
+		,s.IncomingVideoCodec
+		,s.IncomingVideoResolution
 	);
 
 	WITH delta AS (
