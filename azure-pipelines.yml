@@ -13,9 +13,9 @@ resources:
 
 parameters:
   - name: environment
-    displayName: Environment to Deploy (sbox default)
+    displayName: Environment to Deploy (dev default)
     type: string
-    default: sbox
+    default: dev
     values:
       - dev
       - sbox
