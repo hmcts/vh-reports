@@ -15,10 +15,10 @@ parameters:
   - name: environment
     displayName: Environment to Deploy (sbox default)
     type: string
-    default: sandbox
+    default: sbox
     values:
       - dev
-      - sandbox
+      - sbox
       - test1
       - preview
       - preprod
