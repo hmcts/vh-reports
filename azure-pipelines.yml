@@ -146,14 +146,21 @@ stages:
               displayName: Update ADF-${{ parameters.environment }} pipeline triggers
               inputs:
                 azureSubscription: $(subscription)
-                scriptType: bash
+                scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: |                  
-                  #set up triggers
-                  for file in $(System.DefaultWorkingDirectory)/trigger/*
-                  do
-                    fileName="$(basename $file .json)"
-                    echo $fileName
-                    az datafactory trigger create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file" --debug
-                  done
+                  $files=Get-ChildItem -Path "./trigger"
+                  $environment="dev"
+                  
+                  foreach ($file in $files){
+                    $name= $file.name
+                    $path= $file.fullName
+                    $content=$(Get-Content -Path $path | ConvertTo-Json -Compress -Depth 100)
+                    $content = $content -replace "`"", "\`""
+                  
+                    Write-Host "Creating/Updating Trigger $name"
+                    #Write-Host "$content"
+                    az datafactory trigger create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --properties "$content" --debug
+                  }
+                
             
