@@ -1,15 +1,5 @@
 {
 	"properties": {
-		"annotations": [],
-		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "Master_TraceFile",
-					"type": "PipelineReference"
-				}
-			}
-		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
@@ -23,6 +13,16 @@
 					]
 				}
 			}
-		}
+		},
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Master_TraceFile",
+					"type": "PipelineReference"
+				}
+			}
+		]
 	}
 }

@@ -154,6 +154,6 @@ stages:
                   do
                     fileName="$(basename $file .json)"
                     echo $fileName
-                    az datafactory trigger create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
+                    az datafactory trigger create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file" --debug
                   done
             
