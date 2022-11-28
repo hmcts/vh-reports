@@ -150,17 +150,18 @@ stages:
                 scriptLocation: inlineScript
                 inlineScript: |                  
                   $files=Get-ChildItem -Path "./trigger"
-                  $environment="dev"
+                  $environment="${{ parameters.environment }}"
                   
                   foreach ($file in $files){
                     $name= $file.name
                     $path= $file.fullName
-                    $content=$(Get-Content -Path $path | ConvertTo-Json -Compress -Depth 100)
+                    $content=$(Get-Content -Path $path) | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 100
                     $content = $content -replace "`"", "\`""
-                  
+
                     Write-Host "Creating/Updating Trigger $name"
-                    #Write-Host "$content"
-                    az datafactory trigger create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --properties "$content" --debug
+                    
+                    Write-Host "$content"
+                    az datafactory trigger create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --properties "$content"
                   }
                 
             
