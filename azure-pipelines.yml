@@ -164,7 +164,7 @@ stages:
                     Write-Host "Creating/Updating Trigger $name"
                     
                     Write-Host "$content"
-                    az datafactory trigger create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --properties "$content"
+                    az datafactory trigger create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --properties "$content" --debug
                   }
                 
             
