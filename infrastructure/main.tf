@@ -68,3 +68,20 @@ resource "azurerm_storage_container" "vhreporting" {
   storage_account_name  = data.azurerm_storage_account.core-sa.name
   container_access_type = "private"
 }
+
+
+locals {
+  data_factory_contributor_role = "673868aa-7521-48a0-acc6-0f60742d39f5"
+  vh_ad_group                   = "dcd_vh_reform_cft_vh_dev_contributor"
+}
+
+data "azuread_group" "vh_ad_group" {
+  display_name     = local.vh_ad_group
+  security_enabled = true
+}
+
+resource "azurerm_role_assignment" "example" {
+  scope                = module.data_factory_config.adf_id
+  role_definition_name = "Data Factory Contributor"
+  principal_id         = data.azuread_group.vh_ad_group.object_id
+}
