@@ -59,20 +59,23 @@ stages:
           outputName: ${{ parameters.environment }}
           workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
 
-          
-  - stage: Wait
-    jobs:
-      - job: Wait
-        displayName: "Wait for approval"
-        pool: server
-        steps:
-          - template: ado-pipeline/steps/wait.yaml
-            parameters:
-              environment: ${{ parameters.environment }}
+  - ${{ if ne(parameters.environment, 'dev') }}:        
+    - stage: Wait
+      jobs:
+        - job: Wait
+          displayName: "Wait for approval"
+          pool: server
+          steps:
+            - template: ado-pipeline/steps/wait.yaml
+              parameters:
+                environment: ${{ parameters.environment }}
             
   - stage: Apply
     displayName: Apply ${{ parameters.environment }}
-    dependsOn: Wait 
+    ${{ if eq(parameters.environment, 'dev') }}:
+      dependsOn: Plan
+    ${{ else }}:
+      dependsOn: Wait 
     jobs:
       - template: ado-pipeline/jobs/terraform-apply.yaml
         parameters:
