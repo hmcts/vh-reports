@@ -1,28 +1,26 @@
 {
-	"properties": {
-		"type": "ScheduleTrigger",
-		"typeProperties": {
-			"recurrence": {
-				"frequency": "Day",
-				"interval": 1,
-				"startTime": "2022-01-01T00:00:00Z",
-				"timeZone": "UTC",
-				"schedule": {
-					"hours": [
-						6
-					]
-				}
+	"type": "ScheduleTrigger",
+	"typeProperties": {
+		"recurrence": {
+			"frequency": "Day",
+			"interval": 1,
+			"startTime": "2022-01-01T00:00:00Z",
+			"timeZone": "UTC",
+			"schedule": {
+				"hours": [
+					6
+				]
 			}
-		},
-		"annotations": [],
-		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "Master_TraceFile",
-					"type": "PipelineReference"
-				}
+		}
+	},
+	"annotations": [],
+	"runtimeState": "Started",
+	"pipelines": [
+		{
+			"pipelineReference": {
+				"referenceName": "Master_TraceFile",
+				"type": "PipelineReference"
 			}
-		]
-	}
+		}
+	]
 }

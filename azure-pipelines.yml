@@ -161,9 +161,9 @@ stages:
                     $content=$(Get-Content -Path $path) | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 100
                     $content = $content -replace "`"", "\`""
 
+                    Write-Host "Stop Trigger"
+                    az datafactory trigger stop --factory-name "vh-datafactory-$environment" --resource-group "vh-reporting-infra-$environment" --name "$name"
                     Write-Host "Creating/Updating Trigger $name"
-                    
-                    Write-Host "$content"
                     az datafactory trigger create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --properties "$content" --debug
                   }
                 
