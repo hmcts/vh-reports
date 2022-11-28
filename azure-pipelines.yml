@@ -156,7 +156,7 @@ stages:
                   $environment="${{ parameters.environment }}"
                   
                   foreach ($file in $files){
-                    $name= $file.name
+                    $name= $file.name -replace ".json",""
                     $path= $file.fullName
                     $content=$(Get-Content -Path $path) | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 100
                     $content = $content -replace "`"", "\`""

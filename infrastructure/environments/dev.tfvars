@@ -1,5 +1,5 @@
-env = "dev"
+env      = "dev"
 location = "uksouth"
 
-builtFrom   = "vh-reports"
-product     = "vh"
+builtFrom = "vh-reports"
+product   = "vh"
