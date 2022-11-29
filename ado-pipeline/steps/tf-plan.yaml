@@ -10,10 +10,14 @@ parameters:
 
 steps:
 
+  - template: sds-variables.yaml
+    parameters:
+      environment: var.environment
+
   - task: TerraformCLI@0
     displayName: Terraform plan
     inputs:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan'
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan $(extraVars.sdsVars) '

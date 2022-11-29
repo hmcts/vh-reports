@@ -1,14 +1,9 @@
 terraform {
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=2.99"
+      source                = "hashicorp/azurerm"
+      version               = "=2.99"
+      configuration_aliases = [azurerm.sds_subcription]
     }
   }
-}
-
-provider "azurerm" {
-  features {}
-  alias           = "sds_subcription"
-  subscription_id = var.sds_subcription_id
 }
