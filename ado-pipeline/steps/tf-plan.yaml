@@ -12,7 +12,7 @@ steps:
 
   - template: sds-variables.yaml
     parameters:
-      environment: var.environment
+      environment: ${{ parameters.environment }}
 
   - task: TerraformCLI@0
     displayName: Terraform plan
