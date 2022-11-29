@@ -29,6 +29,8 @@ module "data_factory_config" {
   rg_name     = azurerm_resource_group.vh-reporting-rg.name
   rg_location = azurerm_resource_group.vh-reporting-rg.location
 
+  sds_subcription_id = local.sds_subcription_id
+
 }
 
 resource "azurerm_template_deployment" "workflow" {
