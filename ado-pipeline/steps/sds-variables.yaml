@@ -11,9 +11,9 @@ steps:
   - powershell: |
       $sds_credentails = [PSCustomObject]@{
         sds_client_id      = "$($env:sds_client_id)"
-          sds_client_secret  = "$($env:sds_client_secret)"
-          sds_subcription_id = "$($env:sds_subcription_id)"
-          sds_tenant_id      = "$($env:sds_tenant_id)"
+        sds_client_secret  = "$($env:sds_client_secret)"
+        sds_subcription_id = "$($env:sds_subcription_id)"
+        sds_tenant_id      = "$($env:sds_tenant_id)"
       }
 
       $sds_credentailsJson = $sds_credentails | ConvertTo-Json -Compress -Depth 100
@@ -22,7 +22,7 @@ steps:
       $variableStr = " -var sds_credentails=$sds_credentailsJson "
 
       Write-Host "$variableStr"
-      echo "##vso[task.setvariable variable=sdsVars;output=true]${variables}"
+      echo "##vso[task.setvariable variable=sdsVars;output=true]$variableStr"
     displayName: 'Set SDS TF Variables'
     name: extraVars
     env:

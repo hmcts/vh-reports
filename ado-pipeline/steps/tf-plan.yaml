@@ -10,9 +10,9 @@ parameters:
 
 steps:
 
-  - template: sds-variables.yaml
+  - template: templates/Azure/Common/get-service-connection-details.yaml@templates
     parameters:
-      environment: ${{ parameters.environment }}
+      subscriptionName: "DTS-SHAREDSERVICES-${{ parameters.environment }}"
 
   - task: TerraformCLI@0
     displayName: Terraform plan
@@ -20,4 +20,4 @@ steps:
       command: plan
       workingDirectory: ${{ parameters.workingDirectory }}
       environmentServiceName: ${{ parameters.subscription }}
-      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan $(extraVars.sdsVars) '
+      commandOptions: '-var-file=${{ parameters.tfVariables }} -out=$(System.DefaultWorkingDirectory)/plans/${{ parameters.environment }}.tfplan -var sds_credentails={\"sds_client_id\":\"$(serviceConnection.ARM_CLIENT_ID) \",\"sds_client_secret\":\"$(serviceConnection.ARM_CLIENT_SECRET)\",\"sds_subcription_id\":\"$(serviceConnection.ARM_SUBSCRIPTION_ID) \",\"sds_tenant_id\":\"$(serviceConnection.ARM_TENANT_ID) \"}'
