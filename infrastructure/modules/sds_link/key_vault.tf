@@ -25,4 +25,9 @@ resource "azurerm_data_factory_linked_service_key_vault" "infra_core" {
   data_factory_id     = var.adf_id
   key_vault_id        = data.azurerm_key_vault.infra_core.id
   resource_group_name = "vh-reporting-infra-${var.env}"
+
+  depends_on = [
+    azurerm_role_assignment.kv_access,
+    azurerm_key_vault_access_policy.kvaccess
+  ]
 }
