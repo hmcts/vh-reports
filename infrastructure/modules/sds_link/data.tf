@@ -8,3 +8,6 @@ data "azurerm_sql_server" "infra_core" {
   resource_group_name = "vh-infra-core-${var.env}"
 }
 data "azurerm_client_config" "current" {}
+data "azurerm_client_config" "vh" {
+  provider = azurerm.vh
+}

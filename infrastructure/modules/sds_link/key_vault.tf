@@ -13,6 +13,12 @@ resource "azurerm_key_vault_access_policy" "kvaccess" {
 
 }
 
+resource "azurerm_role_assignment" "kv_access" {
+  scope                = data.azurerm_key_vault.infra_core.id
+  role_definition_name = "Contributor"
+  principal_id         = data.azurerm_client_config.vh.object_id
+}
+
 resource "azurerm_data_factory_linked_service_key_vault" "infra_core" {
   provider            = azurerm.vh
   name                = "vhreporting-kv-link"
