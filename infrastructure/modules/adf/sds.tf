@@ -1,12 +1,3 @@
-data "azurerm_client_config" "sds" {
-  provider = azurerm.sds_subcription
-}
-data "azurerm_user_assigned_identity" "sds_adf_mi" {
-  provider            = azurerm.sds_subcription
-  name                = "vh-adf-${var.env}-mi"
-  resource_group_name = "managed-identities-${var.env}-rg"
-}
-
 
 module "sds_connection" {
   source = "../sds_link"
@@ -18,4 +9,6 @@ module "sds_connection" {
   adf_integration_runtime_name = azurerm_data_factory_integration_runtime_azure.adfintegration.name
 
   env = var.env
+
+  adf_mi_principal_id = azurerm_user_assigned_identity.adf-mi.principal_id
 }

@@ -26,8 +26,7 @@ resource "azurerm_data_factory" "adf" {
   identity {
     type = "UserAssigned"
     identity_ids = [
-      azurerm_user_assigned_identity.adf-mi.id,
-      data.azurerm_user_assigned_identity.sds_adf_mi.id,
+      azurerm_user_assigned_identity.adf-mi.id
     ]
   }
 }

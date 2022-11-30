@@ -11,3 +11,7 @@ variable "env" {
   type        = string
   description = "Environment"
 }
+variable "adf_mi_principal_id" {
+  type        = string
+  description = "Managed Identity Principal ID"
+}

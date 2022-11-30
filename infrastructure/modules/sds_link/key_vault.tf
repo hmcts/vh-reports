@@ -1,4 +1,17 @@
+resource "azurerm_key_vault_access_policy" "kvaccess" {
+  key_vault_id = data.azurerm_key_vault.infra_core.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = var.adf_mi_principal_id
 
+  key_permissions = [
+    "Get", "List",
+  ]
+
+  secret_permissions = [
+    "Get", "List",
+  ]
+
+}
 
 resource "azurerm_data_factory_linked_service_key_vault" "infra_core" {
   name                = "vhreporting-kv-link"
