@@ -1,5 +1,6 @@
 
 resource "azurerm_data_factory_linked_service_azure_sql_database" "video" {
+  provider                 = azurerm.vh
   name                     = "vhvideo_link"
   data_factory_id          = var.adf_id
   resource_group_name      = "vh-reporting-infra-${var.env}"

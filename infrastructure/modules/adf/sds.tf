@@ -2,7 +2,8 @@
 module "sds_connection" {
   source = "../sds_link"
   providers = {
-    azurerm = azurerm.sds_subcription
+    azurerm    = azurerm.sds_subcription
+    azurerm.vh = azurerm
   }
 
   adf_id                       = azurerm_data_factory.adf.id

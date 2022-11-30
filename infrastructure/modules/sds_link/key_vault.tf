@@ -14,6 +14,7 @@ resource "azurerm_key_vault_access_policy" "kvaccess" {
 }
 
 resource "azurerm_data_factory_linked_service_key_vault" "infra_core" {
+  provider            = azurerm.vh
   name                = "vhreporting-kv-link"
   data_factory_id     = var.adf_id
   key_vault_id        = data.azurerm_key_vault.infra_core.id
