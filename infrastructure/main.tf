@@ -24,10 +24,16 @@ resource "azurerm_resource_group" "vh-reporting-rg" {
 }
 module "data_factory_config" {
   source = "./modules/adf"
+  providers = {
+    azurerm                 = azurerm
+    azurerm.sds_subcription = azurerm.sds_subcription
+  }
 
   env         = var.env
   rg_name     = azurerm_resource_group.vh-reporting-rg.name
   rg_location = azurerm_resource_group.vh-reporting-rg.location
+
+  sds_subcription_id = local.sds_subcription_id
 
 }
 
