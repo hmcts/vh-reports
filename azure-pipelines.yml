@@ -178,12 +178,12 @@ stages:
               subscription: $(subscription)
               environment: ${{ parameters.environment }}
               resourceGroupName: "vh-core-infra-${{ parameters.environment }}"
-              resourceName: "vhadfendpoint"
-              privateEndpointName: "vh-core-infra-${{ parameters.environment }}"
+              resourceName: "vh-core-infra-${{ parameters.environment }}"
+              privateEndpointName: "vhadfendpoint"
           - template: ado-pipeline/templates/private-endpoint-approval.yaml
             parameters:
               subscription: "DTS-SHAREDSERVICES-${{ parameters.environment }}"
               environment: ${{ parameters.environment }}
               resourceGroupName: "vh-infra-core-${{ parameters.environment }}"
-              resourceName: "vhadfsdsendpoint"
-              privateEndpointName: "vh-infra-core-${{ parameters.environment }}"
+              resourceName: "vh-infra-core-${{ parameters.environment }}"
+              privateEndpointName: "vhadfsdsendpoint"
