@@ -103,7 +103,6 @@ stages:
           dbuserpass: $(dbuserpass${{ parameters.environment }})
           SqlFileName: '00_init.sql'
 
-
   - stage: ADF
     displayName: ADF Config
     dependsOn: Apply 
@@ -167,4 +166,24 @@ stages:
                     az datafactory trigger create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --properties "$content" --debug
                   }
                 
-            
+  - stage: Access
+    displayName: Allow Access
+    dependsOn: Apply
+    jobs:
+      - job:
+        displayName: Database Access
+        steps:
+          - template: ado-pipeline/templates/private-endpoint-approval.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              resourceGroupName: "vh-core-infra-${{ parameters.environment }}"
+              resourceName: "vhadfendpoint"
+              privateEndpointName: "vh-core-infra-${{ parameters.environment }}"
+          - template: ado-pipeline/templates/private-endpoint-approval.yaml
+            parameters:
+              subscription: "DTS-SHAREDSERVICES-${{ parameters.environment }}"
+              environment: ${{ parameters.environment }}
+              resourceGroupName: "vh-infra-core-${{ parameters.environment }}"
+              resourceName: "vhadfsdsendpoint"
+              privateEndpointName: "vh-infra-core-${{ parameters.environment }}"
