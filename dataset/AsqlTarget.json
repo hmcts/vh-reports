@@ -1,5 +1,4 @@
 {
-	"properties": {
 		"linkedServiceName": {
 			"referenceName": "vhreporting_link",
 			"type": "LinkedServiceReference"
@@ -27,6 +26,4 @@
 				"type": "Expression"
 			}
 		}
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
 }

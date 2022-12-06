@@ -7,10 +7,10 @@
 			"connectionString": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
-					"referenceName": "vhreporting-kv-link",
+					"referenceName": "vhreporting-sds-kv-link",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "VhVideoDatabaseConnectionString"
+				"secretName": "connectionstrings--vhvideo"
 			},
 			"alwaysEncryptedSettings": {
 				"alwaysEncryptedAkvAuthType": "ManagedIdentity"

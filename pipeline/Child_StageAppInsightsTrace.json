@@ -1,5 +1,4 @@
 {
-	"properties": {
 		"activities": [
 			{
 				"name": "Stage AppInsightsError",
@@ -347,6 +346,4 @@
 		},
 		"annotations": [],
 		"lastPublishTime": "2022-04-25T13:14:07Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
 }

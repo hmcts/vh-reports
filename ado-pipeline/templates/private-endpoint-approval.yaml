@@ -1,0 +1,39 @@
+parameters:
+  - name: subscription
+    type: string
+  - name: environment
+    type: string
+  - name: resourceGroupName
+    type: string
+  - name: resourceName
+    type: string
+  - name: privateEndpointName
+    type: string
+
+steps:
+  - task: AzureCLI@2
+    displayName: Approve ${{ parameters.privateEndpointName }} Private Endpont on ${{ parameters.resourceName }}
+    inputs:
+      azureSubscription: ${{ parameters.subscription }}
+      scriptType: pscore
+      scriptLocation: inlineScript
+      inlineScript: | 
+        $environment="${{ parameters.environment }}"
+        $resource_group_name="${{ parameters.resourceGroupName }}"
+        $resource_name="${{ parameters.resourceName }}"
+        $private_endpoint_name="${{ parameters.privateEndpointName }}"
+        $resource_type="Microsoft.Sql/servers"
+        $approval_description="Approved by vh-reports pipeline"
+
+        $private_endpoints=$(az network private-endpoint-connection list -g $resource_group_name -n $resource_name --type $resource_type --query "[? contains(name, '$private_endpoint_name')]" -o json --only-show-errors | ConvertFrom-Json)
+
+        if ($private_endpoints.length -gt 0 -and $private_endpoints[0].properties.privateLinkServiceConnectionState.status -ne "Approved"){
+          Write-Host "Approving $($private_endpoints[0].name)"
+          az network private-endpoint-connection approve -g $resource_group_name -n $($private_endpoints[0].name) --resource-name $resource_name --type $resource_type --description $approval_description --only-show-errors
+        }
+        elseif ($private_endpoints.length -lt 1){
+          Write-Host "None found with name like $private_endpoint_name in $resource_name"
+        }
+        else {
+          Write-Host "$($private_endpoints[0].name) is already approved"
+        }

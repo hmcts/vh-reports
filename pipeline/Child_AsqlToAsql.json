@@ -1,5 +1,4 @@
 {
-	"properties": {
 		"activities": [
 			{
 				"name": "Truncate Staging",
@@ -147,5 +146,4 @@
 			}
 		},
 		"annotations": []
-	}
 }

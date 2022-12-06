@@ -1,0 +1,10 @@
+{
+	"name": "vhreporting-sds-kv-link",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://vh-infra-core-dev.vault.azure.net/"
+		}
+	}
+}

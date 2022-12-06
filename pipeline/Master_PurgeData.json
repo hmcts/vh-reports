@@ -1,5 +1,4 @@
 {
-	"properties": {
 		"activities": [
 			{
 				"name": "Purge Data",
@@ -23,5 +22,4 @@
 			}
 		],
 		"annotations": []
-	}
 }
