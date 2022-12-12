@@ -168,7 +168,7 @@ stages:
                 
   - stage: Access
     displayName: Allow Access
-    dependsOn: Apply
+    dependsOn: CIBuild #Apply
     jobs:
       - job:
         displayName: Database Access
@@ -190,10 +190,10 @@ stages:
       - job:
         displayName: Linked Services to MIs
         steps:
-          - template: ado-pipeline/templates/create-credential.yaml
-            parameters:
-              subscription: $(subscription)
-              environment: ${{ parameters.environment }}
+          #- template: ado-pipeline/templates/create-credential.yaml
+          #  parameters:
+          #    subscription: $(subscription)
+          #    environment: ${{ parameters.environment }}
           - template: ado-pipeline/templates/link-credential.yaml
             parameters:
               subscription: $(subscription)
