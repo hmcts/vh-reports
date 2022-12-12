@@ -168,7 +168,7 @@ stages:
                 
   - stage: Access
     displayName: Allow Access
-    dependsOn: CIBuild #Apply
+    dependsOn: Apply
     jobs:
       - job:
         displayName: Database Access
