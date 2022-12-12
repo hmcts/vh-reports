@@ -187,3 +187,20 @@ stages:
               resourceGroupName: "vh-infra-core-${{ parameters.environment }}"
               resourceName: "vh-infra-core-${{ parameters.environment }}"
               privateEndpointName: "vhadfsdsendpoint"
+      - job:
+        displayName: Linked Services to MIs
+        steps:
+          - template: ado-pipeline/templates/create-credential.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+          - template: ado-pipeline/templates/link-credential.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              serviceName: "vhreporting-sds-kv-link"
+          - template: ado-pipeline/templates/link-credential.yaml
+            parameters:
+              subscription: $(subscription)
+              environment: ${{ parameters.environment }}
+              serviceName: "vhreporting-kv-link"
