@@ -86,8 +86,13 @@ data "azuread_group" "vh_ad_group" {
   security_enabled = true
 }
 
-resource "azurerm_role_assignment" "example" {
+resource "azurerm_role_assignment" "vh_ad_group" {
   scope                = module.data_factory_config.adf_id
   role_definition_name = "Data Factory Contributor"
   principal_id         = data.azuread_group.vh_ad_group.object_id
+}
+resource "azurerm_role_assignment" "deployment_sp" {
+  scope                = module.data_factory_config.adf_id
+  role_definition_name = "Data Factory Contributor"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
