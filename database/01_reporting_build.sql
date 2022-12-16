@@ -116,6 +116,7 @@ CREATE TABLE stg.Heartbeat (
 	[IncomingVideoBitrate] [nvarchar](50) NULL,
 	[IncomingVideoCodec] [nvarchar](50) NULL,
 	[IncomingVideoResolution] [nvarchar](50) NULL,
+	Device [nvarchar](max) NULL,
 	CONSTRAINT PK_stg_Heartbeat PRIMARY KEY CLUSTERED (	Id ASC ))
 GO
 
@@ -288,6 +289,7 @@ CREATE TABLE dbo.Heartbeat (
 	[IncomingVideoBitrate] [nvarchar](50) NULL,
 	[IncomingVideoCodec] [nvarchar](50) NULL,
 	[IncomingVideoResolution] [nvarchar](50) NULL,
+	Device [nvarchar](max) NULL,
 	CONSTRAINT PK_Heartbeat PRIMARY KEY CLUSTERED (	Id ASC ))
 GO
 
@@ -601,7 +603,9 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoResolution')
 	ALTER TABLE stg.Heartbeat ADD IncomingVideoResolution [nvarchar](50) NULL;
 GO
-
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Device' and [name] = 'IncomingVideoResolution')
+	ALTER TABLE stg.Heartbeat ADD Device [nvarchar](max) NULL;
+GO
 
 
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'OutgoingAudioPacketSent')
@@ -661,4 +665,6 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoResolution')
 	ALTER TABLE dbo.Heartbeat ADD IncomingVideoResolution [nvarchar](50) NULL;
 GO
-
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'Device')
+	ALTER TABLE dbo.Heartbeat ADD Device [nvarchar](max) NULL;
+GO
