@@ -1,0 +1,63 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "vh-datafactory-dev"
+		},
+		"vhreporting_blob_connectionString": {
+			"value": ""
+		},
+		"vhreporting-kv-link_properties_typeProperties_baseUrl": {
+			"value": "https://vhcoreinfradev.vault.azure.net/"
+		},
+		"vhreporting-sds-kv-link_properties_typeProperties_baseUrl": {
+			"value": "https://vh-infra-core-dev.vault.azure.net/"
+		},
+		"vhreporting_link_properties_typeProperties_connectionString_secretName": {
+			"value": "VhReportingDatabaseConnectionString"
+		},
+		"vhvideo_link_properties_typeProperties_connectionString_secretName": {
+			"value": "connectionstrings--vhvideo"
+		},
+		"AzureBlobStorage958_properties_privateLinkResourceId": {
+			"value": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-dev/providers/Microsoft.Storage/storageAccounts/vhcoreinfradev"
+		},
+		"AzureBlobStorage958_properties_groupId": {
+			"value": "blob"
+		},
+		"AzureBlobStorage958_properties_fqdns": {
+			"value": [
+				"vhcoreinfradev.blob.core.windows.net"
+			]
+		},
+		"vhadfendpoint_properties_privateLinkResourceId": {
+			"value": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-dev/providers/Microsoft.Sql/servers/vh-core-infra-dev"
+		},
+		"vhadfendpoint_properties_groupId": {
+			"value": "sqlServer"
+		},
+		"vhadfendpoint_properties_fqdns": {
+			"value": [
+				"vh-core-infra-dev.database.windows.net"
+			]
+		},
+		"vhadfsdsendpoint_properties_privateLinkResourceId": {
+			"value": "/subscriptions/867a878b-cb68-4de5-9741-361ac9e178b6/resourceGroups/vh-infra-core-dev/providers/Microsoft.Sql/servers/vh-infra-core-dev"
+		},
+		"vhadfsdsendpoint_properties_groupId": {
+			"value": "sqlServer"
+		},
+		"vhadfsdsendpoint_properties_fqdns": {
+			"value": [
+				"vh-infra-core-dev.database.windows.net"
+			]
+		},
+		"vhcoreinfrasbox_properties_privateLinkResourceId": {
+			"value": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-sandbox/providers/Microsoft.Sql/servers/vh-core-infra-sandbox"
+		},
+		"vhcoreinfrasbox_properties_groupId": {
+			"value": "sqlServer"
+		}
+	}
+}

@@ -1,0 +1,772 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "vh-datafactory-dev"
+		},
+		"vhreporting_blob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'vhreporting_blob'"
+		},
+		"vhreporting-kv-link_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://vhcoreinfradev.vault.azure.net/"
+		},
+		"vhreporting-sds-kv-link_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://vh-infra-core-dev.vault.azure.net/"
+		},
+		"AzureBlobStorage958_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-dev/providers/Microsoft.Storage/storageAccounts/vhcoreinfradev"
+		},
+		"AzureBlobStorage958_properties_groupId": {
+			"type": "string",
+			"defaultValue": "blob"
+		},
+		"AzureBlobStorage958_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"vhcoreinfradev.blob.core.windows.net"
+			]
+		},
+		"vhadfendpoint_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-dev/providers/Microsoft.Sql/servers/vh-core-infra-dev"
+		},
+		"vhadfendpoint_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
+		},
+		"vhadfendpoint_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"vh-core-infra-dev.database.windows.net"
+			]
+		},
+		"vhadfsdsendpoint_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/867a878b-cb68-4de5-9741-361ac9e178b6/resourceGroups/vh-infra-core-dev/providers/Microsoft.Sql/servers/vh-infra-core-dev"
+		},
+		"vhadfsdsendpoint_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
+		},
+		"vhadfsdsendpoint_properties_fqdns": {
+			"type": "array",
+			"defaultValue": [
+				"vh-infra-core-dev.database.windows.net"
+			]
+		},
+		"vhcoreinfrasbox_properties_privateLinkResourceId": {
+			"type": "string",
+			"defaultValue": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-sandbox/providers/Microsoft.Sql/servers/vh-core-infra-sandbox"
+		},
+		"vhcoreinfrasbox_properties_groupId": {
+			"type": "string",
+			"defaultValue": "sqlServer"
+		},
+		"vhreporting_link_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "VhReportingDatabaseConnectionString"
+		},
+		"vhvideo_link_properties_typeProperties_connectionString_secretName": {
+			"type": "string",
+			"defaultValue": "connectionstrings--vhvideo"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/vhreporting_blob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('vhreporting_blob_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/credential1')]",
+			"type": "Microsoft.DataFactory/factories/credentials",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {
+					"resourceId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourcegroups/vh-reporting-infra-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/vh-adf-mi-dev"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vh-adf-mi-dev')]",
+			"type": "Microsoft.DataFactory/factories/credentials",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {
+					"resourceId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourcegroups/vh-reporting-infra-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/vh-adf-mi-dev"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+			"apiVersion": "2018-06-01",
+			"properties": {},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/JsonAppInsightsError')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "vhreporting_blob",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "vhreporting"
+					},
+					"Folder": {
+						"type": "string",
+						"defaultValue": "AppInsightsError"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "2022-03-16T22%3A00%3A00.0000000"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().Folder",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"value": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"problemId": {
+										"type": "string"
+									},
+									"total_exceptions": {
+										"type": "integer"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_blob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/JsonAppInsightsTrace')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "vhreporting_blob",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "vhreporting"
+					},
+					"Folder": {
+						"type": "string",
+						"defaultValue": "AppInsightsTrace"
+					},
+					"FileName": {
+						"type": "string",
+						"defaultValue": "2022-04-11T09:00:00Z"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().Folder",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"value": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"message": {
+										"type": "string"
+									},
+									"customDimensions": {
+										"type": "string"
+									},
+									"user_Id": {
+										"type": "string"
+									},
+									"client_Model": {
+										"type": "string"
+									},
+									"client_OS": {
+										"type": "string"
+									},
+									"timestamp": {
+										"type": "string"
+									},
+									"currentConferenceId": {
+										"type": "null"
+									},
+									"conference": {
+										"type": "null"
+									},
+									"participant": {
+										"type": "null"
+									},
+									"errorInformation": {
+										"type": "null"
+									},
+									"HostInstanceId": {
+										"type": "null"
+									},
+									"ProcessId": {
+										"type": "null"
+									},
+									"LogLevel": {
+										"type": "null"
+									},
+									"pexipError": {
+										"type": "null"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_blob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vhreporting-kv-link')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('vhreporting-kv-link_properties_typeProperties_baseUrl')]",
+					"credential": {
+						"referenceName": "vh-adf-mi-dev",
+						"type": "CredentialReference"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/credentials/vh-adf-mi-dev')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vhreporting-sds-kv-link')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('vhreporting-sds-kv-link_properties_typeProperties_baseUrl')]",
+					"credential": {
+						"referenceName": "vh-adf-mi-dev",
+						"type": "CredentialReference"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/credentials/vh-adf-mi-dev')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADFVnet')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "UK West",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false
+						}
+					}
+				},
+				"managedVirtualNetwork": {
+					"type": "ManagedVirtualNetworkReference",
+					"referenceName": "default"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vh-adf-integration')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "UK South",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 16,
+							"timeToLive": 10,
+							"cleanup": true
+						},
+						"pipelineExternalComputeScaleProperties": {
+							"timeToLive": 60
+						}
+					}
+				},
+				"managedVirtualNetwork": {
+					"type": "ManagedVirtualNetworkReference",
+					"referenceName": "default"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default/AzureBlobStorage958')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"privateLinkResourceId": "[parameters('AzureBlobStorage958_properties_privateLinkResourceId')]",
+				"groupId": "[parameters('AzureBlobStorage958_properties_groupId')]",
+				"fqdns": "[parameters('AzureBlobStorage958_properties_fqdns')]"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default/vhadfendpoint')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"privateLinkResourceId": "[parameters('vhadfendpoint_properties_privateLinkResourceId')]",
+				"groupId": "[parameters('vhadfendpoint_properties_groupId')]",
+				"fqdns": "[parameters('vhadfendpoint_properties_fqdns')]"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default/vhadfsdsendpoint')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"privateLinkResourceId": "[parameters('vhadfsdsendpoint_properties_privateLinkResourceId')]",
+				"groupId": "[parameters('vhadfsdsendpoint_properties_groupId')]",
+				"fqdns": "[parameters('vhadfsdsendpoint_properties_fqdns')]"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/default/vhcoreinfrasbox')]",
+			"type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"privateLinkResourceId": "[parameters('vhcoreinfrasbox_properties_privateLinkResourceId')]",
+				"groupId": "[parameters('vhcoreinfrasbox_properties_groupId')]"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vhreporting_link')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "vhreporting-kv-link",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('vhreporting_link_properties_typeProperties_connectionString_secretName')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "vh-adf-integration",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/vh-adf-integration')]",
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting-kv-link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vhvideo_link')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "vhreporting-sds-kv-link",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('vhvideo_link_properties_typeProperties_connectionString_secretName')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "vh-adf-integration",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/vh-adf-integration')]",
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting-sds-kv-link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Master_PurgeData')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Purge Data",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "dbo.sp_PurgeOldData"
+						},
+						"linkedServiceName": {
+							"referenceName": "vhreporting_link",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-12-13T14:08:39Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AsqlSource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "vhvideo_link",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SchemaName": {
+						"type": "string",
+						"defaultValue": "dbo"
+					},
+					"TableName": {
+						"type": "string",
+						"defaultValue": "Conference"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().SchemaName",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/vhvideo_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AsqlTarget')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "vhreporting_link",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SchemaName": {
+						"type": "string",
+						"defaultValue": "stg"
+					},
+					"TableName": {
+						"type": "string",
+						"defaultValue": "Conference"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().SchemaName",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Child_AsqlToAsql')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Truncate Staging",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[sp_TruncateStagingTable]",
+							"storedProcedureParameters": {
+								"tableName": {
+									"value": {
+										"value": "@pipeline().parameters.TableName",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "vhreporting_link",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "SourceToStaging",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Truncate Staging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "@pipeline().parameters.ExtractSQL",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AsqlSource",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "dbo",
+									"TableName": {
+										"value": "@pipeline().parameters.TableName",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AsqlTarget",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "stg",
+									"TableName": {
+										"value": "@pipeline().parameters.TableName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "LoadTarget",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "SourceToStaging",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": {
+								"value": "@pipeline().parameters.ProcedureName",
+								"type": "Expression"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "vhreporting_link",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"TableName": {
+						"type": "string",
+						"defaultValue": "Conference"
+					},
+					"ProcedureName": {
+						"type": "string",
+						"defaultValue": "sp_LoadConference"
+					},
+					"ExtractSQL": {
+						"type": "string",
+						"defaultValue": "SELECT * FROM dbo.Conference"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-12-13T14:08:35Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/vhreporting_link')]",
+				"[concat(variables('factoryId'), '/datasets/AsqlSource')]",
+				"[concat(variables('factoryId'), '/datasets/AsqlTarget')]"
+			]
+		}
+	]
+}
