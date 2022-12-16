@@ -1,4 +1,6 @@
 {
+	"name": "Child_StageAppInsightsError",
+	"properties": {
 		"activities": [
 			{
 				"name": "Stage AppInsightsError",
@@ -242,5 +244,7 @@
 			}
 		},
 		"annotations": [],
-		"lastPublishTime": "2022-04-25T13:14:06Z"
+		"lastPublishTime": "2022-12-13T14:08:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }

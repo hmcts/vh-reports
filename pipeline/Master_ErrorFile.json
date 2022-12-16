@@ -1,4 +1,6 @@
 {
+	"name": "Master_ErrorFile",
+	"properties": {
 		"activities": [
 			{
 				"name": "GetConfig",
@@ -87,5 +89,8 @@
 				}
 			}
 		],
-		"annotations": []
+		"annotations": [],
+		"lastPublishTime": "2022-12-13T14:08:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }

@@ -1,0 +1,10 @@
+{
+	"name": "AzureBlobStorage958",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-dev/providers/Microsoft.Storage/storageAccounts/vhcoreinfradev",
+		"groupId": "blob",
+		"fqdns": [
+			"vhcoreinfradev.blob.core.windows.net"
+		]
+	}
+}

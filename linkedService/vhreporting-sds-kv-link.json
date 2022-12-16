@@ -1,10 +1,15 @@
 {
 	"name": "vhreporting-sds-kv-link",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
-		"annotations": [],
 		"type": "AzureKeyVault",
 		"typeProperties": {
-			"baseUrl": "https://vh-infra-core-dev.vault.azure.net/"
-		}
+			"baseUrl": "https://vh-infra-core-dev.vault.azure.net/",
+			"credential": {
+				"type": "CredentialReference",
+				"referenceName": "vh-adf-mi-dev"
+			}
+		},
+		"annotations": []
 	}
 }

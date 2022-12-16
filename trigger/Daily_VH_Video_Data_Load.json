@@ -1,25 +1,28 @@
 {
-	"annotations": [],
-	"runtimeState": "Started",
-	"pipelines": [
-		{
-			"pipelineReference": {
-				"referenceName": "Master_Staging",
-				"type": "PipelineReference"
+	"name": "Daily_VH_Video_Data_Load",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Master_Staging",
+					"type": "PipelineReference"
+				}
 			}
-		}
-	],
-	"type": "ScheduleTrigger",
-	"typeProperties": {
-		"recurrence": {
-			"frequency": "Day",
-			"interval": 1,
-			"startTime": "2022-01-01T00:00:00Z",
-			"timeZone": "UTC",
-			"schedule": {
-				"hours": [
-					6
-				]
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-01-01T00:00:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"hours": [
+						6
+					]
+				}
 			}
 		}
 	}
