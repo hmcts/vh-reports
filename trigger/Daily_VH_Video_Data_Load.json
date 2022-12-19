@@ -2,7 +2,7 @@
 	"name": "Daily_VH_Video_Data_Load",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
