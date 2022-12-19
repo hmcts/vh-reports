@@ -1576,15 +1576,7 @@
 			"properties": {
 				"annotations": [],
 				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Master_TraceFile",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
+				"pipelines": [],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
@@ -1600,9 +1592,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Master_TraceFile')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Daily_Purge_Data')]",
