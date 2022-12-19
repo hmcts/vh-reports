@@ -11,6 +11,10 @@ CREATE TABLE dbo.AdfConfig (
 	CONSTRAINT PK_AdfConfig PRIMARY KEY (Id))
 GO
 
+DELETE FROM dbo.AdfConfig
+WHERE MasterPipeline = 'Master_TraceFile'
+Go
+
 WITH cfg AS (
 	SELECT NEWID() AS Id, 'Master_Staging' AS MasterPipeline, 'Conference' AS TableName, 'sp_LoadConference' AS ProcedureName, NULL AS DeltaColumn, NULL AS DeltaValue, 1 AS RunOrder
 	UNION ALL SELECT NEWID() AS Id, 'Master_Staging' AS MasterPipeline, 'Participant' AS TableName, 'sp_LoadParticipant' AS ProcedureName, NULL AS DeltaColumn, NULL AS DeltaValue, 1 AS RunOrder
@@ -20,8 +24,6 @@ WITH cfg AS (
 	UNION ALL SELECT NEWID() AS Id, 'Master_Staging' AS MasterPipeline, 'Event' AS TableName, 'sp_LoadEvent' AS ProcedureName, 'Timestamp' AS DeltaColumn, NULL AS DeltaValue, 1 AS RunOrder
 	UNION ALL SELECT NEWID() AS Id, 'Master_Staging' AS MasterPipeline, 'Heartbeat' AS TableName, 'sp_LoadHeartbeat' AS ProcedureName, 'Timestamp' AS DeltaColumn, NULL AS DeltaValue, 1 AS RunOrder
 	UNION ALL SELECT NEWID() AS Id, 'Master_Staging' AS MasterPipeline, 'ConferenceStatus' AS TableName, 'sp_LoadConferenceStatus' AS ProcedureName, 'Timestamp' AS DeltaColumn, NULL AS DeltaValue, 1 AS RunOrder
---	UNION ALL SELECT NEWID() AS Id, 'Master_ErrorFile' AS MasterPipeline, 'AppInsightsError' AS TableName, 'sp_LoadAppInsightsError' AS ProcedureName, 'Timestamp' AS DeltaColumn, NULL AS DeltaValue, 1 AS RunOrder
-	UNION ALL SELECT NEWID() AS Id, 'Master_TraceFile' AS MasterPipeline, 'AppInsightsTrace' AS TableName, 'sp_LoadAppInsightsTrace' AS ProcedureName, 'timestamp' AS DeltaColumn, NULL AS DeltaValue, 1 AS RunOrder
 )
 MERGE INTO dbo.AdfConfig t
 USING cfg s

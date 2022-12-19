@@ -412,6 +412,7 @@ BEGIN
 			,t.IncomingVideoBitrate = s.IncomingVideoBitrate			
 			,t.IncomingVideoCodec = s.IncomingVideoCodec			
 			,t.IncomingVideoResolution = s.IncomingVideoResolution
+			,t.Device = s.Device
 	WHEN NOT MATCHED THEN 
 	INSERT (
 		Id
@@ -448,7 +449,8 @@ BEGIN
 		,IncomingAudioCodec
 		,IncomingVideoBitrate
 		,IncomingVideoCodec
-		,IncomingVideoResolution )
+		,IncomingVideoResolution
+		,Device)
 	VALUES (
 		s.Id
 		,s.ConferenceId
@@ -485,6 +487,36 @@ BEGIN
 		,s.IncomingVideoBitrate
 		,s.IncomingVideoCodec
 		,s.IncomingVideoResolution
+		,s.Device
+	);
+
+	WITH all_devices AS (
+		SELECT ConferenceId
+			,ParticipantId
+			,Device
+			,ROW_NUMBER() OVER (PARTITION BY ConferenceId, ParticipantId ORDER BY [TimeStamp] DESC ) AS device_order
+		FROM stg.HeartBeat
+		WHERE Device IS NOT NULL )
+	,latest_devices AS (
+		SELECT ConferenceId
+			,ParticipantId
+			,Device
+		FROM all_devices
+		WHERE device_order = 1 )
+	MERGE INTO dbo.Device t
+	USING latest_devices s
+		ON s.ConferenceId = t.ConferenceId
+		AND s.ParticipantId = t.ParticipantId
+	WHEN MATCHED THEN
+		UPDATE SET t.Device = s.Device
+	WHEN NOT MATCHED THEN INSERT (
+		ConferenceId
+		,ParticipantId
+		,Device )
+	VALUES (
+		s.ConferenceId
+		,s.ParticipantId
+		,s.Device 
 	);
 
 	WITH delta AS (
@@ -536,165 +568,17 @@ BEGIN
 END
 GO
 
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'sp_LoadAppInsightsError')
-	EXEC('CREATE PROCEDURE dbo.sp_LoadAppInsightsError AS BEGIN SELECT 1 END')
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'sp_LoadAppInsightsError')
+	EXEC('DROP PROCEDURE dbo.sp_LoadAppInsightsError')
 GO
 
-ALTER PROCEDURE dbo.sp_LoadAppInsightsError AS
-BEGIN
-	MERGE INTO dbo.AppInsightsError AS t
-	USING (
-		SELECT *
-			,TRY_CONVERT(datetime2,replace(FileName,'_',':'),127) AS FileDate
-		FROM stg.AppInsightsError ) AS s
-		ON (s.FileName = t.FileName 
-			AND s.ProblemId = t.ProblemId)
-	WHEN MATCHED THEN UPDATE
-		SET t.TotalExceptions = s.TotalExceptions
-			,t.RunDate = s.RunDate
-	WHEN NOT MATCHED THEN 
-	INSERT (
-		Id
-		,FileName
-		,FileDate
-		,RunDate
-		,ProblemId
-		,TotalExceptions )
-	VALUES (
-		s.Id
-		,s.FileName
-		,s.FileDate
-		,s.RunDate
-		,s.ProblemId
-		,s.TotalExceptions
-	);
-
-	WITH delta AS (
-		SELECT 'AppInsightsError' AS TableName, FORMAT(MAX(RunDate),'MM/dd/yyyy HH:mm:ss') AS DeltaValue FROM dbo.AppInsightsError
-	)
-	UPDATE a 
-	SET DeltaValue = delta.DeltaValue 
-	FROM dbo.AdfConfig a 
-	INNER JOIN delta 
-	ON delta.TableName = a.TableName
-
-END
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'sp_LoadAppInsightsError')
+	EXEC('DROP PROCEDURE dbo.sp_LoadAppInsightsError')
 GO
 
-
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'sp_LoadAppInsightsError')
-	EXEC('CREATE PROCEDURE dbo.sp_LoadAppInsightsError AS BEGIN SELECT 1 END')
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'sp_LoadAppInsightsTrace')
+	EXEC('DROP PROCEDURE dbo.sp_LoadAppInsightsTrace')
 GO
-
-ALTER PROCEDURE dbo.sp_LoadAppInsightsError AS
-BEGIN
-	MERGE INTO dbo.AppInsightsError AS t
-	USING (
-		SELECT *
-			,TRY_CONVERT(datetime2,replace(FileName,'_',':'),127) AS FileDate
-		FROM stg.AppInsightsError ) AS s
-		ON (s.FileName = t.FileName 
-			AND s.ProblemId = t.ProblemId)
-	WHEN MATCHED THEN UPDATE
-		SET t.TotalExceptions = s.TotalExceptions
-			,t.RunDate = s.RunDate
-	WHEN NOT MATCHED THEN 
-	INSERT (
-		Id
-		,FileName
-		,FileDate
-		,RunDate
-		,ProblemId
-		,TotalExceptions )
-	VALUES (
-		s.Id
-		,s.FileName
-		,s.FileDate
-		,s.RunDate
-		,s.ProblemId
-		,s.TotalExceptions
-	);
-
-	WITH delta AS (
-		SELECT 'AppInsightsError' AS TableName, FORMAT(MAX(RunDate),'MM/dd/yyyy HH:mm:ss') AS DeltaValue FROM dbo.AppInsightsError
-	)
-	UPDATE a 
-	SET DeltaValue = delta.DeltaValue 
-	FROM dbo.AdfConfig a 
-	INNER JOIN delta 
-	ON delta.TableName = a.TableName
-
-END
-GO
-
-
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'sp_LoadAppInsightsTrace')
-	EXEC('CREATE PROCEDURE dbo.sp_LoadAppInsightsTrace AS BEGIN SELECT 1 END')
-GO
-
-ALTER PROCEDURE dbo.sp_LoadAppInsightsTrace AS
-BEGIN
-	WITH s AS (
-		SELECT *
-		FROM (
-			SELECT *
-				,ROW_NUMBER() OVER (PARTITION BY timestamp ORDER BY Filename DESC) AS row1
-			FROM stg.AppInsightsTrace ) AS s
-		WHERE s.row1 = 1 )
-	INSERT INTO dbo.AppInsightsTrace (
-		Id
-		,FileName
-		,message
-		,customDimensions
-		,user_Id
-		,client_Model
-		,client_OS
-		,timestamp
-		,currentConferenceId
-		,conference
-		,participant
-		,errorInformation
-		,HostInstanceId
-		,ProcessId
-		,LogLevel
-		,pexipError
-		,RunDate )
-	SELECT s.Id
-		,s.FileName
-		,s.message
-		,s.customDimensions
-		,s.user_Id
-		,s.client_Model
-		,s.client_OS
-		,s.timestamp
-		,s.currentConferenceId
-		,s.conference
-		,s.participant
-		,s.errorInformation
-		,s.HostInstanceId
-		,s.ProcessId
-		,s.LogLevel
-		,s.pexipError
-		,s.RunDate
-	FROM s
-	LEFT JOIN dbo.AppInsightsTrace t
-		ON s.timestamp = t.timestamp
-	WHERE t.timestamp IS NULL
-	;
-
-	WITH delta AS (
-		SELECT 'AppInsightsTrace' AS TableName, FORMAT(TRY_CONVERT(datetime2,MAX(FileName)),'MM/dd/yyyy HH:mm:ss') AS DeltaValue FROM dbo.AppInsightsTrace
-	)
-	UPDATE a 
-	SET DeltaValue = delta.DeltaValue 
-	FROM dbo.AdfConfig a 
-	INNER JOIN delta 
-	ON delta.TableName = a.TableName
-	WHERE ISNULL(a.DeltaValue,'') != delta.DeltaValue 
-
-END
-GO
-
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'sp_PurgeOldData')
 	EXEC('CREATE PROCEDURE dbo.sp_PurgeOldData AS BEGIN SELECT 1 END')
@@ -732,11 +616,6 @@ BEGIN
 	SET Phone = 'Purged'
 	WHERE Phone != 'Purged'
 	AND [TimeStamp] < DATEADD(DAY,-90, GETDATE())
-
-    --Delete Data older than 15 days from dbo.Heartbeat and dbo.AppInsightsTrace	
-	DELETE
-	FROM dbo.AppInsightsTrace
-	WHERE [TimeStamp] < DATEADD(DAY,-15, GETDATE())
 
 	DELETE
 	FROM dbo.Heartbeat

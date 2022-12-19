@@ -1,4 +1,4 @@
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwRegion'))
+﻿IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwRegion'))
 	EXEC('CREATE VIEW dbo.vwRegion AS SELECT 1 AS col1')
 GO
 
@@ -1319,166 +1319,14 @@ GO
 --SELECT top 100 * FROM dbo.vwConferenceConcurrentCount WHERE HearingDate >= '2021-09-10' ORDER BY HearingDate, Timestamp
 GO
 
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwApplicationInsights'))
-	EXEC('CREATE VIEW dbo.vwApplicationInsights AS SELECT 1 AS col1')
-GO
-
-ALTER VIEW dbo.vwApplicationInsights AS
-SELECT t.id AS [MessageID]
-	,t.[timestamp] AS MessageTimestamp
-	,t.[message] AS MessageText
-	,t.[user_Id] AS UserID
-	,t.[client_Model] AS DeviceType
-	,t.[client_OS] AS ClientOS
-	,d.[key] AS CustomDimensionKey
-	,d.[value] AS CustomDimensionValue
-	,CASE WHEN e.errorInformation IS NOT NULL THEN 1 ELSE 0 END AS IsErrorFlag
-FROM dbo.AppInsightsTrace t
-CROSS APPLY OPENJSON(t.customDimensions) d
-CROSS APPLY OPENJSON(t.customDimensions) WITH (errorInformation VARCHAR(50) '$."errorInformation"') e
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwApplicationInsights'))
+	EXEC('DROP VIEW dbo.vwApplicationInsights')
 GO
 
 
---SELECT top 100 * FROM dbo.vwApplicationInsights WHERE MessageTimestamp >= '2022-03-28' ORDER BY MessageTimestamp, MessageID
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwApplicationInsightsWide'))
+	EXEC('DROP VIEW dbo.vwApplicationInsightsWide')
 GO
-
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwApplicationInsightsWide'))
-	EXEC('CREATE VIEW dbo.vwApplicationInsightsWide AS SELECT 1 AS col1')
-GO
-
-ALTER VIEW dbo.vwApplicationInsightsWide AS
-SELECT t.id AS [MessageID]
-	,t.[timestamp] AS MessageTimestamp
-	,t.[message] AS MessageText
-	,t.[user_Id] AS UserID
-	,t.[client_Model] AS DeviceType
-	,t.[client_OS] AS ClientOS
-	,cd.CategoryName
-	,cd.AspNetCoreEnvironment
-	,cd.ParentId
-	,cd.RequestId
-	,cd.RequestPath
-	,cd.SpanId
-	,cd.TraceId
-	,cd.EventId
-	,cd.EventName
-	,cd.OriginalFormat
-	,cd.ElapsedMilliseconds
-	,cd.StatusCode
-	,cd.HttpMethod
-	,cd.Uri
-	,cd.[Path]
-	,cd.DisplayName
-	,cd.ControllerName
-	,cd.Host
-	,cd.Method
-	,cd.Protocol
-	,cd.Scheme
-	,cd.ContentType
-	,cd.PhysicalPath
-	,cd.VirtualPath
-	,cd.EndpointName
-	,cd.Accept
-	,cd.[Content-Security-Policy]
-	,cd.[Content-Type]
-	,cd.[Date]
-	,cd.[Strict-Transport-Security]
-	,cd.[Request-Context]
-	,cd.[Content-Length]
-	,cd.Controller
-	,cd.AssemblyName
-	,cd.RouteData
-	,cd.MethodInfo
-	,cd.ValidationState
-	,cd.ActionResult
-	,cd.[Type]
-	,cd.[Authorization]
-	,cd.AuthenticationScheme
-	,cd.commandText
-	,cd.commandTimeout
-	,cd.commandType
-	,cd.elapsed
-	,cd.conferenceId
-	,cd.TQuery
-	,cd.TResult
-	,cd.currentConferenceId
-	,cd.notificationType
-	,cd.TOut
-	,cd.TIn1
-	,cd.[Set-Cookie]
-	,cd.[parameters]
-	,cd.participantId
-	,cd.ConferenceId2
-	,cd.Category
-	,cd.LogLevel
-	,CASE WHEN t.errorInformation IS NOT NULL OR t.pexipError IS NOT NULL THEN 1 ELSE 0 END AS IsErrorFlag
-FROM dbo.AppInsightsTrace t
-CROSS APPLY OPENJSON(t.customDimensions) WITH (
-	CategoryName VARCHAR(250) '$."CategoryName"'
-	,AspNetCoreEnvironment VARCHAR(250) '$."AspNetCoreEnvironment"'
-	,ParentId VARCHAR(250) '$."ParentId"'
-	,RequestId VARCHAR(250) '$."RequestId"'
-	,RequestPath VARCHAR(250) '$."RequestPath"'
-	,SpanId VARCHAR(250) '$."SpanId"'
-	,TraceId VARCHAR(250) '$."TraceId"'
-	,EventId VARCHAR(250) '$."EventId"'
-	,EventName VARCHAR(250) '$."EventName"'
-	,OriginalFormat VARCHAR(250) '$."{OriginalFormat}"'
-	,ElapsedMilliseconds VARCHAR(250) '$."ElapsedMilliseconds"'
-	,StatusCode VARCHAR(250) '$."StatusCode"'
-	,HttpMethod VARCHAR(250) '$."HttpMethod"'
-	,Uri VARCHAR(250) '$."Uri"'
-	,[Path] VARCHAR(250) '$."Path"'
-	,DisplayName VARCHAR(250) '$."DisplayName"'
-	,ControllerName VARCHAR(250) '$."ControllerName"'
-	,Host VARCHAR(250) '$."Host"'
-	,Method VARCHAR(250) '$."Method"'
-	,Protocol VARCHAR(250) '$."Protocol"'
-	,Scheme VARCHAR(250) '$."Scheme"'
-	,ContentType VARCHAR(250) '$."ContentType"'
-	,PhysicalPath VARCHAR(250) '$."PhysicalPath"'
-	,VirtualPath VARCHAR(250) '$."VirtualPath"'
-	,EndpointName VARCHAR(250) '$."EndpointName"'
-	,Accept VARCHAR(250) '$."Accept"'
-	,[Content-Security-Policy] VARCHAR(250) '$."Content-Security-Policy"'
-	,[Content-Type] VARCHAR(250) '$."Content-Type"'
-	,[Date] VARCHAR(250) '$."Date"'
-	,[Strict-Transport-Security] VARCHAR(250) '$."Strict-Transport-Security"'
-	,[Request-Context] VARCHAR(250) '$."Request-Context"'
-	,[Content-Length] VARCHAR(250) '$."Content-Length"'
-	,Controller VARCHAR(250) '$."Controller"'
-	,AssemblyName VARCHAR(250) '$."AssemblyName"'
-	,RouteData VARCHAR(250) '$."RouteData"'
-	,MethodInfo VARCHAR(250) '$."MethodInfo"'
-	,ValidationState VARCHAR(250) '$."ValidationState"'
-	,ActionResult VARCHAR(250) '$."ActionResult"'
-	,[Type] VARCHAR(250) '$."Type"'
-	,[Authorization] VARCHAR(250) '$."Authorization"'
-	,AuthenticationScheme VARCHAR(250) '$."AuthenticationScheme"'
-	,commandText VARCHAR(250) '$."commandText"'
-	,commandTimeout VARCHAR(250) '$."commandTimeout"'
-	,commandType VARCHAR(250) '$."commandType"'
-	,elapsed VARCHAR(250) '$."elapsed"'
-	,conferenceId VARCHAR(250) '$."conferenceId"'
-	,TQuery VARCHAR(250) '$."TQuery"'
-	,TResult VARCHAR(250) '$."TResult"'
-	,currentConferenceId VARCHAR(250) '$."currentConferenceId"'
-	,notificationType VARCHAR(250) '$."notificationType"'
-	,TOut VARCHAR(250) '$."TOut"'
-	,TIn1 VARCHAR(250) '$."TIn1"'
-	,[Set-Cookie] VARCHAR(250) '$."Set-Cookie"'
-	,[parameters] VARCHAR(250) '$."parameters"'
-	,participantId VARCHAR(250) '$."participantId"'
-	,ConferenceId2 VARCHAR(250) '$."ConferenceId"'
-	,Category VARCHAR(250) '$."Category"'
-	,LogLevel VARCHAR(250) '$."LogLevel"'
-) cd
-GO
-
-
---SELECT top 100 * FROM dbo.vwApplicationInsightsWide WHERE MessageTimestamp >= '2022-03-28' ORDER BY MessageTimestamp, MessageID
-GO
-
 
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo') AND name in ('vwDevice'))
@@ -1486,20 +1334,9 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo')
 GO
 
 ALTER VIEW [dbo].[vwDevice] AS
-WITH ai AS (
-	SELECT COALESCE(NULLIF(conferenceId,'null'),NULLIF(CurrentConferenceId,'null'),NULLIF(conferenceId2,'null')) AS ConfID
-		,participantId
-		,DeviceType
-		,ClientOS
-	FROM [dbo].[vwApplicationInsightsWide] 
-	GROUP BY COALESCE(NULLIF(conferenceId,'null'),NULLIF(CurrentConferenceId,'null'),NULLIF(conferenceId2,'null')) 
-		,participantId
-		,DeviceType
-		,ClientOS )
-SELECT ai.ClientOS
-	,ai.DeviceType
-	,ai.ConfId AS [AppInsights.ConferenceId]
-	,ai.participantId AS [AppInsights.participantId]
+SELECT NULL AS ClientOS
+	,d.Device AS DeviceType
+	,p.Id AS [Particpant.ParticipantId]
 	,c.Id AS [Conference.ConferenceId]
 	,cd.[Hearing Start]
 	,cd.[Hearing End]
@@ -1554,9 +1391,12 @@ SELECT ai.ClientOS
 	,p.HearingRole AS [Participant.HearingRole]
 	,p.CurrentConsultationRoomId AS [Participant.CurrentConsultationRoomId]
 	,p.Discriminator AS [Participant.Discriminator]
-FROM ai
+FROM dbo.Participant p
+LEFT JOIN dbo.Device d
+	ON d.ConferenceId = p.ConferenceId
+	AND d.ParticipantId = p.Id
 INNER JOIN dbo.Conference c
-	ON TRY_CONVERT(varchar(100),c.ID) = ai.ConfID
+	ON TRY_CONVERT(varchar(100),c.ID) = p.ConferenceID
 INNER JOIN dbo.vwConferenceDuration cd
 	ON cd.ConferenceId = c.Id
 LEFT JOIN dbo.ReportingEnums lcs
@@ -1611,14 +1451,16 @@ OUTER APPLY (
 		AND rt.EnumString = 'ConsultationRoom'
 	WHERE r.ConferenceId = c.Id
 	AND ic.InConsultationFlag = 1 ) pcc
-LEFT JOIN dbo.Participant p
-	ON TRY_CONVERT(varchar(100),p.ID) = ai.participantId
 LEFT JOIN dbo.ReportingEnums lps
 	ON lps.EnumName = 'dbo.Participant.State'
 	AND lps.EnumNumber = p.State
 LEFT JOIN dbo.ReportingEnums lur
 	ON lur.EnumName = 'dbo.Participant.UserRole'
 	AND lur.EnumNumber = p.UserRole
+GO
+
+
+--SELECT top 100 * FROM dbo.vwDevice WHERE [Hearing Start] >= '2021-09-10'
 GO
 
 

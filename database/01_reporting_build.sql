@@ -349,72 +349,34 @@ GO
 
 
 
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'AppInsightsError')
-CREATE TABLE stg.AppInsightsError(
-	Id uniqueidentifier NOT NULL DEFAULT NEWID(),
-	[FileName] nvarchar(255) NULL,
-	ProblemId nvarchar(max) NOT NULL,
-	TotalExceptions tinyint NULL,
-	RunDate datetime2 NULL,
-	CONSTRAINT PK_stg_AppInsightsError PRIMARY KEY CLUSTERED (Id ASC))
+--IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'AppInsightsError')
+--CREATE TABLE stg.AppInsightsError(
+--	Id uniqueidentifier NOT NULL DEFAULT NEWID(),
+--	[FileName] nvarchar(255) NULL,
+--	ProblemId nvarchar(max) NOT NULL,
+--	TotalExceptions tinyint NULL,
+--	RunDate datetime2 NULL,
+--	CONSTRAINT PK_stg_AppInsightsError PRIMARY KEY CLUSTERED (Id ASC))
+--GO
+
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'AppInsightsError')
+DROP TABLE stg.AppInsightsError;
 GO
 
 
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'AppInsightsError')
-CREATE TABLE dbo.AppInsightsError(
-	Id uniqueidentifier NOT NULL,
-	[FileName] nvarchar(255) NULL,
-	FileDate datetime2 NULL,
-	ProblemId nvarchar(max) NOT NULL,
-	TotalExceptions tinyint NULL,
-	RunDate datetime2 NULL,
-	CONSTRAINT PK_AppInsightsError PRIMARY KEY CLUSTERED (Id ASC))
+
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'AppInsightsError')
+DROP TABLE dbo.AppInsightsError;
 GO
 
 
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'AppInsightsTrace')
-CREATE TABLE stg.AppInsightsTrace (
-	Id uniqueidentifier NOT NULL DEFAULT NEWID(),
-	[FileName] nvarchar(max) NULL,
-	[message] nvarchar(max) NOT NULL,
-	customDimensions nvarchar(max) NOT NULL,
-	[user_Id] nvarchar(255) NOT NULL,
-	client_Model nvarchar(max) NULL,
-	client_OS nvarchar(255) NULL,
-	[timestamp] nvarchar(max) NOT NULL,
-	currentConferenceId nvarchar(max) NULL,
-	conference nvarchar(max) NULL,
-	participant nvarchar(max) NULL,
-	errorInformation nvarchar(max) NULL,
-	HostInstanceId nvarchar(max) NULL,
-	ProcessId nvarchar(max) NULL,
-	LogLevel nvarchar(max) NULL,
-	pexipError nvarchar(max) NULL,
-	RunDate datetime2 NULL,
-	CONSTRAINT PK_stg_AppInsightsTrace PRIMARY KEY CLUSTERED (Id ASC))
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'stg' AND name = 'AppInsightsTrace')
+DROP TABLE stg.AppInsightsTrace;
 GO
 
 
-IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'AppInsightsTrace')
-CREATE TABLE dbo.AppInsightsTrace(
-	Id uniqueidentifier NOT NULL DEFAULT NEWID(),
-	[FileName] nvarchar(255) NULL,
-	[message] nvarchar(max) NOT NULL,
-	customDimensions nvarchar(max) NOT NULL,
-	[user_Id] nvarchar(255) NOT NULL,
-	client_Model nvarchar(255) NULL,
-	client_OS nvarchar(255) NULL,
-	[timestamp] datetime2 NOT NULL,
-	currentConferenceId nvarchar(255) NULL,
-	conference nvarchar(max) NULL,
-	participant nvarchar(255) NULL,
-	errorInformation nvarchar(max) NULL,
-	HostInstanceId nvarchar(255) NULL,
-	ProcessId nvarchar(255) NULL,
-	LogLevel nvarchar(255) NULL,
-	pexipError nvarchar(max) NULL,
-	RunDate datetime2 NULL,
-	CONSTRAINT PK_AppInsightsTrace PRIMARY KEY CLUSTERED (Id ASC))
+IF EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'AppInsightsTrace')
+DROP TABLE dbo.AppInsightsTrace;
 GO
 
 
@@ -445,13 +407,6 @@ CREATE TABLE dbo.Time (
 	CONSTRAINT PK_Time PRIMARY KEY (TimeOfDay))
 GO
 
-
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'AppInsightsTrace' and [name] = 'client_OS')
-	ALTER TABLE stg.AppInsightsTrace ADD client_OS nvarchar(255) NULL;
-GO
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'AppInsightsTrace' and [name] = 'client_OS')
-	ALTER TABLE dbo.AppInsightsTrace ADD client_OS nvarchar(255) NULL;
-GO
 
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Conference' and [name] = 'UpdatedAt')
 	ALTER TABLE stg.Conference ADD UpdatedAt datetime2(7) NULL;
@@ -603,7 +558,7 @@ GO
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'IncomingVideoResolution')
 	ALTER TABLE stg.Heartbeat ADD IncomingVideoResolution [nvarchar](50) NULL;
 GO
-IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Device' and [name] = 'IncomingVideoResolution')
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'stg' AND object_name([object_id])  = 'Heartbeat' and [name] = 'Device')
 	ALTER TABLE stg.Heartbeat ADD Device [nvarchar](max) NULL;
 GO
 
@@ -667,4 +622,14 @@ IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) =
 GO
 IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Heartbeat' and [name] = 'Device')
 	ALTER TABLE dbo.Heartbeat ADD Device [nvarchar](max) NULL;
+GO
+
+
+IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'Device')
+CREATE TABLE dbo.Device (
+	ConferenceId uniqueidentifier NOT NULL, 
+	ParticipantId uniqueidentifier NOT NULL, 
+	Device nvarchar(max) NOT NULL,
+	CONSTRAINT PK_dbo_Device PRIMARY KEY ( ConferenceId, ParticipantId )
+)
 GO
