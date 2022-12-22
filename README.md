@@ -13,34 +13,21 @@ Running [this pipeline](https://hmctsreform.visualstudio.com/VirtualHearings/_bu
     * triggers required for the ADF pipelines
 
 ## Getting Started
-Run the [vh-reports pipeline](https://hmctsreform.visualstudio.com/VirtualHearings/_build?definitionId=214)
-Then log in to the ADF instance and set up the MI:
-* Go to Manage -> Credentials -> Create New
-* Give it a sensible name (like vh-adf-mid-<env>)
-* Choose User Assigned Managed Identity for type
-* Select the relevant subscription and then choose the vh-adf-mi-<env> Managed Identity:
-![Alt text](images/ADF_Credentials.png?raw=true "Logic App Authorize API")
-* Publish your change
-* Finally go to Linked Services -> vhreporting-kv-link
-* Change the Authentication to User Assigned Managed Identity and choose the Credential created above.
-* Hit Save and Publish your changes 
+This ADF is setup in Git Mode. This means it does not follow a standard CI/CD.
 
-Connect to the logic app in the portal and authorize the api connection:
-![Alt text](images/logic_app_auth.png?raw=true "Logic App Authorize API")
+DevOps will write/build the terraform as normal, but the ADF configuration is developed within ADF.
 
-Alternatively:
+ADF Config development will go as:
+1. Developer accesses `Dev` ADF and makes configuration changes.
+2. They will `Publish` the changes via ADF to this repo on the branch `adf_publish`.
+3. They will make a  Pull Request to `master`, which will trigger an automated deployment to `Dev`
+4. Once merged will/can deploy to other environments.
 
-### Infrastructure 
-Run locally from the infrastructure folder via terraform.
-### DB config
-Run each of the scripts in the database folder.
-### ADF config
-Run the az cli commands from the pipeline to configure: 
-* [the datasets](https://github.com/hmcts/vh-reports/blob/b34d41f746aa03baec6073306779a9e7e600de6f/azure-pipelines.yml#L119)
-* [pipelines](https://github.com/hmcts/vh-reports/blob/b34d41f746aa03baec6073306779a9e7e600de6f/azure-pipelines.yml#L134)
-* and [triggers](https://github.com/hmcts/vh-reports/blob/f11a7fa9c72a1852d7ebf4c44a9aa3d8a47b69e8/azure-pipelines.yml#L149)
-supplying the relevant files from the dataset/pipeline/trigger folders.
+The second deployment on point 3 is to make sure the automation is working and the environment is kept up to data with terraform.
 
+You read more here: https://learn.microsoft.com/en-us/azure/data-factory/continuous-integration-delivery#cicd-lifecycle
+
+## More Information
 Confluence: 
 *   [Vh Reporting on Confluence](https://tools.hmcts.net/confluence/display/VIH/VH+Reporting)  
 *   [Confluence page on deployment](https://tools.hmcts.net/confluence/display/VIH/Deployment+of+Current+VH-Reporting+Infrastructure)

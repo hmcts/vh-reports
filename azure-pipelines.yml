@@ -115,34 +115,43 @@ stages:
               displayName: Update datasets
               inputs:
                 azureSubscription: $(subscription)
-                scriptType: bash
+                scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: |
                   az config set extension.use_dynamic_install=yes_without_prompt
-                  ls -ltr $(System.DefaultWorkingDirectory)
-                  #set up datasets
-                 
-                  for file in $(System.DefaultWorkingDirectory)/dataset/*
-                  do
-                    fileName="$(basename $file .json)"
-                    echo $fileName
-                    az datafactory dataset create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --properties "$file"
-                  done
+                  $files=Get-ChildItem -Path "./dataset"
+                  $environment="${{ parameters.environment }}"
+                  
+                  foreach ($file in $files){
+                    $name= $file.name -replace ".json",""
+                    $path= $file.fullName
+                    $content=$($(Get-Content -Path $path) | ConvertFrom-Json).properties | ConvertTo-Json -Compress -Depth 100
+                    $content = $content -replace "`"", "\`""
+
+                    Write-Host "Creating/Updating Pipeline $name"
+                    az datafactory dataset create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --properties "$content"
+                  }
 
             - task: AzureCLI@2
               displayName: Update ADF-${{ parameters.environment }} pipeines
               inputs:
                 azureSubscription: $(subscription)
-                scriptType: bash
+                scriptType: pscore
                 scriptLocation: inlineScript
                 inlineScript: |
-                  ##set up pipelines
-                  for file in $(System.DefaultWorkingDirectory)/pipeline/*
-                  do
-                    fileName="$(basename $file .json)"
-                    echo $fileName
-                    az datafactory pipeline create --resource-group vh-reporting-infra-${{ parameters.environment }} --factory-name "vh-datafactory-${{ parameters.environment }}" --name "$fileName" --pipeline "$file"
-                  done
+                  az config set extension.use_dynamic_install=yes_without_prompt
+                  $files=Get-ChildItem -Path "./pipeline"
+                  $environment="${{ parameters.environment }}"
+                  
+                  foreach ($file in $files){
+                    $name= $file.name -replace ".json",""
+                    $path= $file.fullName
+                    $content=$($(Get-Content -Path $path) | ConvertFrom-Json).properties | ConvertTo-Json -Compress -Depth 100
+                    $content = $content -replace "`"", "\`""
+
+                    Write-Host "Creating/Updating Pipeline $name"
+                    az datafactory pipeline create --resource-group "vh-reporting-infra-$environment" --factory-name "vh-datafactory-$environment" --name "$name" --pipeline "$content"
+                  }
 
             - task: AzureCLI@2
               displayName: Update ADF-${{ parameters.environment }} pipeline triggers
@@ -150,14 +159,15 @@ stages:
                 azureSubscription: $(subscription)
                 scriptType: pscore
                 scriptLocation: inlineScript
-                inlineScript: |                  
+                inlineScript: |  
+                  az config set extension.use_dynamic_install=yes_without_prompt                
                   $files=Get-ChildItem -Path "./trigger"
                   $environment="${{ parameters.environment }}"
                   
                   foreach ($file in $files){
                     $name= $file.name -replace ".json",""
                     $path= $file.fullName
-                    $content=$(Get-Content -Path $path) | ConvertFrom-Json | ConvertTo-Json -Compress -Depth 100
+                    $content=$($(Get-Content -Path $path) | ConvertFrom-Json).properties | ConvertTo-Json -Compress -Depth 100
                     $content = $content -replace "`"", "\`""
 
                     Write-Host "Stop Trigger"
