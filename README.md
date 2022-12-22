@@ -27,6 +27,16 @@ The second deployment on point 3 is to make sure the automation is working and t
 
 You read more here: https://learn.microsoft.com/en-us/azure/data-factory/continuous-integration-delivery#cicd-lifecycle
 
+## Known Issues
+
+### Terraform Private Endpoint already exists
+If you see an error like this:
+
+`Error: A resource with the ID "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-reporting-infra-dev/providers/Microsoft.DataFactory/factories/vh-datafactory-dev/managedVirtualNetworks/default/managedPrivateEndpoints/vhadfendpoint" already exists - to be managed via Terraform this resource needs to be imported into the State. Please see the resource documentation for "azurerm_data_factory_managed_private_endpoint" for more information.`
+
+Rerun the pipelines before the Plan stag and it will work.
+
+
 ## More Information
 Confluence: 
 *   [Vh Reporting on Confluence](https://tools.hmcts.net/confluence/display/VIH/VH+Reporting)  
