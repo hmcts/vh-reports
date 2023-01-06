@@ -1334,8 +1334,11 @@ IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) in ('dbo')
 GO
 
 ALTER VIEW [dbo].[vwDevice] AS
-SELECT NULL AS ClientOS
-	,d.Device AS DeviceType
+SELECT d.Device AS DeviceType
+	,d.BrowserName
+	,d.BrowserVersion
+	,d.OperatingSystem
+	,d.OperatingSystemVersion
 	,p.Id AS [Particpant.ParticipantId]
 	,c.Id AS [Conference.ConferenceId]
 	,cd.[Hearing Start]
@@ -1460,7 +1463,7 @@ LEFT JOIN dbo.ReportingEnums lur
 GO
 
 
---SELECT top 100 * FROM dbo.vwDevice WHERE [Hearing Start] >= '2021-09-10'
+--SELECT top 100 * FROM dbo.vwDevice WHERE operatingsystem is not null
 GO
 
 

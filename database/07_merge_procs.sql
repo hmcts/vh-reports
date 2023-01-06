@@ -494,13 +494,23 @@ BEGIN
 		SELECT ConferenceId
 			,ParticipantId
 			,Device
+			,BrowserName
+			,BrowserVersion
+			,OperatingSystem
+			,OperatingSystemVersion
 			,ROW_NUMBER() OVER (PARTITION BY ConferenceId, ParticipantId ORDER BY [TimeStamp] DESC ) AS device_order
 		FROM stg.HeartBeat
-		WHERE Device IS NOT NULL )
+		WHERE Device IS NOT NULL
+			OR BrowserName IS NOT NULL
+			OR OperatingSystem IS NOT NULL )
 	,latest_devices AS (
 		SELECT ConferenceId
 			,ParticipantId
 			,Device
+			,BrowserName
+			,BrowserVersion
+			,OperatingSystem
+			,OperatingSystemVersion
 		FROM all_devices
 		WHERE device_order = 1 )
 	MERGE INTO dbo.Device t
@@ -509,14 +519,26 @@ BEGIN
 		AND s.ParticipantId = t.ParticipantId
 	WHEN MATCHED THEN
 		UPDATE SET t.Device = s.Device
+			,t.BrowserName = s.BrowserName
+			,t.BrowserVersion = s.BrowserVersion
+			,t.OperatingSystem = s.OperatingSystem
+			,t.OperatingSystemVersion = s.OperatingSystemVersion
 	WHEN NOT MATCHED THEN INSERT (
 		ConferenceId
 		,ParticipantId
-		,Device )
+		,Device
+		,BrowserName
+		,BrowserVersion
+		,OperatingSystem
+		,OperatingSystemVersion )
 	VALUES (
 		s.ConferenceId
 		,s.ParticipantId
 		,s.Device 
+		,s.BrowserName 
+		,s.BrowserVersion 
+		,s.OperatingSystem 
+		,s.OperatingSystemVersion 
 	);
 
 	WITH delta AS (

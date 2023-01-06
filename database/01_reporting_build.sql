@@ -626,10 +626,86 @@ GO
 
 
 IF NOT EXISTS (SELECT 1 FROM sys.objects WHERE schema_name(schema_id) = 'dbo' AND name = 'Device')
-CREATE TABLE dbo.Device (
-	ConferenceId uniqueidentifier NOT NULL, 
-	ParticipantId uniqueidentifier NOT NULL, 
-	Device nvarchar(max) NOT NULL,
-	CONSTRAINT PK_dbo_Device PRIMARY KEY ( ConferenceId, ParticipantId )
-)
+BEGIN
+	CREATE TABLE dbo.Device (
+		ConferenceId uniqueidentifier NOT NULL, 
+		ParticipantId uniqueidentifier NOT NULL, 
+		Device nvarchar(max) NULL,
+		BrowserName nvarchar(max) NULL,
+		BrowserVersion nvarchar(max) NULL,
+		OperatingSystem nvarchar(max) NULL,
+		OperatingSystemVersion nvarchar(max) NULL,
+		CONSTRAINT PK_dbo_Device PRIMARY KEY ( ConferenceId, ParticipantId )
+	);
+
+	WITH all_devices AS (
+		SELECT ConferenceId
+			,ParticipantId
+			,Device
+			,BrowserName
+			,BrowserVersion
+			,OperatingSystem
+			,OperatingSystemVersion
+			,ROW_NUMBER() OVER (PARTITION BY ConferenceId, ParticipantId ORDER BY [TimeStamp] DESC ) AS device_order
+		FROM dbo.HeartBeat
+		WHERE Device IS NOT NULL
+			OR BrowserName IS NOT NULL
+			OR OperatingSystem IS NOT NULL )
+	,latest_devices AS (
+		SELECT ConferenceId
+			,ParticipantId
+			,Device
+			,BrowserName
+			,BrowserVersion
+			,OperatingSystem
+			,OperatingSystemVersion
+		FROM all_devices
+		WHERE device_order = 1 )
+	MERGE INTO dbo.Device t
+	USING latest_devices s
+		ON s.ConferenceId = t.ConferenceId
+		AND s.ParticipantId = t.ParticipantId
+	WHEN MATCHED THEN
+		UPDATE SET t.Device = s.Device
+			,t.BrowserName = s.BrowserName
+			,t.BrowserVersion = s.BrowserVersion
+			,t.OperatingSystem = s.OperatingSystem
+			,t.OperatingSystemVersion = s.OperatingSystemVersion
+	WHEN NOT MATCHED THEN INSERT (
+		ConferenceId
+		,ParticipantId
+		,Device
+		,BrowserName
+		,BrowserVersion
+		,OperatingSystem
+		,OperatingSystemVersion )
+	VALUES (
+		s.ConferenceId
+		,s.ParticipantId
+		,s.Device 
+		,s.BrowserName 
+		,s.BrowserVersion 
+		,s.OperatingSystem 
+		,s.OperatingSystemVersion 
+	);
+
+END
 GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Device' and [name] = 'BrowserName')
+	ALTER TABLE dbo.Device ADD BrowserName [nvarchar](max) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Device' and [name] = 'BrowserVersion')
+	ALTER TABLE dbo.Device ADD BrowserVersion [nvarchar](max) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Device' and [name] = 'OperatingSystem')
+	ALTER TABLE dbo.Device ADD OperatingSystem [nvarchar](max) NULL;
+GO
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Device' and [name] = 'OperatingSystemVersion')
+	ALTER TABLE dbo.Device ADD OperatingSystemVersion [nvarchar](max) NULL;
+GO
+
+IF EXISTS (SELECT 1 FROM sys.columns WHERE object_schema_name([object_id]) = 'dbo' AND object_name([object_id])  = 'Device' and [name] = 'Device' AND is_nullable = 0)
+	ALTER TABLE dbo.Device ALTER COLUMN Device [nvarchar](max) NULL;
+GO
+
