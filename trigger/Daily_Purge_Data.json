@@ -1,28 +1,31 @@
 {
-	"annotations": [],
-	"runtimeState": "Started",
-	"pipelines": [
-		{
-			"pipelineReference": {
-				"referenceName": "Master_PurgeData",
-				"type": "PipelineReference"
+	"name": "Daily_Purge_Data",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Master_PurgeData",
+					"type": "PipelineReference"
+				}
 			}
-		}
-	],
-	"type": "ScheduleTrigger",
-	"typeProperties": {
-		"recurrence": {
-			"frequency": "Day",
-			"interval": 1,
-			"startTime": "2022-05-06T06:45:00Z",
-			"timeZone": "UTC",
-			"schedule": {
-				"minutes": [
-					45
-				],
-				"hours": [
-					6
-				]
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-05-06T06:45:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						6
+					]
+				}
 			}
 		}
 	}

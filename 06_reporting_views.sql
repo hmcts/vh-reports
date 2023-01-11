@@ -990,6 +990,17 @@ SELECT c.Id AS [Conference.ConferenceId]
 	,ISNULL(pc.ParticipantCount,0) AS ParticipantCount
 	,ISNULL(pc.QuickLinkFeatureCount,0) AS QuickLinkFeatureCount
 	,ISNULL(pc.DualHostFeatureCount,0) AS DualHostFeatureCount
+	,CASE WHEN f.FilterFlag = 1 THEN 'Y' ELSE 'N' END AS TestHearingFlag
+	,CASE WHEN cd.[Hearing Duration] < 1 THEN 'Y' 
+		WHEN cd.[Hearing Duration] < 3 AND ISNULL(pcc.PrivateConsultationCount,0) < 1 THEN 'Y' 
+		ELSE 'N' END AS ShortHearingFlag
+	,CASE WHEN c.CaseType IN ('Generic') THEN 'Y' ELSE 'N' END AS GenericHearingFlag
+	,CASE 
+		WHEN f.FilterFlag = 1 THEN 'Y'
+		WHEN c.CaseType IN ('Generic') THEN 'Y' 
+		WHEN cd.[Hearing Duration] < 1 THEN 'Y' 
+		WHEN cd.[Hearing Duration] < 3 AND ISNULL(pcc.PrivateConsultationCount,0) < 1 THEN 'Y'
+		ELSE 'N' END AS ExceptionHearingFlag
 FROM dbo.Conference c
 INNER JOIN dbo.vwConferenceDuration cd
 	ON cd.ConferenceId = c.Id
@@ -1045,6 +1056,17 @@ OUTER APPLY (
 		AND rt.EnumString = 'ConsultationRoom'
 	WHERE r.ConferenceId = c.Id
 	AND ic.InConsultationFlag = 1 ) pcc
+OUTER APPLY (
+	SELECT TOP(1) 1 AS FilterFlag
+	FROM dbo.ConferenceNameFilters f
+	WHERE (
+		c.CaseNumber LIKE '%' + f.FilterString + '%'
+		and c.CaseNumber NOT LIKE '%[A-Z]' + f.FilterString + '%'
+		and c.CaseNumber NOT LIKE '%' + f.FilterString + '[A-Z]%')
+	OR (
+		c.CaseName LIKE '%' + f.FilterString + '%'
+		and c.CaseName NOT LIKE '%[A-Z]' + f.FilterString + '%'
+		and c.CaseName NOT LIKE '%' + f.FilterString + '[A-Z]%')) f
 GO
 
 --SELECT top 100 * FROM dbo.vwConference ORDER BY [Conference.ConferenceId] DESC, [Hearing Start]

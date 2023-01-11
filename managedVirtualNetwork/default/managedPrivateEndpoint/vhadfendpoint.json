@@ -1,0 +1,10 @@
+{
+	"name": "vhadfendpoint",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/705b2731-0e0b-4df7-8630-95f157f0a347/resourceGroups/vh-core-infra-dev/providers/Microsoft.Sql/servers/vh-core-infra-dev",
+		"groupId": "sqlServer",
+		"fqdns": [
+			"vh-core-infra-dev.database.windows.net"
+		]
+	}
+}

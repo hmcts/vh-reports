@@ -1,24 +1,23 @@
 {
 	"name": "vhreporting_link",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
-		"annotations": [],
+		"connectVia": {
+			"referenceName": "vh-adf-integration",
+			"type": "IntegrationRuntimeReference"
+		},
 		"type": "AzureSqlDatabase",
 		"typeProperties": {
 			"connectionString": {
-				"type": "AzureKeyVaultSecret",
+				"secretName": "VhReportingDatabaseConnectionString",
 				"store": {
 					"referenceName": "vhreporting-kv-link",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "VhReportingDatabaseConnectionString"
+				"type": "AzureKeyVaultSecret"
 			},
-			"alwaysEncryptedSettings": {
-				"alwaysEncryptedAkvAuthType": "ManagedIdentity"
-			}
+			"tenant": ""
 		},
-		"connectVia": {
-			"referenceName": "ADFVnet",
-			"type": "IntegrationRuntimeReference"
-		}
+		"annotations": []
 	}
 }

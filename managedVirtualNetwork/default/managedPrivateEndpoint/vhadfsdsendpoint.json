@@ -1,0 +1,10 @@
+{
+	"name": "vhadfsdsendpoint",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/867a878b-cb68-4de5-9741-361ac9e178b6/resourceGroups/vh-infra-core-dev/providers/Microsoft.Sql/servers/vh-infra-core-dev",
+		"groupId": "sqlServer",
+		"fqdns": [
+			"vh-infra-core-dev.database.windows.net"
+		]
+	}
+}

@@ -1,4 +1,6 @@
 {
+	"name": "Child_AsqlToAsql",
+	"properties": {
 		"activities": [
 			{
 				"name": "Truncate Staging",
@@ -145,5 +147,8 @@
 				"defaultValue": "SELECT * FROM dbo.Conference"
 			}
 		},
-		"annotations": []
+		"annotations": [],
+		"lastPublishTime": "2022-12-13T14:08:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
